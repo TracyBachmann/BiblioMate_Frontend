@@ -1,0 +1,78 @@
+<header class="header">
+  <!-- Logo + menu toggle -->
+  <div class="header__top">
+    <button
+      #menuToggleButton
+      class="header__menu-toggle"
+      (click)="toggleMenu()"
+      aria-label="Ouvrir le menu latéral"
+      [attr.aria-expanded]="isMenuOpen"
+    >
+      <img ngSrc="assets/images/icon-menu.svg" alt="Menu" width="60" height="60" />
+    </button>
+    <img
+      class="header__logo"
+      ngSrc="assets/images/logo.svg"
+      alt="BiblioMate Logo"
+      width="500"
+      height="382"
+    />
+  </div>
+
+  <!-- Navigation -->
+  <nav class="header__nav">
+    <a class="header__nav-item search" href="#">
+      <img ngSrc="assets/images/icon-search.svg" alt="Search" width="60" height="60" />
+    </a>
+    <a class="header__nav-item contact" href="#">
+      <img ngSrc="assets/images/icon-contact.svg" alt="Contact" width="60" height="60" />
+    </a>
+    <a class="header__nav-item user" href="#">
+      <img ngSrc="assets/images/icon-user.svg" alt="User" width="60" height="60" />
+    </a>
+  </nav>
+
+  <!-- Menu latéral -->
+  <aside
+    class="header__drawer"
+    [class.is-visible]="isMenuOpen"
+    (keydown)="handleKeyDown($event)"
+  >
+    <button
+      class="header__drawer__close"
+      (click)="closeMenu()"
+      aria-label="Fermer le menu"
+    >
+      <img ngSrc="assets/images/icon-fermer.svg" alt="Fermer le menu" height="39" width="39" />
+    </button>
+    <nav>
+      <a
+        #drawerFirstLink
+        href="#"
+        (click)="closeMenu()"
+        [class.active]="isActivePage('accueil')"
+      >
+        Accueil
+      </a>
+      <a
+        href="#"
+        (click)="closeMenu()"
+        [class.active]="isActivePage('catalogue')"
+      >
+        Catalogue
+      </a>
+      <a
+        href="#"
+        (click)="closeMenu()"
+        [class.active]="isActivePage('connexion')"
+      >
+        Se connecter
+      </a>
+      <hr />
+      <a href="#" (click)="closeMenu()">Contact</a>
+      <a href="#" (click)="closeMenu()">À propos</a>
+      <a href="#" (click)="closeMenu()">FAQ</a>
+      <a href="#" (click)="closeMenu()">Mentions légales</a>
+    </nav>
+  </aside>
+</header>
