@@ -19,25 +19,26 @@
     />
   </div>
 
-  <!-- Navigation -->
   <nav class="header__nav">
-    <a class="header__nav-item search" href="#">
-      <img ngSrc="assets/images/icon-search.svg" alt="Search" width="60" height="60" />
-    </a>
-    <a class="header__nav-item contact" href="#">
-      <img ngSrc="assets/images/icon-contact.svg" alt="Contact" width="60" height="60" />
-    </a>
-    <a class="header__nav-item user" href="#">
-      <img ngSrc="assets/images/icon-user.svg" alt="User" width="60" height="60" />
+    <a
+      *ngFor="let icon of navIcons"
+      [href]="icon.href"
+      [ngClass]="'header__nav-item ' + icon.class"
+      [attr.aria-label]="icon.alt"
+    >
+      <img [ngSrc]="icon.src" [alt]="icon.alt" width="60" height="60" />
     </a>
   </nav>
 
-  <!-- Menu latéral -->
   <aside
     class="header__drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="drawer-title"
     [class.is-visible]="isMenuOpen"
     (keydown)="handleKeyDown($event)"
   >
+    <h2 id="drawer-title" class="visually-hidden">Menu principal</h2>
     <button
       class="header__drawer__close"
       (click)="closeMenu()"
@@ -51,6 +52,7 @@
         href="#"
         (click)="closeMenu()"
         [class.active]="isActivePage('accueil')"
+        [attr.aria-current]="isActivePage('accueil') ? 'page' : null"
       >
         Accueil
       </a>
@@ -58,6 +60,7 @@
         href="#"
         (click)="closeMenu()"
         [class.active]="isActivePage('catalogue')"
+        [attr.aria-current]="isActivePage('catalogue') ? 'page' : null"
       >
         Catalogue
       </a>
@@ -65,6 +68,7 @@
         href="#"
         (click)="closeMenu()"
         [class.active]="isActivePage('connexion')"
+        [attr.aria-current]="isActivePage('connexion') ? 'page' : null"
       >
         Se connecter
       </a>

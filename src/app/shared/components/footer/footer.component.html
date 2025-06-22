@@ -1,1 +1,59 @@
-<p>footer works!</p>
+<footer class="footer" role="contentinfo">
+  <div class="footer__content">
+
+    <!-- Bloc logo + texte -->
+    <div class="footer__block footer__logo-text">
+      <div class="footer__logo-wrapper">
+        <a href="/" class="footer__logo-link" aria-label="Retour à l'accueil">
+        <img
+          ngSrc="assets/images/logo.svg"
+          class="footer__logo"
+          width="110"
+          height="110"
+          alt="Logo BiblioMate"
+        />
+        </a>
+        <p class="footer__text">
+          © 2025 BiblioMate<br />
+          Parce que chaque histoire mérite une bibliothèque.
+        </p>
+      </div>
+    </div>
+
+    <ng-container *ngFor="let section of footerSections">
+      <div class="footer__block" [ngClass]="section.class">
+        <div class="footer__section-title" role="heading" [attr.aria-level]="2">
+          <span>{{ section.title }}</span>
+          <button
+            class="footer__accordion-toggle"
+            (click)="toggleSection(section.id)"
+            [attr.aria-expanded]="isSectionOpen(section.id)"
+            [attr.aria-controls]="section.id + '-content'"
+            [attr.aria-label]="'Afficher ou masquer la section ' + section.title"
+          >
+            <span class="footer__accordion-arrow" [class.open]="isSectionOpen(section.id)">›</span>
+          </button>
+        </div>
+
+        <div
+          class="footer__accordion-content"
+          [id]="section.id + '-content'"
+          [class.open]="isSectionOpen(section.id)"
+        >
+          <ng-container *ngIf="section.id !== 'socials'">
+            <a *ngFor="let link of section.links" [href]="link.href" class="footer__link">
+              {{ link.label }}
+            </a>
+          </ng-container>
+          <ng-container *ngIf="section.id === 'socials'">
+            <div class="footer__social-grid">
+              <a *ngFor="let social of section.links" [href]="social.href" [attr.aria-label]="social.label" role="link">
+                <img *ngIf="isSocialLink(social)" [ngSrc]="social.icon" alt="" width="40" height="40" />
+              </a>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</footer>

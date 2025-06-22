@@ -1,14 +1,7 @@
 <app-header></app-header>
 
-<!-- le reste de ton contenu (poussé à droite en desktop) -->
-<div class="lg:ml-[60px]">
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
 
-  <p>Bienvenue sur la bibliothèque...</p>
-
-  <div class="text-3xl text-green-600 font-bold text-center mt-10">
-    ✅ Tailwind fonctionne parfaitement !
-  </div>
-
-</div>
-
-<router-outlet />
+<app-footer></app-footer>

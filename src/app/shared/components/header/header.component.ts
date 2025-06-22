@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import {CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -14,14 +14,22 @@ export class HeaderComponent implements AfterViewInit {
   @ViewChild('menuToggleButton') menuToggleButton!: ElementRef<HTMLButtonElement>;
   @ViewChild('drawerFirstLink') drawerFirstLink!: ElementRef<HTMLAnchorElement>;
 
+  navIcons = [
+    { class: 'search', src: 'assets/images/icon-search.svg', alt: 'Recherche', href: '#' },
+    { class: 'contact', src: 'assets/images/icon-contact.svg', alt: 'Contact', href: '#' },
+    { class: 'user', src: 'assets/images/icon-user.svg', alt: 'Mon compte', href: '#' }
+  ];
+
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
 
-    if (this.isMenuOpen) {
-      setTimeout(() => this.drawerFirstLink.nativeElement.focus(), 0);
-    } else {
-      setTimeout(() => this.menuToggleButton.nativeElement.focus(), 0);
-    }
+    setTimeout(() => {
+      if (this.isMenuOpen) {
+        this.drawerFirstLink.nativeElement.focus();
+      } else {
+        this.menuToggleButton.nativeElement.focus();
+      }
+    }, 0);
   }
 
   closeMenu(): void {
@@ -32,37 +40,33 @@ export class HeaderComponent implements AfterViewInit {
   isActivePage(page: string): boolean {
     return window.location.pathname.includes(page);
   }
-  
+
   ngAfterViewInit() {
     if (!this.isMenuOpen) {
       this.menuToggleButton.nativeElement.focus();
     }
   }
+
   handleKeyDown(event: KeyboardEvent) {
     if (!this.isMenuOpen) return;
 
     const focusableElements = this.getFocusableElements();
     if (focusableElements.length === 0) return;
 
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-    const currentIndex = focusableElements.indexOf(document.activeElement as HTMLElement);
+    const first = focusableElements[0];
+    const last = focusableElements[focusableElements.length - 1];
+    const current = document.activeElement as HTMLElement;
 
     switch (event.key) {
       case 'Tab':
-        if (event.shiftKey) {
-          if (document.activeElement === firstElement) {
-            event.preventDefault();
-            lastElement.focus();
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            event.preventDefault();
-            firstElement.focus();
-          }
+        if (event.shiftKey && current === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && current === last) {
+          event.preventDefault();
+          first.focus();
         }
         break;
-
       case 'Escape':
         event.preventDefault();
         this.closeMenu();
@@ -73,7 +77,6 @@ export class HeaderComponent implements AfterViewInit {
   private getFocusableElements(): HTMLElement[] {
     const drawer = document.querySelector('.header__drawer');
     if (!drawer) return [];
-
     const elements = drawer.querySelectorAll<HTMLElement>(
       'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
     );
