@@ -28,7 +28,7 @@
 
     @media (min-width: 1025px) {
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: stretch;
     }
   }
@@ -101,7 +101,31 @@
       align-items: center;
       justify-content: center;
 
-      &.footer__info,
+      &.footer__info {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        .footer__accordion-content {
+          align-items: center;
+        }
+
+        .footer__section-title {
+          margin-bottom: 0.4rem;
+          justify-content: center;
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 1px;
+          background-color: rgba(255, 255, 255, 0.4);
+        }
+      }
+
       &.footer__socials {
         align-items: center;
         justify-content: center;
