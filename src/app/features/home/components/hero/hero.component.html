@@ -26,10 +26,21 @@
     </p>
   </div>
 
-  <div class="hero__cta">
+  <div class="hero__cta" [class.is-open]="isCtaOpen">
     <div class="hero__cta-text">Se connecter en tant que</div>
+
+    <ng-container *ngIf="!isMobile && isCtaOpen">
+      <a routerLink="/grand-public" class="hero__cta-option with-divider partial-divider">Grand public</a>
+      <a routerLink="/bibliothecaire" class="hero__cta-option">Bibliothécaire</a>
+    </ng-container>
+
+    <ng-container *ngIf="isMobile && isCtaOpen">
+      <a routerLink="/grand-public" class="hero__cta-option">Grand public</a>
+      <a routerLink="/bibliothecaire" class="hero__cta-option">Bibliothécaire</a>
+    </ng-container>
+
     <div class="hero__cta-chevron">
-      <a href="#">
+      <a href="javascript:void(0)" (click)="toggleCta()" [class.rotated]="isCtaOpen">
         <img
           ngSrc="assets/images/icon-chevron.svg"
           width="30"
@@ -39,4 +50,5 @@
       </a>
     </div>
   </div>
+
 </section>

@@ -152,6 +152,7 @@
     transform: scale(0.95);
     pointer-events: none;
     transition: transform 0.3s ease, opacity 0.3s ease;
+    border-right: 2px solid #fff;
 
     &.is-visible {
       opacity: 1;
