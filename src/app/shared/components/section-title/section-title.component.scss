@@ -1,0 +1,31 @@
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #004b87;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 400;
+  font-family: 'League Gothic', sans-serif;
+  padding: 0 1rem;
+  margin: 0;
+  text-align: center;
+  box-sizing: border-box;
+  height: 98px;
+  width: 275px;
+  max-width: 500px;
+
+  @media (min-width: 1024px) {
+    max-width: 600px;
+  }
+
+  @media (max-width: 750px) {
+    height: 80px;
+    font-size: 28px;
+  }
+
+  @media (max-width: 480px) {
+    height: 70px;
+    font-size: 24px;
+  }
+}
