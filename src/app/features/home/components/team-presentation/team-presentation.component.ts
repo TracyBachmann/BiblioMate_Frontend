@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-team-presentation',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './team-presentation.component.html',
-  styleUrl: './team-presentation.component.css'
+  styleUrls: ['./team-presentation.component.scss']
 })
-export class TeamPresentationComponent {
-
-}
+export class TeamPresentationComponent {}

@@ -2,18 +2,19 @@
   position: relative;
   width: 100%;
   height: 600px;
-  overflow: hidden;
   font-family: 'Lato', sans-serif;
+  z-index: 10;
+  padding-bottom: 40px;
 
   &__background {
     position: absolute;
     inset: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% + 80px);
     max-height: 600px;
     object-fit: cover;
     object-position: center;
-    z-index: -1;
+    z-index: 1; // Changé de -1 à 1
   }
 
   &__content {
