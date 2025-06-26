@@ -1,1 +1,6 @@
-<p>book-card works!</p>
+<div class="book-card">
+  <div class="book-card__header">{{ title }}</div>
+  <img [src]="cover" [alt]="title" class="book-card__image" />
+  <p class="book-card__description">{{ description }}</p>
+  <a [href]="link" class="book-card__link">Lien vers le livre</a>
+</div>
