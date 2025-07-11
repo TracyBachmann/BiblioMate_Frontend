@@ -1,1 +1,35 @@
-<p>catalog-preview works!</p>
+<section class="catalog-preview">
+  <div class="catalog-preview__header">
+    <app-section-title title="Catalogue"></app-section-title>
+    <app-cta-button
+      text="Consulter le catalogue"
+      color="yellow"
+      icon="book"
+    ></app-cta-button>
+  </div>
+
+  <div class="catalog-preview__grid-wrapper">
+    <div class="catalog-preview__grid">
+      <app-book-card
+        title="Titre du livre"
+        image="assets/images/mock-book-1.png"
+        description="Quisque vel enim purus. Nullam pretium fringilla molestie [...]"
+        link="#"
+      ></app-book-card>
+
+      <app-book-card
+        title="Titre du livre"
+        image="assets/images/mock-book-2.png"
+        description="Quisque vel enim purus. Nullam pretium fringilla molestie [...]"
+        link="#"
+      ></app-book-card>
+
+      <app-book-card
+        title="Titre du livre"
+        image="assets/images/mock-book-3.png"
+        description="Quisque vel enim purus. Nullam pretium fringilla molestie [...]"
+        link="#"
+      ></app-book-card>
+    </div>
+  </div>
+</section>

@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-book-card',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './book-card.component.html',
-  styleUrl: './book-card.component.css'
+  styleUrls: ['./book-card.component.scss']
 })
 export class BookCardComponent {
-
+  @Input() title!: string;
+  @Input() image!: string;
+  @Input() description!: string;
+  @Input() link!: string;
 }

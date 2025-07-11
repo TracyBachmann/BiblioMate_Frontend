@@ -1,0 +1,61 @@
+.catalog-preview {
+  padding: 4rem 15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  font-family: 'Lato', sans-serif;
+
+  @media (max-width: 1024px) {
+    padding: 3rem 2rem;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    width: 100%;
+  }
+
+  &__grid-wrapper {
+    margin: 0 -15rem;
+    padding: 0 10rem;
+    box-sizing: border-box;
+
+    @media (max-width: 1024px) {
+      margin: 0 -2rem;
+      padding: 0 2rem;
+    }
+  }
+
+  &__grid {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    gap: 5rem;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    > app-book-card {
+      flex: 1;
+    }
+
+    > app-book-card:not(:first-child) {
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 6rem;
+        bottom: 6rem;
+        left: -2.5rem;
+        width: 1px;
+        background-color: #000;
+      }
+    }
+  }
+}
