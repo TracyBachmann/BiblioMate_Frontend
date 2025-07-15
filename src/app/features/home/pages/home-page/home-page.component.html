@@ -1,4 +1,14 @@
 <app-hero></app-hero>
 <app-library-info-section></app-library-info-section>
 <app-team-presentation></app-team-presentation>
-<app-catalog-preview></app-catalog-preview>
+
+<section class="latest-books">
+
+  <ng-container *ngIf="latestBooks.length; else loading">
+    <app-catalog-preview [books]="latestBooks"></app-catalog-preview>
+  </ng-container>
+
+  <ng-template #loading>
+    <p>Chargement…</p>
+  </ng-template>
+</section>

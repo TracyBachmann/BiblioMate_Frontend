@@ -4,19 +4,33 @@
   </div>
 
   <div class="book-card__image">
-    <img
-      [ngSrc]="image"
-      [alt]="title"
-      width="400"
-      height="300"
-      loading="lazy"
-    />
+    <ng-container *ngIf="image; else placeholder">
+      <img
+        ngSrc="{{ image }}"
+        [alt]="title"
+        width="400"
+        height="300"
+        loading="lazy"
+      />
+    </ng-container>
+    <ng-template #placeholder>
+      <img
+        src="assets/images/placeholder.png"
+        [alt]="title"
+        width="400"
+        height="300"
+        loading="lazy"
+      />
+    </ng-template>
   </div>
 
   <div class="book-card__content">
-    <p class="book-card__description">
+    <p
+      *ngIf="description?.trim()"
+      class="book-card__description"
+    >
       {{ description }}
     </p>
-    <a class="book-card__link" [href]="link">Lien vers le livre</a>
+    <a class="book-card__link" [href]="link">Voir le détail</a>
   </div>
 </div>

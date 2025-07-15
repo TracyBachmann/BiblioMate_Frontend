@@ -10,7 +10,7 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 })
 export class BookCardComponent {
   @Input() title!: string;
-  @Input() image!: string;
+  @Input() image: string | undefined; 
   @Input() description!: string;
   @Input() link!: string;
 }

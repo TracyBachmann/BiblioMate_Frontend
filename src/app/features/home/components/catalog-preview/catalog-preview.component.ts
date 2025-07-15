@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Book } from '../../../../core/services/book.service';
 
-// IMPORTS des composants partagés
 import { SectionTitleComponent } from '../../../../shared/components/section-title/section-title.component';
 import { CtaButtonComponent } from '../../../../shared/components/cta-button/cta-button.component';
 import { BookCardComponent } from '../../../../shared/components/book-card/book-card.component';
@@ -18,4 +18,6 @@ import { BookCardComponent } from '../../../../shared/components/book-card/book-
   templateUrl: './catalog-preview.component.html',
   styleUrls: ['./catalog-preview.component.scss']
 })
-export class CatalogPreviewComponent {}
+export class CatalogPreviewComponent {
+  @Input() books: Book[] = [];
+}

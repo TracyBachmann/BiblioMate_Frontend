@@ -1,4 +1,5 @@
 .catalog-preview {
+  position: relative;
   padding: 4rem 15rem;
   display: flex;
   flex-direction: column;
@@ -13,9 +14,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 2rem;
     width: 100%;
+
+    @media (max-width: 750px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      & app-cta-button {
+        position: absolute;
+        bottom: 2rem;
+        left: 2rem;
+        right: 2rem;
+        width: auto;
+      }
+    }
   }
 
   &__grid-wrapper {
@@ -57,5 +69,9 @@
         background-color: #000;
       }
     }
+  }
+
+  @media (max-width: 750px) {
+    padding-bottom: 8rem;
   }
 }
