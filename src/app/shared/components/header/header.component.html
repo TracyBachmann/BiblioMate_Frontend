@@ -6,77 +6,81 @@
       class="header__menu-toggle"
       (click)="toggleMenu()"
       aria-label="Ouvrir le menu latéral"
-      [attr.aria-expanded]="isMenuOpen"
-    >
+      [attr.aria-expanded]="isMenuOpen">
       <img ngSrc="assets/images/icon-menu.svg" alt="Menu" width="60" height="60" />
     </button>
-    <img
-      class="header__logo"
-      ngSrc="assets/images/logo.svg"
-      alt="BiblioMate Logo"
-      width="500"
-      height="382"
-    />
+
+    <img class="header__logo" ngSrc="assets/images/logo.svg" alt="BiblioMate Logo" width="500" height="382" />
   </div>
 
+  <!-- icônes -->
   <nav class="header__nav">
-    <a
-      *ngFor="let icon of navIcons"
-      [href]="icon.href"
-      [ngClass]="'header__nav-item ' + icon.class"
-      [attr.aria-label]="icon.alt"
-    >
+    <a *ngFor="let icon of navIcons"
+       class="header__nav-item"
+       [ngClass]="icon.class"
+       [routerLink]="icon.link"
+       [attr.aria-label]="icon.alt">
       <img [ngSrc]="icon.src" [alt]="icon.alt" width="60" height="60" />
+    </a>
+
+    <!-- icône compte : destination selon état -->
+    <a class="header__nav-item user"
+       [routerLink]="(auth.isAuthenticated$ | async) ? '/espace-personnel' : '/connexion'"
+       aria-label="Mon compte">
+      <img ngSrc="assets/images/icon-user.svg" alt="Mon compte" width="60" height="60" />
     </a>
   </nav>
 
-  <aside
-    class="header__drawer"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="drawer-title"
-    [class.is-visible]="isMenuOpen"
-    (keydown)="handleKeyDown($event)"
-  >
+  <!-- tiroir -->
+  <aside class="header__drawer" role="dialog" aria-modal="true"
+         aria-labelledby="drawer-title"
+         [class.is-visible]="isMenuOpen"
+         (keydown)="handleKeyDown($event)">
     <h2 id="drawer-title" class="visually-hidden">Menu principal</h2>
-    <button
-      class="header__drawer__close"
-      (click)="closeMenu()"
-      aria-label="Fermer le menu"
-    >
+
+    <button class="header__drawer__close" (click)="closeMenu()" aria-label="Fermer le menu">
       <img ngSrc="assets/images/icon-fermer.svg" alt="Fermer le menu" height="39" width="39" />
     </button>
+
     <nav>
-      <a
-        #drawerFirstLink
-        href="#"
-        (click)="closeMenu()"
-        [class.active]="isActivePage('accueil')"
-        [attr.aria-current]="isActivePage('accueil') ? 'page' : null"
-      >
-        Accueil
-      </a>
-      <a
-        href="#"
-        (click)="closeMenu()"
-        [class.active]="isActivePage('catalogue')"
-        [attr.aria-current]="isActivePage('catalogue') ? 'page' : null"
-      >
-        Catalogue
-      </a>
-      <a
-        href="#"
-        (click)="closeMenu()"
-        [class.active]="isActivePage('connexion')"
-        [attr.aria-current]="isActivePage('connexion') ? 'page' : null"
-      >
-        Se connecter
-      </a>
-      <hr />
-      <a href="#" (click)="closeMenu()">Contact</a>
-      <a href="#" (click)="closeMenu()">À propos</a>
-      <a href="#" (click)="closeMenu()">FAQ</a>
-      <a href="#" (click)="closeMenu()">Mentions légales</a>
+      <a #drawerFirstLink routerLink="/" (click)="closeMenu()" [class.active]="isActive('/')"
+         [attr.aria-current]="isActive('/') ? 'page' : null">Accueil</a>
+
+      <a routerLink="/catalogue" (click)="closeMenu()" [class.active]="isActive('/catalogue')"
+         [attr.aria-current]="isActive('/catalogue') ? 'page' : null">Catalogue</a>
+
+      <!-- Non connecté -->
+      <ng-container *ngIf="(auth.isAuthenticated$ | async) === false">
+        <a routerLink="/connexion" (click)="closeMenu()" [class.active]="isActive('/connexion')">Se connecter</a>
+        <hr />
+      </ng-container>
+
+      <!-- Connecté -->
+      <ng-container *ngIf="auth.isAuthenticated$ | async">
+        <a routerLink="/espace-personnel" (click)="closeMenu()" [class.active]="isActive('/espace-personnel')">
+          Espace personnel
+        </a>
+
+        <!-- Bibliothécaire -->
+        <ng-container *ngIf="(auth.role$ | async) === 'Librarian'">
+          <a routerLink="/gestion" (click)="closeMenu()">Gestion</a>
+        </ng-container>
+
+        <!-- Admin -->
+        <ng-container *ngIf="(auth.role$ | async) === 'Admin'">
+          <a routerLink="/admin" (click)="closeMenu()">Administration</a>
+          <a routerLink="/rapports" (click)="closeMenu()">Rapports</a>
+        </ng-container>
+
+        <a (click)="auth.logout()">Se déconnecter</a>
+        <hr />
+      </ng-container>
+
+      <!-- bas de menu -->
+      <a routerLink="/contact" (click)="closeMenu()">Contact</a>
+      <a routerLink="/a-propos" (click)="closeMenu()">À propos</a>
+      <a routerLink="/faq" (click)="closeMenu()">FAQ</a>
+      <a routerLink="/mentions-legales" (click)="closeMenu()">Mentions légales</a>
     </nav>
   </aside>
 </header>

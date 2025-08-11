@@ -1,0 +1,86 @@
+<div class="login-wrapper">
+  <div class="login-page">
+    <img
+      ngSrc="assets/images/hero-background.png"
+      width="1920"
+      height="1080"
+      alt="Bibliothèque de Montferrand"
+      class="login-background"
+      fetchpriority="high"
+      priority
+    />
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
+      <h1>Se connecter</h1>
+
+      <p class="login-subtext">
+        Pas de compte ?
+        <a routerLink="/inscription">Inscrivez-vous gratuitement</a>
+      </p>
+
+      <div class="form-field">
+        <input
+          type="email"
+          name="email"
+          placeholder="Adresse de messagerie"
+          formControlName="email"
+          [class.invalid]="hasError('email')"
+        />
+        <div class="error-text" *ngIf="hasError('email')">
+          {{ getErrorMessage('email') }}
+        </div>
+      </div>
+
+      <div class="form-field">
+        <input
+          type="password"
+          name="password"
+          placeholder="Mot de passe"
+          formControlName="password"
+          [class.invalid]="hasError('password')"
+        />
+        <div class="error-text" *ngIf="hasError('password')">
+          {{ getErrorMessage('password') }}
+        </div>
+      </div>
+
+      <a class="forgot-password" routerLink="/mot-de-passe-oublie">Mot de passe oublié ?</a>
+
+      <div class="checkbox-line">
+        <input type="checkbox" id="remember" formControlName="remember" />
+        <label for="remember">
+          Se souvenir de moi
+        </label>
+      </div>
+
+      <div class="button-wrapper">
+        <button
+          type="submit"
+          class="styled-button"
+          [disabled]="isSubmitting || loginForm.invalid"
+          [class.loading]="isSubmitting"
+        >
+          <span *ngIf="!isSubmitting">Se connecter</span>
+          <span *ngIf="isSubmitting">Connexion en cours...</span>
+        </button>
+
+        <div class="divider"><span>OU</span></div>
+
+        <button type="button" class="google-button styled-button" disabled>
+          <img
+            ngSrc="assets/images/icon-google.svg"
+            width="24"
+            height="24"
+            alt="Google"
+            fetchpriority="low"
+          />
+          Continuer avec Google
+        </button>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+</div>

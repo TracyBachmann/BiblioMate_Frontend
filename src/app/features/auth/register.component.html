@@ -1,0 +1,147 @@
+<div class="login-wrapper">
+  <div class="login-page">
+    <img
+      ngSrc="assets/images/hero-background.png"
+      width="1920"
+      height="1080"
+      alt="Bibliothèque de Montferrand"
+      class="login-background"
+      fetchpriority="high"
+      priority
+    />
+
+    <form [formGroup]="registerForm" (ngSubmit)="submit()" class="login-form">
+      <h1>Créer votre compte</h1>
+
+      <p class="login-subtext">
+        Vous avez déjà un compte ?
+        <a routerLink="/connexion">Connectez-vous</a>
+      </p>
+
+      <!-- Stepper simple -->
+      <div class="stepper">
+        <span [class.active]="step>=1">1</span>
+        <span [class.active]="step>=2">2</span>
+        <span [class.active]="step>=3">3</span>
+      </div>
+
+      <!-- Étape 1 -->
+      <ng-container *ngIf="step === 1">
+        <div class="form-field">
+          <input
+            type="text"
+            name="name"
+            placeholder="Nom & prénom"
+            formControlName="name"
+            [class.invalid]="hasError('name')"
+          />
+          <div class="error-text" *ngIf="hasError('name')">
+            {{ getErrorMessage('name') }}
+          </div>
+        </div>
+
+        <div class="form-field">
+          <input
+            type="email"
+            name="email"
+            placeholder="Adresse de messagerie"
+            formControlName="email"
+            [class.invalid]="hasError('email')"
+          />
+          <div class="error-text" *ngIf="hasError('email')">
+            {{ getErrorMessage('email') }}
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Étape 2 -->
+      <ng-container *ngIf="step === 2">
+        <div class="form-field">
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Téléphone"
+            formControlName="phone"
+            [class.invalid]="hasError('phone')"
+          />
+          <div class="error-text" *ngIf="hasError('phone')">
+            {{ getErrorMessage('phone') }}
+          </div>
+        </div>
+
+        <div class="form-field">
+          <input
+            type="text"
+            name="address"
+            placeholder="Adresse postale"
+            formControlName="address"
+            [class.invalid]="hasError('address')"
+          />
+          <div class="error-text" *ngIf="hasError('address')">
+            {{ getErrorMessage('address') }}
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Étape 3 -->
+      <ng-container *ngIf="step === 3">
+        <div class="form-field">
+          <input
+            type="password"
+            name="password"
+            placeholder="Mot de passe"
+            formControlName="password"
+            [class.invalid]="hasError('password') || registerForm.hasError('passwordMismatch')"
+          />
+          <div class="error-text" *ngIf="hasError('password')">
+            {{ getErrorMessage('password') }}
+          </div>
+        </div>
+
+        <div class="form-field">
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirmation du mot de passe"
+            formControlName="confirmPassword"
+            [class.invalid]="hasError('confirmPassword') || registerForm.hasError('passwordMismatch')"
+          />
+          <div class="error-text" *ngIf="hasError('confirmPassword') || registerForm.hasError('passwordMismatch')">
+            {{ getErrorMessage('confirmPassword') }}
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Navigation d’étapes -->
+      <div class="wizard-nav">
+        <button type="button" class="styled-button secondary" (click)="prev()" [disabled]="step===1">
+          Étape précédente
+        </button>
+
+        <button
+          *ngIf="step<3"
+          type="button"
+          class="styled-button"
+          (click)="next()"
+        >
+          Étape suivante
+        </button>
+
+        <button
+          *ngIf="step===3"
+          type="submit"
+          class="styled-button"
+          [disabled]="isSubmitting"
+          [class.loading]="isSubmitting"
+        >
+          <span *ngIf="!isSubmitting">S'inscrire à BiblioMate</span>
+          <span *ngIf="isSubmitting">Envoi en cours...</span>
+        </button>
+      </div>
+
+      <!-- Messages -->
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+    </form>
+  </div>
+</div>

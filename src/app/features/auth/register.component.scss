@@ -1,0 +1,49 @@
+/* Stepper très léger */
+.stepper {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  margin: .25rem 0 0.5rem;
+
+  span {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fbbc05;
+    color: #fff;
+    opacity: .6;
+    font-weight: 400;
+  }
+  .active {
+    background: #fbbc05;
+    color: #000;
+    opacity: 1;
+  }
+}
+
+/* Nav d'étapes (réutilise .styled-button) */
+.wizard-nav {
+  display: flex;
+  gap: .75rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .secondary {
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
+
+    &:hover { background: rgba(255,255,255,.08); }
+  }
+}
+
+/* Messages */
+.success-message {
+  color: #9be48c;
+  text-align: center;
+  font-size: 0.95rem;
+}
