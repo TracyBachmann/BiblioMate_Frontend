@@ -1,49 +1,33 @@
-/* Stepper très léger */
+/* on reprend ton style login + quelques ajouts */
+@use './login.component.scss' as *;
+
 .stepper {
-  display: flex;
-  justify-content: center;
-  gap: .5rem;
-  margin: .25rem 0 0.5rem;
-
+  display: flex; justify-content: center; gap: .5rem; margin: .25rem 0 1rem;
   span {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #fbbc05;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid #fbbc05; display: inline-flex; align-items: center; justify-content: center;
     color: #fff;
-    opacity: .6;
-    font-weight: 400;
-  }
-  .active {
-    background: #fbbc05;
-    color: #000;
-    opacity: 1;
+    &.active { background: #fbbc05; color: #000; }
   }
 }
 
-/* Nav d'étapes (réutilise .styled-button) */
 .wizard-nav {
-  display: flex;
-  gap: .75rem;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-
-  .secondary {
-    background: transparent;
-    color: #fff;
-    border-color: #fff;
-
-    &:hover { background: rgba(255,255,255,.08); }
-  }
+  display: flex; gap: .5rem; justify-content: center; margin-top: .5rem;
+  .secondary { background: transparent; color: #fff; border-color: #fff; }
 }
 
-/* Messages */
-.success-message {
-  color: #9be48c;
-  text-align: center;
-  font-size: 0.95rem;
+.hint { color: #f1f1f1; font-size: .8rem; margin-top: .25rem; opacity: .9; }
+
+.dropzone {
+  background: #fff; border: 2px dashed #fbbc05; border-radius: 12px; padding: 1rem; text-align: center; cursor: pointer;
+  img { max-width: 100%; border-radius: 10px; display: block; margin: 0 auto .5rem; }
+  .tiny { margin-top: .25rem; height: 32px; padding: 0 .75rem; border-radius: 8px; border: 1px solid #fbbc05; background: #fff; }
+}
+
+.chips {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  .chip {
+    border: 1px solid #fbbc05; border-radius: 999px; background: #ffffff; padding: .35rem .8rem; cursor: pointer;
+    &.selected { background: #fdf5dc; }
+  }
 }
