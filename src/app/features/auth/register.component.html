@@ -11,6 +11,30 @@
     />
 
     <form [formGroup]="registerForm" (ngSubmit)="submit()" class="login-form">
+      <!-- 1) Google -->
+      <div class="button-wrapper alt-spacing">
+        <button type="button" class="google-button styled-button" disabled>
+          <img
+            ngSrc="assets/images/icon-google.svg"
+            width="24"
+            height="24"
+            alt="Google"
+            fetchpriority="low"
+          />
+          S'inscrire avec Google
+        </button>
+      </div>
+
+      <div class="divider"><span>OU</span></div>
+
+      <div class="stepper stepper-lg">
+        <span [class.active]="step>=1">1</span><i class="sep" aria-hidden="true"></i>
+        <span [class.active]="step>=2">2</span><i class="sep" aria-hidden="true"></i>
+        <span [class.active]="step>=3">3</span><i class="sep" aria-hidden="true"></i>
+        <span [class.active]="step>=4">4</span><i class="sep" aria-hidden="true"></i>
+        <span [class.active]="step>=5">5</span>
+      </div>
+
       <h1>Créer votre compte</h1>
 
       <p class="login-subtext">
@@ -18,16 +42,6 @@
         <a routerLink="/connexion">Connectez-vous</a>
       </p>
 
-      <!-- Stepper -->
-      <div class="stepper">
-        <span [class.active]="step>=1">1</span>
-        <span [class.active]="step>=2">2</span>
-        <span [class.active]="step>=3">3</span>
-        <span [class.active]="step>=4">4</span>
-        <span [class.active]="step>=5">5</span>
-      </div>
-
-      <!-- ÉTAPE 1 : identité -->
       <ng-container *ngIf="step === 1">
         <div class="form-field">
           <input
@@ -66,7 +80,6 @@
         </div>
       </ng-container>
 
-      <!-- ÉTAPE 2 : contact -->
       <ng-container *ngIf="step === 2">
         <div class="form-field">
           <input
@@ -101,14 +114,9 @@
         </div>
       </ng-container>
 
-      <!-- ÉTAPE 3 : sécurité + date de naissance -->
       <ng-container *ngIf="step === 3">
         <div class="form-field">
-          <input
-            type="date"
-            placeholder="Date de naissance"
-            formControlName="dateOfBirth"
-          />
+          <input type="date" placeholder="Date de naissance" formControlName="dateOfBirth" />
           <div class="hint">Facultatif — utilisé pour des recommandations adaptées.</div>
         </div>
 
@@ -137,29 +145,21 @@
         </div>
       </ng-container>
 
-      <!-- ÉTAPE 4 : image de profil (facultatif) -->
       <ng-container *ngIf="step === 4">
         <div class="dropzone" (click)="fileInput.click()">
-          <input
-            #fileInput
-            type="file"
-            accept="image/*"
-            (change)="onFileSelected($event)"
-            hidden
-          />
-          <ng-container *ngIf="!previewUrl; else preview">
+          <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+          <ng-container *ngIf="!previewUrl">
             <p>Cliquer pour choisir une image (facultatif)</p>
             <small>PNG / JPG • &lt; 5 Mo</small>
           </ng-container>
-          <ng-template #preview>
-            <img [src]="previewUrl" alt="Aperçu" />
+          <ng-container *ngIf="previewUrl as url">
+            <img [ngSrc]="url" width="256" height="256" alt="Aperçu" decoding="async" />
             <button type="button" class="tiny" (click)="clearImage($event)">Retirer</button>
-          </ng-template>
+          </ng-container>
         </div>
-        <div class="hint">L’image est optionnelle. Elle n’est pas encore téléversée : on enverra juste un champ vide côté API.</div>
+        <div class="hint">L’image est optionnelle. Rien n’est téléversé tant que l’API n’est pas câblée.</div>
       </ng-container>
 
-      <!-- ÉTAPE 5 : genres + CGU -->
       <ng-container *ngIf="step === 5">
         <div class="form-field">
           <label>Genres favoris (facultatif)</label>
@@ -168,7 +168,7 @@
               type="button"
               class="chip"
               *ngFor="let g of genres"
-              [class.selected]="favoriteGenreIds.value?.includes(g.id)"
+              [class.selected]="favoriteGenreIds.value.includes(g.id)"
               (click)="toggleGenre(g.id)"
             >
               {{ g.name }}
@@ -178,18 +178,15 @@
 
         <div class="checkbox-line">
           <input id="accept" type="checkbox" formControlName="acceptTerms" />
-          <label for="accept">
-            J’accepte les conditions d’utilisation.
-          </label>
+          <label for="accept">J’accepte les conditions d’utilisation.</label>
         </div>
         <div class="error-text" *ngIf="hasError('acceptTerms')">
           Veuillez accepter les conditions d’utilisation.
         </div>
       </ng-container>
 
-      <!-- NAV -->
       <div class="wizard-nav">
-        <button type="button" class="styled-button secondary" (click)="prev()" [disabled]="step===1">
+        <button *ngIf="step>1" type="button" class="styled-button secondary" (click)="prev()">
           Étape précédente
         </button>
 

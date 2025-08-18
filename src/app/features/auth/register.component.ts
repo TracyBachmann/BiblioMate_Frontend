@@ -17,9 +17,9 @@ type RegisterPayload = {
   address1: string;
   address2?: string | null;
   phone: string;
-  dateOfBirth?: string | null;      // ISO yyyy-MM-dd
-  profileImagePath?: string | null; // pour l’instant: null
-  favoriteGenreIds?: number[];      // facultatif
+  dateOfBirth?: string | null;
+  profileImagePath?: string | null;
+  favoriteGenreIds?: number[];
 };
 
 @Component({
@@ -49,26 +49,21 @@ export class RegisterComponent implements OnInit {
     private router: Router
   ) {
     this.registerForm = this.fb.group({
-      // Étape 1
       lastName:  ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
       email:     ['', [Validators.required, Validators.email]],
 
-      // Étape 2
       phone:    ['', [Validators.required]],
       address1: ['', [Validators.required, Validators.maxLength(200)]],
       address2: [''],
 
-      // Étape 3
       dateOfBirth:     [''],
       password:        ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
       confirmPassword: ['', [Validators.required]],
 
-      // Étape 4
       profileImagePath: [''],
 
-      // Étape 5
-      favoriteGenreIds: new FormControl<number[]>([]),
+      favoriteGenreIds: this.fb.nonNullable.control<number[]>([]),
       acceptTerms: [false, [Validators.requiredTrue]]
     }, { validators: this.passwordsMatch });
   }
