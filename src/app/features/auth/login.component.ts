@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { environment } from '../../../environment';
 
 type LoginResponse = { token: string };
 
@@ -19,7 +20,7 @@ export class LoginComponent {
   errorMessage: string | null = null;
   isSubmitting = false;
 
-  private readonly API_URL = 'https://localhost:7084/api/auths/login';
+  private readonly API_URL = `${environment.apiBase}/api/auths/login`;
 
   constructor(
     private fb: FormBuilder,
@@ -29,7 +30,7 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required]],   // <- removed stray parenthesis
       remember: [false]
     });
   }
@@ -54,18 +55,23 @@ export class LoginComponent {
           this.isSubmitting = false;
           return;
         }
-        this.auth.login(res.token, !!remember);   // programme aussi l’auto-logout
-        // redirection accueil (tu modifieras vers /espace-personnel quand prêt)
+        this.auth.login(res.token, !!remember);
         const returnUrl = new URLSearchParams(location.search).get('returnUrl') ?? '/';
         this.router.navigateByUrl(returnUrl);
       },
       error: (err) => {
-        this.errorMessage =
-          err?.error?.error ||
-          (err?.status === 0 ? 'Impossible de joindre le serveur.' : 'Identifiants invalides.');
+        const apiMsg = err?.error?.error || err?.error;
+        if (apiMsg === 'Account awaiting admin approval.') {
+          this.errorMessage = 'Votre compte a bien été créé, mais il doit être approuvé par un·e bibliothécaire.';
+        } else if (apiMsg === 'Email not confirmed.') {
+          this.errorMessage = 'Veuillez confirmer votre adresse e-mail avant de vous connecter.';
+        } else {
+          this.errorMessage = (err?.status === 0)
+            ? 'Impossible de joindre le serveur.'
+            : 'Identifiants invalides.';
+        }
         this.isSubmitting = false;
-      },
-      complete: () => (this.isSubmitting = false)
+      }
     });
   }
 
@@ -81,4 +87,3 @@ export class LoginComponent {
     return '';
   }
 }
-

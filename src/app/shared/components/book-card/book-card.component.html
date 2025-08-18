@@ -31,6 +31,12 @@
     >
       {{ description }}
     </p>
+    <span *ngIf="showStatus" class="status-badge"
+          [class.available]="status==='Disponible'"
+          [class.unavailable]="status==='Indisponible'"
+          [class.reserved]="status==='Réservé'">
+  {{ status }}
+  </span>
     <a class="book-card__link" [href]="link">Voir le détail</a>
   </div>
 </div>

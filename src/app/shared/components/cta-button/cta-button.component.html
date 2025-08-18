@@ -1,12 +1,9 @@
-<button class="cta-button" [ngClass]="color">
-  <img
-    *ngIf="icon"
-    [ngSrc]="'assets/images/icon-' + icon + '.svg'"
-    width="20"
-    height="20"
-    [alt]="icon"
-    fetchpriority="auto"
-    decoding="async"
-  />
+<button class="cta-button" [ngClass]="color" type="button" [routerLink]="routerLink">
+  <img *ngIf="icon"
+       [ngSrc]="'assets/images/icon-' + icon + '.svg'"
+       width="20" height="20"
+       [alt]="icon"
+       fetchpriority="auto"
+       decoding="async" />
   {{ text }}
 </button>

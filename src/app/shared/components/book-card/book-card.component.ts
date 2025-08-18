@@ -13,4 +13,6 @@ export class BookCardComponent {
   @Input() image: string | undefined; 
   @Input() description!: string;
   @Input() link!: string;
+  @Input() showStatus = false;
+  @Input() status: 'Disponible' | 'Indisponible' | 'Réservé' = 'Disponible';
 }

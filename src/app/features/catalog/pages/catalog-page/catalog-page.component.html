@@ -1,0 +1,115 @@
+<div class="catalog-page">
+
+  <!-- HERO : image + titre + barre de recherche -->
+  <header class="catalog-hero">
+    <img
+      ngSrc="assets/images/catalog-background.png"
+      width="1920" height="480" alt="Catalogue"
+      class="hero-bg" fetchpriority="high" />
+
+    <div class="page-gutter hero-inner">
+      <!-- Titre avec le composant SHARED -->
+      <app-section-title class="hero-title" [title]="'Catalogue'"></app-section-title>
+
+      <!-- Barre de recherche centrée dans la gouttière -->
+      <div class="searchbar-pill">
+        <input
+          type="search"
+          placeholder="Tapez votre recherche..."
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)" />
+
+        <button type="button" class="icon-btn" aria-label="Rechercher">
+          <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
+        </button>
+
+        <label class="adv-toggle">
+          <span>Recherche avancée</span>
+          <input
+            type="checkbox"
+            [checked]="advanced()"
+            (change)="advanced.set($any($event.target).checked)" />
+          <i aria-hidden="true"></i>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filtres avancés -->
+  <form *ngIf="advanced()" class="filters page-gutter" (ngSubmit)="searchWithFilters()">
+    <div class="grid">
+      <input [ngModel]="filters().isbn" (ngModelChange)="onFilterChange('isbn', $event)" name="isbn" placeholder="ISBN" />
+      <input [ngModel]="filters().author" (ngModelChange)="onFilterChange('author', $event)" name="author" placeholder="Auteur" />
+      <input [ngModel]="filters().date" (ngModelChange)="onFilterChange('date', $event)" name="date" type="date" placeholder="Date de publication" />
+      <select [ngModel]="filters().genre" (ngModelChange)="onFilterChange('genre', $event)" name="genre">
+        <option value="" disabled hidden>Genre</option>
+        <option>SF</option><option>Thriller</option><option>Roman</option>
+      </select>
+      <input [ngModel]="filters().tags" (ngModelChange)="onFilterChange('tags', $event)" name="tags" placeholder="Tags (séparés par des virgules)" />
+      <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Éditeur" />
+      <label class="inline">
+        <input type="checkbox" [ngModel]="filters().availableNow" (ngModelChange)="onFilterChange('availableNow', $event)" name="availableNow" />
+        Est disponible immédiatement
+      </label>
+      <input [ngModel]="filters().exclude" (ngModelChange)="onFilterChange('exclude', $event)" name="exclude" placeholder="Exclure de la recherche..." />
+    </div>
+
+    <div class="action-row">
+      <button type="button" class="styled-button secondary" (click)="resetFilters()">
+        Réinitialiser les filtres
+      </button>
+      <button type="submit" class="styled-button">
+        Rechercher avec ces filtres
+      </button>
+    </div>
+  </form>
+
+  <!-- SECTION NOUVEAUTÉS : carrousel -->
+  <section class="section-block nouveautes above-separator page-gutter">
+    <app-section-title [title]="'Nouveautés'"></app-section-title>
+
+    <div class="carousel">
+      <button class="nav prev" [disabled]="!canPrev()" (click)="prev()" aria-label="Précédent">➜</button>
+
+      <div class="viewport">
+        <div class="track">
+          <div class="col" *ngFor="let b of visibleNouveautes(); let i = index" [class.has-sep]="i>0">
+            <app-book-card
+              [showStatus]="true"
+              [status]="bookStatus(b)"
+              [title]="b.title"
+              [image]="b.coverUrl"
+              [description]="b.description || ''"
+              [link]="'/books/' + b.bookId">
+            </app-book-card>
+          </div>
+        </div>
+      </div>
+
+      <button class="nav next" [disabled]="!canNext()" (click)="next()" aria-label="Suivant">➜</button>
+    </div>
+
+    <hr class="viewport-sep" />
+  </section>
+
+  <!-- Résultats -->
+  <section class="section-block page-gutter">
+    <div class="meta">
+      <span>Nombre de résultats affichés ({{ results().length }})</span>
+      <span class="view-switch">Vue grille | liste</span>
+    </div>
+
+    <div class="cards-grid">
+      <app-book-card
+        *ngFor="let b of results()"
+        [showStatus]="true"
+        [status]="bookStatus(b)"
+        [title]="b.title"
+        [image]="b.coverUrl"
+        [description]="b.description || ''"
+        [link]="'/books/' + b.bookId">
+      </app-book-card>
+    </div>
+  </section>
+
+</div>

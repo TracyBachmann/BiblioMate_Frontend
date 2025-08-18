@@ -6,6 +6,7 @@ import {
 } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { environment } from '../../../environment';
 
 type Genre = { id: number; name: string };
 
@@ -37,11 +38,11 @@ export class RegisterComponent implements OnInit {
   successMessage: string | null = null;
 
   genres: Genre[] = [];
-  previewUrl: string | null = null;       // aperçu local de l’image
+  previewUrl: string | null = null;
   private selectedFile: File | null = null;
 
-  private readonly API_REGISTER = 'https://localhost:7084/api/auths/register';
-  private readonly API_GENRES   = 'https://localhost:7084/api/genres'; // suppose un GET disponible
+  private readonly API_REGISTER = `${environment.apiBase}/api/auths/register`;
+  private readonly API_GENRES   = `${environment.apiBase}/api/genres`;
 
   constructor(
     private fb: FormBuilder,
@@ -52,31 +53,24 @@ export class RegisterComponent implements OnInit {
       lastName:  ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
       email:     ['', [Validators.required, Validators.email]],
-
-      phone:    ['', [Validators.required]],
-      address1: ['', [Validators.required, Validators.maxLength(200)]],
-      address2: [''],
-
+      phone:     ['', [Validators.required]],
+      address1:  ['', [Validators.required, Validators.maxLength(200)]],
+      address2:  [''],
       dateOfBirth:     [''],
       password:        ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
       confirmPassword: ['', [Validators.required]],
-
       profileImagePath: [''],
-
       favoriteGenreIds: this.fb.nonNullable.control<number[]>([]),
       acceptTerms: [false, [Validators.requiredTrue]]
     }, { validators: this.passwordsMatch });
   }
 
   ngOnInit(): void {
-    // Charger la liste des genres (si l’endpoint existe)
     this.http.get<Genre[]>(this.API_GENRES).subscribe({
       next: (data) => this.genres = data ?? [],
-      error: () => { /* silencieux si indispo */ }
+      error: () => { /* silencieux si l’endpoint n’existe pas */ }
     });
   }
-
-  // ====== helpers formulaire ======
 
   get favoriteGenreIds(): FormControl<number[]> {
     return this.registerForm.get('favoriteGenreIds') as FormControl<number[]>;
@@ -108,16 +102,8 @@ export class RegisterComponent implements OnInit {
     return '';
   }
 
-  // ====== navigation ======
-
-  next(): void {
-    if (this.currentStepValid()) this.step++;
-    else this.markCurrentStepTouched();
-  }
-
-  prev(): void {
-    if (this.step > 1) this.step--;
-  }
+  next(): void { if (this.currentStepValid()) this.step++; else this.markCurrentStepTouched(); }
+  prev(): void { if (this.step > 1) this.step--; }
 
   private currentStepValid(): boolean {
     const controls = this.controlsForStep(this.step);
@@ -125,23 +111,19 @@ export class RegisterComponent implements OnInit {
     controls.forEach(k => tmp.addControl(k, this.registerForm.get(k)!));
     return tmp.valid;
   }
-
   private markCurrentStepTouched(): void {
     this.controlsForStep(this.step).forEach(k => this.registerForm.get(k)?.markAllAsTouched());
   }
-
   private controlsForStep(step: number): string[] {
     switch (step) {
       case 1: return ['lastName', 'firstName', 'email'];
       case 2: return ['phone', 'address1', 'address2'];
       case 3: return ['dateOfBirth', 'password', 'confirmPassword'];
-      case 4: return ['profileImagePath'];          // facultatif, donc toujours “valide”
+      case 4: return ['profileImagePath'];
       case 5: return ['favoriteGenreIds', 'acceptTerms'];
       default: return [];
     }
   }
-
-  // ====== image (facultatif / pas d’upload côté API pour l’instant) ======
 
   onFileSelected(evt: Event): void {
     const file = (evt.target as HTMLInputElement).files?.[0];
@@ -151,7 +133,6 @@ export class RegisterComponent implements OnInit {
     reader.onload = () => this.previewUrl = reader.result as string;
     reader.readAsDataURL(file);
   }
-
   clearImage(e: MouseEvent): void {
     e.stopPropagation();
     this.selectedFile = null;
@@ -159,10 +140,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm.patchValue({ profileImagePath: '' });
   }
 
-  // ====== soumission ======
-
   submit(): void {
-    // trouve la première étape invalide et y revient
     if (!this.registerForm.valid) {
       for (let s = 1; s <= 5; s++) {
         const tmp = this.fb.group({});
@@ -187,7 +165,7 @@ export class RegisterComponent implements OnInit {
       address2:  v.address2 || null,
       phone:     v.phone,
       dateOfBirth: v.dateOfBirth || null,
-      profileImagePath: null,              // pas d’upload pour l’instant
+      profileImagePath: null,
       favoriteGenreIds: this.favoriteGenreIds.value?.length ? this.favoriteGenreIds.value : undefined
     };
 
@@ -198,16 +176,12 @@ export class RegisterComponent implements OnInit {
         setTimeout(() => this.router.navigate(['/connexion']), 1500);
       },
       error: (err) => {
-        this.errorMessage =
-          err?.error?.error ||
-          err?.error ||
-          'Une erreur est survenue. Merci de réessayer.';
+        this.errorMessage = err?.error?.error || err?.error || 'Une erreur est survenue. Merci de réessayer.';
         this.isSubmitting = false;
       }
     });
   }
 
-  // sélection/désélection de genre (chips)
   toggleGenre(id: number): void {
     const arr = new Set(this.favoriteGenreIds.value ?? []);
     if (arr.has(id)) arr.delete(id); else arr.add(id);

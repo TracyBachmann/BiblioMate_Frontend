@@ -10,6 +10,7 @@ import { Observable, throwError, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { environment } from '../../../environment'; // <- correct path for your project
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -18,26 +19,27 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.auth.getToken();
 
-    // Si token présent mais expiré -> logout immédiat et on annule la requête
+    // Skip auth endpoints entirely
+    const EXCLUDE = /\/api\/auths\/(login|register|confirm-email|request-password-reset|reset-password)\b/i;
+    const isApiCall = req.url.startsWith(environment.apiBase);
+    const isExcluded = EXCLUDE.test(req.url);
+
     if (token && this.auth.isTokenExpired(token)) {
       this.auth.logout();
       return EMPTY;
     }
 
-    // Ajout de l’en-tête Authorization si token présent
-    const authReq = token
+    const needsAuthHeader = token && isApiCall && !isExcluded;
+    const authReq = needsAuthHeader
       ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
       : req;
 
     return next.handle(authReq).pipe(
       catchError((err: HttpErrorResponse) => {
         if (err.status === 401) {
-          // session invalide/expirée -> on déconnecte
           this.auth.logout();
         } else if (err.status === 403) {
-          // droits insuffisants
-          console.warn('Accès refusé (droits insuffisants).');
-          // ici tu peux afficher un toast si tu as un service de notifications
+          console.warn('Accès refusé (403).');
         }
         return throwError(() => err);
       })

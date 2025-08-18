@@ -1,7 +1,11 @@
 <section class="catalog-preview">
   <div class="catalog-preview__header">
     <app-section-title title="Catalogue"></app-section-title>
-    <app-cta-button text="Consulter le catalogue" color="yellow" icon="book">
+    <app-cta-button
+      text="Consulter le catalogue"
+      color="yellow"
+      icon="book"
+      [routerLink]="'/catalogue'">
     </app-cta-button>
   </div>
   <div class="catalog-preview__grid-wrapper">
@@ -10,9 +14,9 @@
         *ngFor="let book of books"
         [title]="book.title"
         [image]="book.coverUrl"
-        [description]="book.description ?? ''"        
-        [link]="'/books/' + book.bookId"
-      ></app-book-card>
+        [description]="book.description ?? ''"
+        [link]="'/books/' + book.bookId">
+      </app-book-card>
     </div>
   </div>
 </section>
