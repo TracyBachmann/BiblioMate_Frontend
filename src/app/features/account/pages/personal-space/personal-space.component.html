@@ -1,0 +1,24 @@
+<div class="personal-page">
+  <!-- HERO -->
+  <div class="personal-hero">
+    <div class="avatar" aria-hidden="true">
+      <img ngSrc="assets/images/icon-user-circle.svg" width="48" height="48" alt="" />
+    </div>
+    <div class="texts">
+      <h1>Bienvenue dans votre espace utilisateur, {{ fullName }}</h1>
+      <p class="subline">{{ subline }}</p>
+    </div>
+  </div>
+
+  <!-- GRID D’ACTIONS -->
+  <div class="action-grid">
+    <app-nav-card
+      *ngFor="let opt of options"
+      [title]="opt.title"
+      [subtitle]="opt.subtitle"
+      [image]="opt.image"
+      [link]="opt.link"
+      [ariaLabel]="'Aller à: ' + opt.title">
+    </app-nav-card>
+  </div>
+</div>

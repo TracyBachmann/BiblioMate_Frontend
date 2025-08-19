@@ -1,0 +1,16 @@
+<a class="nav-card"
+   [class.disabled]="disabled"
+   [attr.aria-disabled]="disabled"
+   [routerLink]="!disabled ? link : null"
+   [attr.aria-label]="ariaLabel || title">
+  <div class="image-wrap">
+    <img [ngSrc]="image" width="640" height="480" alt="" />
+  </div>
+  <div class="card-footer">
+    <div class="texts">
+      <span class="title">{{ title }}</span>
+      <span *ngIf="subtitle" class="subtitle">{{ subtitle }}</span>
+    </div>
+    <img ngSrc="assets/images/icon-arrow-right.svg" width="20" height="20" alt="" />
+  </div>
+</a>

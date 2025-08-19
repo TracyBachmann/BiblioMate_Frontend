@@ -1,0 +1,39 @@
+<div class="about-page">
+  <header class="cover">
+    <img ngSrc="assets/images/hero-background.png" width="1920" height="350" alt="" class="cover__bg" />
+    <div class="cover__inner page-gutter">
+      <app-section-title [title]="'À propos'"></app-section-title>
+      <p class="lede">Notre mission : faciliter l’accès au savoir pour tous.</p>
+    </div>
+  </header>
+
+  <section class="page-gutter mission section-block">
+    <div class="text">
+      <h3>Notre établissement</h3>
+      <p>
+        À la Bibliothèque Montferrand, nous croyons que chaque lecteur mérite un lieu où il peut grandir,
+        s’émerveiller et se connecter aux autres. Avec des milliers d’ouvrages et des espaces adaptés,
+        nous accompagnons <strong>tous les publics</strong>.
+      </p>
+      <div class="cta-row">
+        <app-cta-button text="Découvrir le catalogue" color="yellow" icon="book"></app-cta-button>
+        <a routerLink="/inscription" class="link">S’inscrire</a>
+      </div>
+    </div>
+    <figure class="media">
+      <img ngSrc="assets/images/books-background.png" width="960" height="600" alt="Étagères de livres" />
+    </figure>
+  </section>
+
+  <section class="page-gutter kpis">
+    <div class="kpi"><strong>45k+</strong><span>ouvrages</span></div>
+    <div class="kpi"><strong>1200+</strong><span>adhérents</span></div>
+    <div class="kpi"><strong>300+</strong><span>événements/an</span></div>
+    <div class="kpi"><strong>98%</strong><span>de satisfaction</span></div>
+  </section>
+
+  <section class="page-gutter">
+    <app-section-title [title]="'L’équipe'"></app-section-title>
+    <app-team-presentation></app-team-presentation>
+  </section>
+</div>

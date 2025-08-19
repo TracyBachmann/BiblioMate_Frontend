@@ -1,0 +1,94 @@
+.about-page {
+  color: #1f2937;
+  font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+.page-gutter {
+  padding-inline: clamp(16px, 5vw, 40px);
+  max-width: 1160px;
+  margin-inline: auto;
+}
+
+/* bandeau visuel */
+.cover { position: relative; isolation: isolate; }
+.cover .cover__bg {
+  width: 100%;
+  height: clamp(180px, 36vw, 300px);
+  object-fit: cover;
+  display: block;
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(12, 23, 38, 0.35), rgba(12, 23, 38, 0));
+  z-index: 0;
+}
+.cover .cover__inner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  z-index: 1;
+}
+.cover .cover__inner .lede {
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  margin: 0;
+}
+
+/* section mission */
+.section-block.mission {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(16px, 2.2vw, 24px);
+  margin-top: clamp(24px, 4vw, 40px);
+}
+@media (max-width: 920px) {
+  .section-block.mission { grid-template-columns: 1fr; }
+}
+.section-block.mission .text h3 { margin: 0 0 6px; }
+.section-block.mission .text p { line-height: 1.7; }
+.section-block.mission .text .cta-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.section-block.mission .text .cta-row .link {
+  color: #0e5aa6;
+  text-decoration: underline;
+}
+.section-block.mission .media img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+/* KPIs */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 12px auto 4px;
+}
+@media (max-width: 720px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+}
+.kpis .kpi {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+.kpis .kpi strong {
+  font-size: 28px;
+  display: block;
+}
+.kpis .kpi span {
+  color: #6b7280;
+}

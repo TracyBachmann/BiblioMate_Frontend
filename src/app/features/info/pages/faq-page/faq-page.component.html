@@ -1,0 +1,22 @@
+<div class="faq-page">
+  <header class="cover">
+    <div class="page-gutter">
+      <app-section-title [title]="'FAQ'"></app-section-title>
+      <p class="lede">Les réponses aux questions les plus fréquentes.</p>
+    </div>
+  </header>
+
+  <section class="page-gutter">
+    <ul class="accordion" role="list">
+      <li *ngFor="let f of faqs(); let i = index" class="item" [class.open]="f.open">
+        <button class="head" (click)="toggle(i)" [attr.aria-expanded]="f.open ? 'true' : 'false'">
+          <span>{{ f.q }}</span>
+          <i aria-hidden="true">▾</i>
+        </button>
+        <div class="panel" [attr.aria-hidden]="f.open ? 'false' : 'true'">
+          <p>{{ f.a }}</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>
