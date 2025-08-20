@@ -1,9 +1,8 @@
-/* ===== Page Contact (compact) ===== */
+/* ===== Page Contact (compact, marges symétriques) ===== */
 :host { display: block; }
 
 .contact-page {
-  display: flex;
-  flex-direction: column;
+  /* pas de flex/100vh ici pour ne pas toucher au footer global */
   color: #1f2937;
   font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
@@ -27,12 +26,12 @@
 .cover .cover__inner { position: absolute; inset: 0; display: grid; align-content: center; gap: 6px; z-index: 1; }
 .cover .cover__inner .lede { color: #ffffff; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,.25); }
 
-/* Grille principale resserrée */
+/* Grille principale resserrée — MARGES HAUT/BAS ÉGALES */
 .contact-page section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;                    /* ↓ */
-  margin-top: 12px;             /* ↓ */
+  gap: 12px;
+  margin-block: 40px;            /* << égalise l'espace au-dessus et en dessous */
 }
 @media (max-width: 860px) { .contact-page section { grid-template-columns: 1fr; } }
 
@@ -41,7 +40,7 @@
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 12px;                /* ↓ */
+  padding: 12px;
   box-shadow: 0 6px 18px rgba(0,0,0,.04);
 }
 
@@ -54,8 +53,8 @@
 .info .map { margin: 6px 0 0; }
 .info .map img {
   width: 100%;
-  height: 220px;                /* ← plan beaucoup plus bas */
-  object-fit: cover;            /* recadrage propre */
+  height: 220px;                /* plan compact */
+  object-fit: cover;
   display: block;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
@@ -67,7 +66,7 @@
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   appearance: none; border-radius: 10px; border: 2px solid transparent;
   background: #0e5aa6; color: #ffffff; font-weight: 400; font-size: 16px;
-  padding: .65rem .95rem;       /* ↓ */
+  padding: .65rem .95rem;
   cursor: pointer; transition: background .2s ease, transform .05s ease, border-color .2s ease;
 }
 .styled-button:hover { background: #0a4a8a; }
@@ -75,15 +74,15 @@
 .styled-button:disabled { opacity: .6; cursor: not-allowed; }
 
 /* ===== Formulaire (espaces + hauteur champs réduits) ===== */
-.form { display: grid; gap: 8px; }                 /* ↓ */
+.form { display: grid; gap: 8px; }
 .form h3 { margin: 0 0 6px; }
 
-.form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }  /* ↓ */
+.form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 @media (max-width: 600px) { .form .row { grid-template-columns: 1fr; } }
 
 .form input {
-  height: 40px;                 /* ← hauteur cible */
-  padding: 0 10px;              /* ↓ */
+  height: 40px;
+  padding: 0 10px;
   border: 2px solid #04446b;
   border-radius: 10px;
   background: #ffffff;
@@ -92,8 +91,8 @@
   line-height: 1.2;
 }
 .form textarea {
-  min-height: 110px;            /* ↓ */
-  padding: 8px 10px;            /* ↓ */
+  min-height: 110px;
+  padding: 8px 10px;
   border: 2px solid #04446b;
   border-radius: 10px;
   background: #ffffff;
@@ -113,18 +112,18 @@
 }
 .form .check input { width: 16px; height: 16px; margin-top: 2px; }
 
-.form .actions { display: flex; gap: 8px; align-items: center; margin-top: 2px; } /* ↓ */
+.form .actions { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
 .form .success { color: #065f46; }
 .form .error { color: #b91c1c; }
 .hint { color: #6b7280; font-size: 13px; }
 
-/* Écrans plus courts : compacte encore */
+/* Écrans plus courts : compacte encore (sans toucher au footer) */
 @media (max-height: 780px) {
   .cover .cover__bg { height: clamp(100px, 18vh, 150px); }
   .info .map img { height: 190px; }
   .form input { height: 38px; font-size: 14px; }
   .form textarea { min-height: 100px; font-size: 14px; }
-  .contact-page section { gap: 10px; margin-top: 10px; }
+  .contact-page section { gap: 10px; margin-block: 10px; }
 }
 
 /* A11y utilitaire (honeypot éventuel) */

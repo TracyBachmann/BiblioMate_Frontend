@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environment';
 
 export interface Book {
   bookId: number;
@@ -27,7 +28,7 @@ interface PaginatedBooks {
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
-  private apiUrl = 'https://localhost:7032/api/v1/books';
+  private apiUrl = `${environment.apiBase}/api/v1/books`;  //
 
   constructor(private http: HttpClient) {}
 
