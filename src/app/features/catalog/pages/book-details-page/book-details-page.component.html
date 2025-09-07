@@ -1,1 +1,185 @@
-<p>book-details-page works!</p>
+<section class="book-details-page">
+  <div class="page-gutter">
+    <div class="content">
+      <!-- Topbar (fait partie du contenu centré) -->
+      <div class="topbar">
+        <div class="title-wrap">
+          <app-section-title [title]="title()"></app-section-title>
+
+          <!-- Partager : bouton (toujours cliquable) -->
+          <div class="share-wrap">
+            <button
+              type="button"
+              class="styled-button secondary btn-sm btn-icon"
+              (click)="share()"
+              aria-haspopup="dialog"
+              aria-controls="share-dialog">
+              <span class="icon i-share" aria-hidden="true"></span>
+              <span>Partager</span>
+            </button>
+          </div>
+        </div>
+
+        <a class="back-link" routerLink="/catalogue">Retourner sur le catalogue&nbsp;›</a>
+      </div>
+
+      <!-- Grille couverture + métadonnées -->
+      <div class="grid">
+        <div class="left">
+          <figure class="cover">
+            <ng-container *ngIf="coverUrl(); else placeholder">
+              <img [ngSrc]="coverUrl()!" [alt]="title()" width="600" height="375" loading="lazy" />
+            </ng-container>
+            <ng-template #placeholder>
+              <img ngSrc="assets/images/placeholder.png" [alt]="title()" width="600" height="375" loading="lazy" />
+            </ng-template>
+          </figure>
+        </div>
+
+        <div class="right">
+          <dl class="props props--top">
+            <div><dt>ISBN</dt><dd>{{ isbn() }}</dd></div>
+            <div><dt>Date de publication</dt><dd>{{ date() }}</dd></div>
+            <div><dt>Auteur</dt><dd>{{ author() }}</dd></div>
+            <div><dt>Éditeur</dt><dd>{{ publisher() }}</dd></div>
+            <div><dt>Genre</dt><dd>{{ genres() }}</dd></div>
+
+            <div>
+              <dt>État</dt>
+              <dd>
+                <span class="status" [class.is-ok]="isAvailable()" [class.is-ko]="!isAvailable()">
+                  {{ availabilityLabel() }}
+                </span>
+              </dd>
+            </div>
+
+            <div>
+              <dt>Tags</dt>
+              <dd>
+                <ng-container *ngIf="taglist(); else noTags">
+                  <ul class="tags">
+                    <li *ngFor="let t of taglist()!.split(',')">{{ t.trim() }}</li>
+                  </ul>
+                </ng-container>
+                <ng-template #noTags>—</ng-template>
+              </dd>
+            </div>
+          </dl>
+
+          <!-- CTA sous les champs -->
+          <div *ngIf="auth.isAuthenticated$ | async; else guestCta" class="cta-row cta-right">
+            <!-- Réserver (placeholder, désactivé) -->
+            <button class="styled-button btn-lg btn-icon" type="button" disabled>
+              <span class="icon i-calendar-add" aria-hidden="true"></span>
+              <span>Réserver</span>
+            </button>
+
+            <!-- Emprunter -->
+            <button
+              class="styled-button secondary btn-lg btn-icon"
+              type="button"
+              (click)="borrow()"
+              [disabled]="!isAvailable() || borrowing()">
+              <span class="icon i-book-open" aria-hidden="true"></span>
+              <span *ngIf="!borrowing(); else borrowingTpl">Emprunter</span>
+            </button>
+            <ng-template #borrowingTpl>Traitement…</ng-template>
+          </div>
+
+          <!-- Message invité -->
+          <ng-template #guestCta>
+            <p class="cta-guest">
+              <a routerLink="/connexion">Connectez-vous</a>
+              pour réserver ou emprunter ce livre.
+            </p>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Contenu sous la grille -->
+      <div class="below">
+        <div class="description" *ngIf="description() as desc">
+          <h4>Description</h4>
+          <p>{{ desc }}</p>
+        </div>
+
+        <dl class="props props--loc">
+          <div><dt>Étage</dt><dd>{{ floor() }}</dd></div>
+          <div><dt>Allée</dt><dd>{{ aisle() }}</dd></div>
+          <div><dt>Rayon</dt><dd>{{ rayon() }}</dd></div>
+          <div><dt>Étagère</dt><dd>{{ shelf() }}</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- État "non trouvé" -->
+    <div class="empty" *ngIf="notFound()">
+      <img ngSrc="assets/images/empty.svg" alt="" width="64" height="64" />
+      <p>Oups… ce livre n’existe pas (ou plus).</p>
+      <a class="styled-button" routerLink="/catalogue">
+        <span class="icon i-arrow-left" aria-hidden="true"></span>
+        <span>Retour au catalogue</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ======= MODALE DE PARTAGE ======= -->
+  <div *ngIf="shareOpen()" class="share-modal" (click)="closeShare()">
+    <div
+      class="share-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="share-title"
+      id="share-dialog"
+      (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h3 id="share-title">Partager ce livre</h3>
+        <button type="button" class="close-btn" (click)="closeShare()" aria-label="Fermer">×</button>
+      </div>
+
+      <ul class="share-grid">
+        <li>
+          <a class="share-btn x" [href]="shareHref('x')" target="_blank" rel="noopener">
+            <img ngSrc="/assets/images/twitter.svg" width="26" height="26" alt="" />
+            <span>X / Twitter</span>
+          </a>
+        </li>
+        <li>
+          <a class="share-btn facebook" [href]="shareHref('facebook')" target="_blank" rel="noopener">
+            <img ngSrc="/assets/images/facebook.svg" width="26" height="26" alt="" />
+            <span>Facebook</span>
+          </a>
+        </li>
+        <li>
+          <a class="share-btn linkedin" [href]="shareHref('linkedin')" target="_blank" rel="noopener">
+            <img ngSrc="/assets/images/linkedin.svg" width="26" height="26" alt="" />
+            <span>LinkedIn</span>
+          </a>
+        </li>
+        <li>
+          <a class="share-btn whatsapp" [href]="shareHref('whatsapp')" target="_blank" rel="noopener">
+            <img ngSrc="/assets/images/whatsapp.svg" width="26" height="26" alt="" />
+            <span>WhatsApp</span>
+          </a>
+        </li>
+        <li>
+          <a class="share-btn email" [href]="shareHref('email')">
+            <img ngSrc="/assets/images/icon-mail.svg" width="26" height="26" alt="" />
+            <span>E-mail</span>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="share-btn copy" (click)="copyLink()">
+            <img ngSrc="/assets/images/share.svg" width="26" height="26" alt="" />
+            <span>Copier le lien</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+

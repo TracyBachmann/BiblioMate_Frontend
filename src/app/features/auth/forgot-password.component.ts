@@ -79,10 +79,12 @@ export default class ForgotPasswordComponent implements OnInit {
     if (this.form.invalid) return;
     this.loading = true; this.done = false;
 
-    this.http.post(`${environment.apiBase}/api/auths/request-password-reset`, this.form.value)
-      .subscribe({ next: () => { this.done = true; this.loading = false; },
-        error: () => { this.done = true; this.loading = false; } });
+    this.http.post(`${environment.apiBase}/Auths/request-password-reset`, this.form.value)
+      .subscribe({
+        next: () => { this.done = true; this.loading = false; },
+        error: () => { this.done = true; this.loading = false; }
+      });
   }
-
+  
   get emailCtrl() { return this.form.get('email'); }
 }

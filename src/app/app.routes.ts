@@ -8,6 +8,9 @@ import ResetPasswordComponent from './features/auth/reset-password.component';
 import { CatalogPageComponent } from './features/catalog/pages/catalog-page/catalog-page.component';
 import { BookDetailsPageComponent } from './features/catalog/pages/book-details-page/book-details-page.component';
 import { PersonalSpaceComponent } from './features/account/pages/personal-space/personal-space.component';
+import RegisterSuccessComponent from './features/auth/register-success.component';
+import { authGuard } from './core/guards/auth.guard';
+
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'connexion', component: LoginComponent },
@@ -16,11 +19,17 @@ export const routes: Routes = [
   { path: 'confirm-email', component: ConfirmEmailComponent },
   { path: 'mot-de-passe-oublie', component: ForgotPasswordComponent },
   { path: 'reinitialiser-mot-de-passe', component: ResetPasswordComponent },
+  { path: 'inscription/verification', component: RegisterSuccessComponent },
 
   { path: 'catalogue', component: CatalogPageComponent },
-  { path: 'books/:id', component: BookDetailsPageComponent },
+  {
+    path: 'livre/:id',
+    loadComponent: () =>
+      import('./features/catalog/pages/book-details-page/book-details-page.component')
+        .then(m => m.BookDetailsPageComponent)
+  },
 
-  { path: 'espace', component: PersonalSpaceComponent },
+  { path: 'espace', component: PersonalSpaceComponent, canActivate: [authGuard] },
 
   { path: 'contact', loadComponent: () => import('./features/info/pages/contact-page/contact-page.component').then(m => m.ContactPageComponent) },
   { path: 'a-propos', loadComponent: () => import('./features/info/pages/about-page/about-page.component').then(m => m.AboutPageComponent) },

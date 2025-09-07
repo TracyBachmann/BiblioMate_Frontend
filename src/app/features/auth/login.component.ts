@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+// src/app/features/auth/login.component.ts
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environment';
 
@@ -15,7 +16,7 @@ type LoginResponse = { token: string };
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isSubmitting = false;
@@ -26,13 +27,27 @@ export class LoginComponent {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],   // <- removed stray parenthesis
+      password: ['', [Validators.required]],
       remember: [false]
     });
+  }
+
+  ngOnInit(): void {
+    if (this.auth.isAuthenticated()) {
+      this.router.navigateByUrl('/espace', { replaceUrl: true });
+      return;
+    }
+
+    const qp = this.route.snapshot.queryParamMap;
+    if (qp.get('registered') === '1') {
+      const email = qp.get('email') || 'votre adresse e-mail';
+      this.errorMessage = `Compte créé ✅ Un e-mail de confirmation a été envoyé à ${email}. Ouvrez-le pour activer votre compte.`;
+    }
   }
 
   submit(): void {
@@ -56,8 +71,9 @@ export class LoginComponent {
           return;
         }
         this.auth.login(res.token, !!remember);
-        const returnUrl = new URLSearchParams(location.search).get('returnUrl') ?? '/';
-        this.router.navigateByUrl(returnUrl);
+
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/espace';
+        this.router.navigateByUrl(returnUrl, { replaceUrl: true });
       },
       error: (err) => {
         const apiMsg = err?.error?.error || err?.error;

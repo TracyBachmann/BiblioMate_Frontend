@@ -1,3 +1,4 @@
+/* catalog-page.component.scss */
 .catalog-page {
   color: #1f2937;
 
@@ -147,10 +148,7 @@
       .adv-toggle { order: 2; grid-column: 1 / -1; justify-self: start; }
     }
   }
-
-  @media (max-width: 480px) {
-    .searchbar-pill { padding: 8px 10px; }
-  }
+  @media (max-width: 480px) { .searchbar-pill { padding: 8px 10px; } }
 }
 
 /* FILTRES */
@@ -178,18 +176,14 @@
     }
 
     select.is-empty,
-    input[type="date"].is-empty {
-      font-weight: 300;
-      color: #6b7280;
-    }
+    input[type="date"].is-empty { font-weight: 300; color: #6b7280; }
 
     input[type="date"].is-empty::-webkit-datetime-edit-fields-wrapper,
     input[type="date"].is-empty::-webkit-datetime-edit-text,
     input[type="date"].is-empty::-webkit-datetime-edit-month-field,
     input[type="date"].is-empty::-webkit-datetime-edit-day-field,
     input[type="date"].is-empty::-webkit-datetime-edit-year-field {
-      font-weight: 300;
-      color: #6b7280;
+      font-weight: 300; color: #6b7280;
     }
 
     label.inline {
@@ -213,17 +207,19 @@
   }
 }
 
-/* SECTION */
+/* === SECTIONS : largeur commune === */
 .section-block {
   padding-inline: clamp(16px, 5vw, 40px);
-  max-width: 1160px;
+  max-width: 1040px;
   margin-inline: auto;
-  margin-top: clamp(24px, 4vw, 40px);   /* tu as augmenté : je ne touche pas */
+  margin-top: clamp(24px, 4vw, 40px);
   &.above-separator { margin-top: clamp(32px, 5vw, 56px); }
 }
 
 /* ======= NOUVEAUTÉS ======= */
-/* Callout plus intégré */
+.nouveautes app-section-title { margin-bottom: clamp(28px, 5vw, 56px); }
+
+/* Empty state */
 .nouveautes .callout-empty {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -234,102 +230,57 @@
   background: #f8fafc;
   border-radius: 12px;
   position: relative;
-  margin-top: 10px;
-
-  /* liseré gauche */
+  margin-top: 0;
   &::before {
     content: "";
-    position: absolute;
-    left: 0; top: 8px; bottom: 8px;
-    width: 4px;
-    border-radius: 4px;
-    background: #0e5aa6;
+    position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 4px; border-radius: 4px; background: #0e5aa6;
   }
-
-  .lead {
-    grid-column: 1 / -1;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    img { width: 28px; height: 28px; display: block; }
-    strong { font-weight: 700; }
-  }
-
-  span {
-    grid-column: 1 / -1;
-    color: #6b7280;
-    font-size: 14px;
-    margin-left: 38px; /* aligne le texte sous l'icône */
-  }
+  .lead { grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 10px; }
+  .lead img { width: 28px; height: 28px; display: block; }
+  .lead strong { font-weight: 700; }
+  span { grid-column: 1 / -1; color: #6b7280; font-size: 14px; margin-left: 38px; }
 }
 
-/* CAROUSEL (inchangé quand présent) */
-.nouveautes .carousel {
+/* Carrousel scroll-snap + séparateurs entre colonnes */
+.nouveautes .carousel { position: relative; display: block; margin-top: 0; }
+.nouveautes .carousel .viewport {
+  overflow-x: auto; overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+.nouveautes .carousel .track { display: flex; gap: clamp(28px, 3.5vw, 48px); }
+
+.nouveautes .carousel .col {
   position: relative;
-  display: grid;
-  grid-template-columns: 48px 1fr 48px;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-  .nav {
-    width: 44px; height: 44px;
-    border-radius: 999px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    box-shadow: 0 6px 18px rgba(0,0,0,.08);
-    font-weight: 700;
-    transform: scaleX(-1);
-    &.next { transform: none; }
-    cursor: pointer;
-    transition: background .2s ease, opacity .2s ease;
-    &:disabled { opacity: .35; cursor: default; }
-  }
-  .viewport { overflow: hidden;
-    .track { display: flex; gap: clamp(16px, 2.2vw, 24px); will-change: transform; transition: transform .35s ease; }
-    .col { min-width: clamp(240px, 28vw, 320px);
-      &.has-sep{ position:relative; }
-      &.has-sep::before{ content:""; position:absolute; left:-12px; top:10px; bottom:10px; width:1px; background:#e5e7eb; }
-    }
+  flex: 0 0 calc((100% - 2*clamp(28px, 3.5vw, 48px)) / 3);
+  max-width: calc((100% - 2*clamp(28px, 3.5vw, 48px)) / 3);
+  scroll-snap-align: start;
+}
+.nouveautes .carousel .col + .col::before {
+  content: "";
+  position: absolute;
+  left: calc(-0.5 * clamp(28px, 3.5vw, 48px));
+  top: 18px; bottom: 18px; width: 1px;
+  background: #e5e7eb; pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+  .nouveautes .carousel .col {
+    flex-basis: calc((100% - clamp(28px, 3.5vw, 48px)) / 2);
+    max-width:  calc((100% - clamp(28px, 3.5vw, 48px)) / 2);
   }
 }
-.nouveautes .viewport-sep { margin-top: clamp(18px, 3vw, 26px); border:0; height:1px; background:#e5e7eb; }
-
-/* RÉSULTATS (meta) */
-.section-block .meta {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; color: #6b7280;
-  font-size: 16px; font-weight: 400;
-  margin-bottom: 8px;
-  .view-switch { user-select: none; }
+@media (max-width: 640px) {
+  .nouveautes .carousel .col { flex-basis: 100%; max-width: 100%; }
+  .nouveautes .carousel .col::before { display: none; }
 }
 
-/* EMPTY STATE résultats (icône image + fond léger) */
-.empty-state {
-  margin-top: 24px;          /* tu as augmenté : je ne touche pas à la baisse */
-  margin-bottom: 48px;       /* pour respirer au-dessus du footer */
-  padding: 32px 24px;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  background: #f8fafc;
-  text-align: center;
-  max-width: 760px;
-  margin-inline: auto;
-  box-shadow: 0 8px 24px rgba(0,0,0,.04);
-
-  img { display:block; margin: 0 auto 10px; filter: none; }
-  h3 { font-size: 20px; margin: 6px 0 4px; font-weight: 700; }
-  p  { color: #6b7280; margin: 0 0 14px; }
-  .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-}
-
-/* GRILLE DE CARTES */
-.cards-grid {
-  display: grid;
-  gap: clamp(14px, 2vw, 22px);
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  @media (max-width: 1200px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  @media (max-width: 768px)  { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  @media (max-width: 640px)  { grid-template-columns: 1fr; }
+/* Séparateur horizontal sous le viewport */
+.nouveautes .viewport-sep {
+  margin-top: clamp(18px, 3vw, 26px);
+  border: 0; height: 1px; background: #e5e7eb;
 }
 
 /* DIVERS */
@@ -345,4 +296,162 @@ app-book-card { display: block; }
 .catalog-page select,
 .catalog-page button {
   font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* ======= RÉSULTATS ======= */
+.section-block .meta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; color: #6b7280;
+  font-size: 16px; font-weight: 400;
+  margin-bottom: clamp(28px, 5vw, 56px);
+}
+
+.view-switch {
+  display: inline-flex;
+  background: #eef2f7;
+  border: 1px solid #d6dee8;
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+.view-switch .switch-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #374151;
+  font: inherit;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1;
+}
+.view-switch .switch-btn:hover { background: rgba(14,90,166,.08); }
+.view-switch .switch-btn.is-active { background: #0e5aa6; color: #fff; }
+
+/* Grille : gros gap + séparateurs entre éléments d'une même ligne */
+.cards-grid {
+  position: relative;
+  display: grid;
+  gap: clamp(28px, 3.5vw, 48px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Chaque carte doit pouvoir positionner son séparateur */
+.cards-grid > app-book-card {
+  position: relative;
+}
+
+/* ===== FIX: Séparateurs en MODE 3 COLONNES =====
+   On dessine le trait depuis la carte de gauche (col 1 et col 2). */
+.cards-grid > app-book-card:nth-child(3n+1)::after,
+.cards-grid > app-book-card:nth-child(3n+2)::after {
+  content: "";
+  position: absolute;
+  right: calc(-0.5 * clamp(28px, 3.5vw, 48px));
+  top: 22px;
+  bottom: 22px;
+  width: 1px;
+  background: #e5e7eb;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mode LISTE : 1 colonne avec styles spéciaux */
+.cards-grid.is-list {
+  grid-template-columns: 1fr !important;
+  gap: 16px !important
+}
+
+/* Suppression des séparateurs de grille en mode liste */
+.cards-grid.is-list > app-book-card::after {
+  display: none !important;
+}
+
+/* Styles pour le conteneur app-book-card en mode liste */
+.cards-grid.is-list > app-book-card {
+  padding: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all .15s ease;
+}
+
+/* Fond alterné pour les éléments pairs */
+.cards-grid.is-list > app-book-card:nth-child(even) {
+  background: #f8fafc;
+}
+
+/* États de survol et focus pour le conteneur */
+.cards-grid.is-list > app-book-card:hover {
+  background: #e0f2fe;
+  border-color: #bae6fd;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.cards-grid.is-list > app-book-card:focus-within {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+  background: #e0f2fe;
+  border-color: #0ea5e9;
+}
+
+/* Le contenu de la carte doit être transparent en mode liste */
+.cards-grid.is-list app-book-card .book-card {
+  background: transparent !important;
+  border: none !important;
+  padding: 18px 16px !important;
+  border-radius: 0 !important;
+}
+
+/* ===== 2 COLONNES (tablettes) ===== */
+@media (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* On neutralise d'abord tous les traits… */
+  .cards-grid > app-book-card::after { display: none; }
+
+  /* … puis on trace entre col 1 et col 2 depuis la carte de gauche. */
+  .cards-grid > app-book-card:nth-child(2n+1)::after {
+    display: block;
+    content: "";
+    position: absolute;
+    right: calc(-0.5 * clamp(28px, 3.5vw, 48px));
+    top: 22px;
+    bottom: 22px;
+    width: 1px;
+    background: #e5e7eb;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* ===== 1 COLONNE (mobile) ===== */
+@media (max-width: 640px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Suppression de tous les séparateurs sur mobile */
+  .cards-grid > app-book-card::after {
+    display: none !important;
+  }
+}
+
+.catalog-page > .section-block:last-of-type {
+  padding-bottom: calc(clamp(10px, 2vw, 14px) + env(safe-area-inset-bottom, 0px));
+}
+
+/* 2) En vue LISTE, on ajoute un espace sous la grille pour éviter
+   que le dernier item colle au footer. */
+.cards-grid.is-list {
+  margin-bottom: clamp(24px, 5vw, 72px);
+}
+
+/* 3) Même traitement quand on affiche l'empty state. */
+.section-block .empty-state {
+  margin-bottom: clamp(32px, 6vw, 96px);
 }

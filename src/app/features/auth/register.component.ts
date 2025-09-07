@@ -19,7 +19,7 @@ type RegisterPayload = {
   address2?: string | null;
   phone: string;
   dateOfBirth?: string | null;
-  profileImagePath?: string | null;
+  profileImage?: string | null;       // ← côté API: ProfileImage
   favoriteGenreIds?: number[];
 };
 
@@ -59,16 +59,24 @@ export class RegisterComponent implements OnInit {
       dateOfBirth:     [''],
       password:        ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
       confirmPassword: ['', [Validators.required]],
-      profileImagePath: [''],
+      profileImagePath: [''],                  // on garde ce champ local
       favoriteGenreIds: this.fb.nonNullable.control<number[]>([]),
       acceptTerms: [false, [Validators.requiredTrue]]
     }, { validators: this.passwordsMatch });
   }
 
   ngOnInit(): void {
-    this.http.get<Genre[]>(this.API_GENRES).subscribe({
-      next: (data) => this.genres = data ?? [],
-      error: () => { /* silencieux si l’endpoint n’existe pas */ }
+    this.http.get<any>(this.API_GENRES).subscribe({
+      next: (data) => {
+        const items: any[] = Array.isArray(data) ? data : (data?.items ?? []);
+        this.genres = items
+          .map(g => ({
+            id: Number(g.id ?? g.Id ?? g.genreId ?? g.GenreId),
+            name: g.name ?? g.Name
+          }))
+          .filter(g => Number.isFinite(g.id) && !!g.name);
+      },
+      error: () => { this.genres = []; } // silencieux si l’endpoint n’existe pas encore
     });
   }
 
@@ -106,14 +114,13 @@ export class RegisterComponent implements OnInit {
   prev(): void { if (this.step > 1) this.step--; }
 
   private currentStepValid(): boolean {
-    const controls = this.controlsForStep(this.step);
-    const tmp = this.fb.group({});
-    controls.forEach(k => tmp.addControl(k, this.registerForm.get(k)!));
-    return tmp.valid;
+    return this.controlsForStep(this.step).every(k => this.registerForm.get(k)?.valid);
   }
+
   private markCurrentStepTouched(): void {
     this.controlsForStep(this.step).forEach(k => this.registerForm.get(k)?.markAllAsTouched());
   }
+
   private controlsForStep(step: number): string[] {
     switch (step) {
       case 1: return ['lastName', 'firstName', 'email'];
@@ -133,6 +140,7 @@ export class RegisterComponent implements OnInit {
     reader.onload = () => this.previewUrl = reader.result as string;
     reader.readAsDataURL(file);
   }
+
   clearImage(e: MouseEvent): void {
     e.stopPropagation();
     this.selectedFile = null;
@@ -165,15 +173,16 @@ export class RegisterComponent implements OnInit {
       address2:  v.address2 || null,
       phone:     v.phone,
       dateOfBirth: v.dateOfBirth || null,
-      profileImagePath: null,
+      profileImage: null,
       favoriteGenreIds: this.favoriteGenreIds.value?.length ? this.favoriteGenreIds.value : undefined
     };
 
     this.http.post(this.API_REGISTER, payload).subscribe({
       next: () => {
-        this.successMessage = 'Inscription réussie ! Vérifiez votre e-mail pour confirmer votre compte.';
         this.isSubmitting = false;
-        setTimeout(() => this.router.navigate(['/connexion']), 1500);
+        this.router.navigate(['/inscription/verification'], {
+          queryParams: { email: v.email }
+        });
       },
       error: (err) => {
         this.errorMessage = err?.error?.error || err?.error || 'Une erreur est survenue. Merci de réessayer.';
@@ -183,8 +192,8 @@ export class RegisterComponent implements OnInit {
   }
 
   toggleGenre(id: number): void {
-    const arr = new Set(this.favoriteGenreIds.value ?? []);
-    if (arr.has(id)) arr.delete(id); else arr.add(id);
-    this.favoriteGenreIds.setValue([...arr]);
+    const set = new Set(this.favoriteGenreIds.value ?? []);
+    if (set.has(id)) set.delete(id); else set.add(id);
+    this.favoriteGenreIds.setValue([...set]);
   }
 }

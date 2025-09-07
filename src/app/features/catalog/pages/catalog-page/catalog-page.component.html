@@ -15,9 +15,11 @@
           type="search"
           placeholder="Tapez votre recherche..."
           [ngModel]="query()"
-          (ngModelChange)="query.set($event)" />
+          (ngModelChange)="query.set($event)"
+          (keyup.enter)="searchWithFilters()" />
 
-        <button type="button" class="icon-btn" aria-label="Rechercher">
+        <button type="button" class="icon-btn" aria-label="Rechercher"
+                (click)="searchWithFilters()">
           <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
         </button>
 
@@ -49,7 +51,7 @@
         name="genre"
         [ngClass]="{ 'is-empty': !filters().genre }">
         <option value="" disabled selected hidden>Genre</option>
-        <option>SF</option><option>Thriller</option><option>Roman</option>
+        <option *ngFor="let g of genres()">{{ g }}</option>
       </select>
       <input [ngModel]="filters().tags" (ngModelChange)="onFilterChange('tags', $event)" name="tags" placeholder="Tags (séparés par des virgules)" />
       <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Éditeur" />
@@ -61,7 +63,7 @@
     </div>
 
     <div class="action-row">
-      <button type="button" class="styled-button secondary" (click)="resetFilters()">Réinitialiser les filtres</button>
+      <button type="button" class="styled-button secondary" (click)="resetAll()">Réinitialiser les filtres</button>
       <button type="submit" class="styled-button">Rechercher avec ces filtres</button>
     </div>
   </form>
@@ -70,7 +72,6 @@
   <section class="section-block nouveautes above-separator page-gutter">
     <app-section-title [title]="'Nouveautés'"></app-section-title>
 
-    <!-- ✅ empty state pour le carrousel -->
     <div *ngIf="visibleNouveautes().length === 0; else carouselTpl" class="callout-empty">
       <div class="lead">
         <img ngSrc="assets/images/icon-empty.png" width="28" height="28" alt="" />
@@ -80,8 +81,12 @@
     </div>
 
     <ng-template #carouselTpl>
-      <div class="carousel">
-        <button class="nav prev" [disabled]="!canPrev()" (click)="prev()" aria-label="Précédent">➜</button>
+      <div class="carousel"
+           (mouseenter)="pauseAutoplay(true)"
+           (mouseleave)="pauseAutoplay(false)"
+           (focusin)="pauseAutoplay(true)"
+           (focusout)="pauseAutoplay(false)">
+
         <div class="viewport">
           <div class="track">
             <div class="col" *ngFor="let b of visibleNouveautes(); let i = index" [class.has-sep]="i>0">
@@ -89,16 +94,16 @@
                 [showStatus]="true"
                 [status]="bookStatus(b)"
                 [title]="b.title"
-                [image]="b.coverUrl"
+                [image]="b.coverUrl || null"
                 [description]="b.description || ''"
-                [link]="'/books/' + b.bookId">
+                [bookId]="b.id">
               </app-book-card>
             </div>
           </div>
         </div>
-        <button class="nav next" [disabled]="!canNext()" (click)="next()" aria-label="Suivant">➜</button>
+
+        <hr class="viewport-sep" />
       </div>
-      <hr class="viewport-sep" />
     </ng-template>
   </section>
 
@@ -106,33 +111,57 @@
   <section class="section-block page-gutter" aria-live="polite">
     <div class="meta">
       <span>Nombre de résultats affichés ({{ results().length }})</span>
-      <span class="view-switch">Vue grille | liste</span>
-    </div>
 
-    <!-- ✅ empty state résultats -->
-    <div *ngIf="results().length === 0; else resultsList" class="empty-state">
-      <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
-      <h3>Aucun résultat</h3>
-      <p>Essayez un autre terme ou ajustez vos filtres.</p>
-      <div class="actions">
-        <button type="button" class="styled-button secondary" (click)="resetFilters()">Réinitialiser</button>
-        <button type="button" class="styled-button" (click)="advanced.set(false)">Masquer les filtres</button>
+      <!-- Commutateur grille | liste -->
+      <div class="view-switch" role="tablist" aria-label="Changer l'affichage">
+        <button
+          type="button"
+          class="switch-btn"
+          role="tab"
+          [class.is-active]="viewMode() === 'grid'"
+          [attr.aria-selected]="viewMode() === 'grid'"
+          (click)="viewMode.set('grid')">
+          Vue grille
+        </button>
+        <button
+          type="button"
+          class="switch-btn"
+          role="tab"
+          [class.is-active]="viewMode() === 'list'"
+          [attr.aria-selected]="viewMode() === 'list'"
+          (click)="viewMode.set('list')">
+          Liste
+        </button>
       </div>
     </div>
 
+    <ng-template [ngIf]="results().length === 0" [ngIfElse]="resultsList">
+      <div class="empty-state">
+        <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
+        <h3>Aucun résultat</h3>
+        <p>Essayez un autre terme ou ajustez vos filtres.</p>
+        <div class="actions">
+          <button type="button" class="styled-button secondary" (click)="resetAll()">Réinitialiser</button>
+          <button type="button" class="styled-button" (click)="advanced.set(false)">Masquer les filtres</button>
+        </div>
+      </div>
+    </ng-template>
+
     <ng-template #resultsList>
-      <div class="cards-grid">
+      <div class="cards-grid" [class.is-list]="viewMode() === 'list'">
         <app-book-card
           *ngFor="let b of results()"
+          [compact]="viewMode() === 'list'"
           [showStatus]="true"
           [status]="bookStatus(b)"
           [title]="b.title"
           [image]="b.coverUrl"
-          [description]="b.description || ''"
-          [link]="'/books/' + b.bookId">
+          [description]="b.description"
+          [bookId]="b.id">
         </app-book-card>
       </div>
     </ng-template>
   </section>
 
 </div>
+

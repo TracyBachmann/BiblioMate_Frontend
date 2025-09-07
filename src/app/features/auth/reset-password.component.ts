@@ -86,7 +86,7 @@ export default class ResetPasswordComponent implements OnInit {
     if (this.state === 'error' || this.form.invalid || !this.token) return;
     this.loading = true;
 
-    this.http.post(`${environment.apiBase}/api/auths/reset-password`, {
+    this.http.post(`${environment.apiBase}/Auths/reset-password`, {
       token: this.token,
       newPassword: this.form.value.password
     }).subscribe({

@@ -1,42 +1,31 @@
-<div class="book-card">
+<div class="book-card" [class.is-compact]="compact">
   <div class="book-card__header">
     <h3 class="book-card__title">{{ title }}</h3>
   </div>
 
-  <div class="book-card__image">
+  <div class="book-card__image" *ngIf="!compact">
     <ng-container *ngIf="image; else placeholder">
-      <img
-        ngSrc="{{ image }}"
-        [alt]="title"
-        width="400"
-        height="300"
-        loading="lazy"
-      />
+      <img ngSrc="{{ image }}" [alt]="title" width="400" height="300" loading="lazy" />
     </ng-container>
     <ng-template #placeholder>
-      <img
-        src="assets/images/placeholder.png"
-        [alt]="title"
-        width="400"
-        height="300"
-        loading="lazy"
-      />
+      <img src="assets/images/placeholder.png" [alt]="title" width="400" height="300" loading="lazy" />
     </ng-template>
   </div>
 
   <div class="book-card__content">
-    <p
-      *ngIf="description?.trim()"
-      class="book-card__description"
-    >
-      {{ description }}
-    </p>
-    <span *ngIf="showStatus" class="status-badge"
-          [class.available]="status==='Disponible'"
-          [class.unavailable]="status==='Indisponible'"
-          [class.reserved]="status==='Réservé'">
-  {{ status }}
-  </span>
-    <a class="book-card__link" [href]="link">Voir le détail</a>
+    <p *ngIf="description?.trim()" class="book-card__description">{{ description }}</p>
+    <span *ngIf="showStatus" class="book-card__status">État : {{ status }}</span>
+
+    <a
+      class="book-card__link"
+      *ngIf="routerLinkCmd as cmd; else disabledLink"
+      [routerLink]="cmd"
+      [attr.aria-label]="'Voir le détail de ' + title">
+      Voir le détail
+    </a>
+
+    <ng-template #disabledLink>
+      <span class="book-card__link is-disabled" aria-disabled="true" title="Identifiant manquant">Voir le détail</span>
+    </ng-template>
   </div>
 </div>

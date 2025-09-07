@@ -1,21 +1,24 @@
 <section class="catalog-preview">
   <div class="catalog-preview__header">
     <app-section-title title="Catalogue"></app-section-title>
+
+    <!-- Bouton CTA vers le catalogue -->
     <app-cta-button
       text="Consulter le catalogue"
       color="yellow"
       icon="book"
-      [routerLink]="'/catalogue'">
+      routerLink="/catalogue">
     </app-cta-button>
   </div>
+
   <div class="catalog-preview__grid-wrapper">
     <div class="catalog-preview__grid">
       <app-book-card
-        *ngFor="let book of books"
-        [title]="book.title"
-        [image]="book.coverUrl"
-        [description]="book.description ?? ''"
-        [link]="'/books/' + book.bookId">
+        *ngFor="let b of books"
+        [title]="b.title"
+        [image]="b.coverUrl ?? null"
+        [description]="b.description ?? ''"
+        [bookId]="b.id ?? b.bookId">  <!-- IMPORTANT : passer l’ID -->
       </app-book-card>
     </div>
   </div>

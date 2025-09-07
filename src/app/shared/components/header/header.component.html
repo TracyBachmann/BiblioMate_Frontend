@@ -13,25 +13,31 @@
     <img class="header__logo" ngSrc="assets/images/logo.svg" alt="BiblioMate Logo" width="500" height="382" />
   </div>
 
-  <!-- icônes -->
+  <!-- Icônes -->
   <nav class="header__nav">
-    <a *ngFor="let icon of navIcons"
-       class="header__nav-item"
-       [ngClass]="icon.class"
-       [routerLink]="icon.link"
-       [attr.aria-label]="icon.alt">
-      <img [ngSrc]="icon.src" [alt]="icon.alt" width="60" height="60" />
+    <!-- Loupe -> ouvre/ferme le tiroir recherche -->
+    <button
+      #searchToggleBtn
+      type="button"
+      class="header__nav-item search"
+      aria-label="Recherche"
+      (click)="toggleSearch()">
+      <img ngSrc="assets/images/icon-search.svg" alt="Recherche" width="60" height="60" />
+    </button>
+
+    <a class="header__nav-item contact" routerLink="/contact" aria-label="Contact">
+      <img ngSrc="assets/images/icon-contact.svg" alt="Contact" width="60" height="60" />
     </a>
 
     <!-- icône compte : destination selon état -->
     <a class="header__nav-item user"
-       [routerLink]="(auth.isAuthenticated$ | async) ? '/espace-personnel' : '/connexion'"
+       [routerLink]="(auth.isAuthenticated$ | async) ? '/espace' : '/connexion'"
        aria-label="Mon compte">
       <img ngSrc="assets/images/icon-user.svg" alt="Mon compte" width="60" height="60" />
     </a>
   </nav>
 
-  <!-- tiroir -->
+  <!-- Tiroir MENU -->
   <aside class="header__drawer" role="dialog" aria-modal="true"
          aria-labelledby="drawer-title"
          [class.is-visible]="isMenuOpen"
@@ -57,16 +63,14 @@
 
       <!-- Connecté -->
       <ng-container *ngIf="auth.isAuthenticated$ | async">
-        <a routerLink="/espace-personnel" (click)="closeMenu()" [class.active]="isActive('/espace-personnel')">
+        <a routerLink="/espace" (click)="closeMenu()" [class.active]="isActive('/espace')">
           Espace personnel
         </a>
 
-        <!-- Bibliothécaire -->
         <ng-container *ngIf="(auth.role$ | async) === 'Librarian'">
           <a routerLink="/gestion" (click)="closeMenu()">Gestion</a>
         </ng-container>
 
-        <!-- Admin -->
         <ng-container *ngIf="(auth.role$ | async) === 'Admin'">
           <a routerLink="/admin" (click)="closeMenu()">Administration</a>
           <a routerLink="/rapports" (click)="closeMenu()">Rapports</a>
@@ -76,11 +80,78 @@
         <hr />
       </ng-container>
 
-      <!-- bas de menu -->
       <a routerLink="/contact" (click)="closeMenu()">Contact</a>
       <a routerLink="/a-propos" (click)="closeMenu()">À propos</a>
       <a routerLink="/faq" (click)="closeMenu()">FAQ</a>
       <a routerLink="/mentions-legales" (click)="closeMenu()">Mentions légales</a>
     </nav>
+  </aside>
+
+  <!-- ======= Tiroir RECHERCHE ======= -->
+  <aside class="header__search" role="dialog" aria-modal="true"
+         aria-labelledby="search-title"
+         [class.is-visible]="isSearchOpen"
+         (keydown)="handleSearchKeyDown($event)">
+    <h2 id="search-title" class="visually-hidden">Recherche</h2>
+
+    <!-- bouton fermer (haut-droite) -->
+    <button class="header__search__close" (click)="closeSearch()" aria-label="Fermer la recherche">
+      <img ngSrc="assets/images/icon-fermer.svg" alt="" height="39" width="39" />
+    </button>
+
+    <!-- Barre + toggle -->
+    <div class="page-gutter hero-inner">
+      <div class="searchbar-pill">
+        <input
+          #searchFirstInput
+          type="search"
+          placeholder="Tapez votre recherche..."
+          [ngModel]="query()"
+          (ngModelChange)="onQueryChange($event)"
+          (keyup.enter)="applyNow()" />
+
+        <button type="button" class="icon-btn" aria-label="Rechercher" (click)="applyNow()">
+          <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
+        </button>
+
+        <label class="adv-toggle">
+          <span>Recherche avancée</span>
+          <input type="checkbox"
+                 [checked]="advanced()"
+                 (change)="setAdvanced($any($event.target).checked)" />
+          <i aria-hidden="true"></i>
+        </label>
+      </div>
+    </div>
+
+    <!-- Filtres avancés -->
+    <form *ngIf="advanced()" class="filters page-gutter" (ngSubmit)="applyNow()">
+      <div class="grid">
+        <input [ngModel]="filters().isbn"      (ngModelChange)="onFilterChange('isbn', $event)"      name="isbn"      placeholder="ISBN" />
+        <input [ngModel]="filters().author"    (ngModelChange)="onFilterChange('author', $event)"    name="author"    placeholder="Auteur" />
+        <input [ngModel]="filters().date"      (ngModelChange)="onFilterChange('date', $event)"      name="date"      type="date" placeholder="Date de publication"
+               [ngClass]="{ 'is-empty': !filters().date }" />
+        <select [ngModel]="filters().genre"    (ngModelChange)="onFilterChange('genre', $event)"     name="genre"
+                [ngClass]="{ 'is-empty': !filters().genre }">
+          <option value="" disabled selected hidden>Genre</option>
+          <option *ngFor="let g of genres()">{{ g }}</option>
+        </select>
+        <input [ngModel]="filters().tags"      (ngModelChange)="onFilterChange('tags', $event)"      name="tags"      placeholder="Tags (séparés par des virgules)" />
+        <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Éditeur" />
+        <label class="inline">
+          <input type="checkbox"
+                 [ngModel]="filters().availableNow"
+                 (ngModelChange)="onFilterChange('availableNow', $event)"
+                 name="availableNow" />
+          Est disponible immédiatement
+        </label>
+        <input [ngModel]="filters().exclude"   (ngModelChange)="onFilterChange('exclude', $event)"   name="exclude"   placeholder="Exclure de la recherche..." />
+      </div>
+
+      <div class="action-row">
+        <button type="button" class="styled-button secondary" (click)="resetAll()">Réinitialiser les filtres</button>
+        <button type="submit" class="styled-button">Rechercher avec ces filtres</button>
+      </div>
+    </form>
   </aside>
 </header>

@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NgOptimizedImage } from '@angular/common';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-hero',
@@ -14,24 +14,26 @@ export class HeroComponent {
   isCtaOpen = false;
   isMobile = false;
 
-  constructor() {
+  constructor(public auth: AuthService) {
     this.updateDeviceType();
   }
 
   @HostListener('window:resize')
-  onResize() {
+  onResize(): void {
     this.updateDeviceType();
   }
 
-  updateDeviceType() {
+  private updateDeviceType(): void {
     this.isMobile = window.innerWidth <= 600;
   }
 
-  toggleCta() {
+  toggleCta(): void {
     this.isCtaOpen = !this.isCtaOpen;
   }
 
   get chevronDirection(): string {
-    return this.isCtaOpen ? 'assets/images/icon-chevron-left.svg' : 'assets/images/icon-chevron.svg';
+    return this.isCtaOpen
+      ? 'assets/images/icon-chevron-left.svg'
+      : 'assets/images/icon-chevron.svg';
   }
 }

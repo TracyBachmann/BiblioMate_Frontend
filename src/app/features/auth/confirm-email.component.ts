@@ -1,7 +1,9 @@
+// src/app/features/auth/confirm-email.component.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, of, switchMap } from 'rxjs';
 import { environment } from '../../../environment';
 
 @Component({
@@ -52,7 +54,17 @@ export default class ConfirmEmailComponent {
     const token = this.route.snapshot.queryParamMap.get('token');
     if (!token) { this.state = 'error'; return; }
 
-    this.http.get(`${environment.apiBase}/api/auths/confirm-email`, { params: { token } })
-      .subscribe({ next: () => this.state = 'ok', error: () => this.state = 'error' });
+    const urlV1 = `${environment.apiBase}/api/v1/Auths/confirm-email`;
+    const urlNoV = `${environment.apiBase}/api/auths/confirm-email`;
+
+    this.http.get(urlV1, { params: { token } }).pipe(
+      catchError(err => {
+        // tentative de repli sur la route non versionnée
+        return this.http.get(urlNoV, { params: { token } });
+      })
+    ).subscribe({
+      next: () => this.state = 'ok',
+      error: () => this.state = 'error'
+    });
   }
 }

@@ -1,0 +1,316 @@
+.book-details-page {
+
+  .page-gutter { padding-inline: clamp(30px, 7vw, 120px); }
+
+  /* tout le contenu centré verticalement */
+  .content {
+    min-height: calc(100vh - 220px);
+    display: grid;
+    grid-auto-rows: min-content;
+    align-content: center;
+    row-gap: clamp(28px, 6vh, 72px); /* + d’espace sous la topbar */
+  }
+
+  /* topbar */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: clamp(16px, 3vw, 36px);
+    .title-wrap { display: flex; align-items: center; gap: clamp(16px, 2.5vw, 28px); }
+    .back-link {
+      font: 400 clamp(18px, 1.5vw, 24px)/1.2 "Inria Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: #0e5aa6; text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+  }
+
+  /* grille */
+  .grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+    width: 100%;
+  }
+
+  /* couverture (plus grande sur grands écrans) */
+  .left .cover {
+    width: clamp(560px, 46vw, 820px);
+    aspect-ratio: 600 / 375;
+    margin: 0;
+  }
+  .left .cover img {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+    border: 2px solid #04446B; border-radius: 12px; background: #f3f6fb;
+  }
+
+  /* textes */
+  .props, .description {
+    font-family: "Inria Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: clamp(18px, 1.6vw, 24px);
+    line-height: 1.25;
+  }
+  .props--top { display: grid; row-gap: 10px; }
+  .props--top > div {
+    display: grid; grid-template-columns: max-content 1fr; column-gap: 16px; align-items: baseline;
+  }
+  .props--top dt { font-weight: 700; margin: 0; }
+  .props--top dd { font-weight: 400; margin: 0; }
+
+  /* badges d'état */
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 32px; padding: 0 12px; border-radius: 999px;
+    font-weight: 600; font-size: 0.9em; border: 1px solid;
+  }
+  .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .status.is-ok { color: #0b8f5a; background: #e8f7f1; border-color: #b7e3d2; }
+  .status.is-ko { color: #b94242; background: #f8eaea; border-color: #f0c8c8; }
+
+  /* tags en pills */
+  .tags { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; }
+  .tags li {
+    padding: 4px 10px; border-radius: 999px;
+    background: #f2f7fd; border: 1px solid #bcd3ea; color: #0e5aa6;
+    font-size: .9em; line-height: 1;
+  }
+
+  /* CTA (droite) */
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cta-right { margin-top: clamp(8px, 1.5vh, 16px); }
+
+  /* === Boutons (look catalogue) avec dimensions/police d’origine === */
+  .styled-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    appearance: none;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background: #0e5aa6;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background .2s ease, transform .05s ease, border-color .2s ease;
+
+    /* police d’origine */
+    font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-weight: 400;
+
+    &:hover { background: #0a4a8a; }
+    &:active { transform: translateY(1px); }
+    &:disabled { opacity: .6; cursor: not-allowed; }
+
+    &.secondary {
+      background: transparent;
+      color: #0e5aa6;
+      border-color: #0e5aa6;
+      &:hover { background: rgba(14, 90, 166, .08); }
+    }
+
+    .share-wrap { position: relative; }
+
+    .share-sheet {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      z-index: 10;
+      min-width: 230px;
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+      background: #fff;
+      border: 1px solid #d6dee8;
+      border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    }
+    .share-sheet a,
+    .share-sheet .copy {
+      display: block;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 0;
+      background: transparent;
+      color: #0e5aa6;
+      font: inherit;
+      cursor: pointer;
+    }
+    .share-sheet a:hover,
+    .share-sheet .copy:hover { background: rgba(14,90,166,.08); }
+  }
+  /* tailles d’origine */
+  .btn-sm { width: 160px; height: 44px; font-size: 20px; padding: 0 16px; }
+  .btn-lg { width: 190px; height: 50px; font-size: 24px; padding: 0 20px; }
+
+  /* Icônes à gauche, teintées par currentColor
+     IMPORTANT: chemins ABSOLUS vers /assets/... */
+  .styled-button .icon {
+    width: 1.35em;
+    height: 1.35em;
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center;  mask-position: center;
+    -webkit-mask-size: contain;      mask-size: contain;
+  }
+  .i-share        { -webkit-mask-image: url("/assets/images/share.svg");        mask-image: url("/assets/images/share.svg"); }
+  .i-calendar-add { -webkit-mask-image: url("/assets/images/calendar-add.svg");      mask-image: url("/assets/images/calendar-add.svg"); }
+  .i-book-open    { -webkit-mask-image: url("/assets/images/book-open.svg");         mask-image: url("/assets/images/book-open.svg"); }
+
+  /* dessous */
+  .below { display: grid; row-gap: clamp(12px, 2.8vh, 22px); }
+  .description h4 { margin: 0 0 6px; font-weight: 700; font-size: clamp(18px, 1.6vw, 24px); }
+  .description p { margin: 0; }
+
+  .props--loc {
+    display: grid; grid-template-columns: repeat(4, max-content);
+    justify-content: space-between; column-gap: clamp(24px, 5vw, 72px); white-space: nowrap;
+  }
+  .props--loc > div { display: grid; grid-template-columns: max-content 1fr; column-gap: 10px; }
+  .props--loc dt { font-weight: 700; margin: 0; }
+  .props--loc dd { margin: 0; }
+
+  /* Empty state */
+  .empty {
+    display: grid; place-items: center; text-align: center; gap: 10px;
+    padding: 24px; border: 1px dashed #d6dee8; border-radius: 12px; margin-top: 28px;
+  }
+
+  /* responsive */
+  @media (max-width: 1024px) {
+    .page-gutter { padding-inline: clamp(20px, 6vw, 60px); }
+    .grid { column-gap: clamp(20px, 4vw, 40px); }
+    .left .cover { width: clamp(520px, 60vw, 575px); }
+  }
+  @media (max-width: 700px) {
+    .content { min-height: auto; align-content: start; }
+    .topbar { align-items: flex-start; gap: 10px; }
+    .topbar .title-wrap { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .grid { grid-template-columns: 1fr; row-gap: 14px; }
+    .left .cover { width: 340px; margin-inline: auto; }
+    .cta-right { justify-content: center; }
+    .props--loc { grid-template-columns: 1fr; row-gap: 8px; white-space: normal; justify-content: start; }
+  }
+}
+
+/* ===== Modale de partage (centrée, même bleu que Réserver, + aérée) ===== */
+.book-details-page {
+  /* overlay plein écran + centrage parfait */
+  .share-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(2, 16, 32, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 3vw, 24px);
+  }
+
+  /* boîte */
+  .share-dialog {
+    width: min(680px, 92vw);
+    background: #fff;
+    border: 1px solid #d6dee8;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.18);
+    padding: 22px 24px; /* un peu plus d’air */
+    font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  }
+
+  /* header */
+  .dialog-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+    #share-title {
+      margin: 0;
+      font-weight: 400;   /* Regular */
+      font-size: 24px;    /* Inria Sans 24 */
+      line-height: 1.25;
+      color: #0f172a;
+    }
+    .close-btn {
+      appearance: none; border: 0; background: transparent; cursor: pointer;
+      font-size: 28px; line-height: 1; padding: 6px 8px; color: #374151;
+      border-radius: 10px;
+      &:hover { background: rgba(0,0,0,.06); }
+    }
+  }
+
+  /* grille des actions — plus espacée */
+  .share-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(12px, 2.5vw, 16px);
+    list-style: none; padding: 0; margin: 0;
+  }
+
+  /* boutons = mêmes couleurs que "Réserver" + plus grands */
+  .share-btn {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%;
+    height: 56px;                 /* + de hauteur → plus aéré */
+    padding: 0 18px;              /* + d’espace latéral */
+    border-radius: 10px;          /* même rayon que .styled-button */
+    border: 2px solid transparent;
+    background: #0e5aa6;          /* BLEU "Réserver" */
+    opacity: 0.6;
+    color: #fff;
+    font-weight: 400;
+    font-size: 16px;              /* texte plus petit que le titre */
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease, transform .05s ease, border-color .2s ease;
+    &:hover { background: #0a4a8a; }   /* hover du bouton "Réserver" */
+    &:active { transform: translateY(1px); }
+    &:focus-visible { outline: 0; box-shadow: 0 0 0 3px rgba(14,90,166,.25); }
+
+    img { display: block; width: 24px; height: 24px; }
+  }
+
+  /* rendre UNIQUEMENT share.svg blanc ici */
+  .share-btn.copy img { filter: brightness(0) invert(1); }
+
+  /* responsive */
+  @media (max-width: 640px) {
+    .share-dialog { width: min(520px, 96vw); }
+    .share-grid   { grid-template-columns: 1fr 1fr; }
+  }
+}
+
+/* === CTA invité : "Connectez-vous…" (sans bouton) === */
+.book-details-page {
+  .cta-guest {
+    margin-top: clamp(8px, 1.5vh, 16px);
+    font-family: "Inria Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: clamp(18px, 1.6vw, 24px);
+
+    line-height: 1.25;
+  }
+
+  .cta-guest a {
+    color: #0e5aa6;               /* même bleu que les boutons */
+    font-weight: 600;             /* un peu d’importance sur l’action */
+    text-decoration: none;
+    display: inline-block;        /* pour élargir la zone cliquable */
+    padding: 2px 4px;             /* hit-area confortable */
+    border-radius: 6px;
+    outline-offset: 2px;          /* focus visible propre */
+    transition: background .15s ease, color .15s ease;
+  }
+  .cta-guest a:hover {
+    text-decoration: underline;
+    background: rgba(14, 90, 166, .08);
+  }
+  .cta-guest a:focus-visible {
+    outline: 2px solid #0e5aa6;
+  }
+
+  /* Sur mobile, on centre le message sous le bloc méta pour rester harmonieux */
+  @media (max-width: 700px) {
+    .cta-guest { text-align: center; }
+  }
+}
+
+
+

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 
 export type UserRole = 'User' | 'Librarian' | 'Admin' | null;
 
@@ -14,6 +14,13 @@ export class AuthService {
   readonly isAuthenticated$ = this.token$.pipe(map(t => !!t));
   readonly role$ = this.token$.pipe(map(t => this.readRole(t)));
 
+  /** 🔥 AJOUTS : flux dérivés pour prénom / nom / affichage */
+  readonly firstName$ = this.token$.pipe(map(t => this.readFirstName(t)));
+  readonly lastName$  = this.token$.pipe(map(t => this.readLastName(t)));
+  readonly displayName$ = combineLatest([this.firstName$, this.lastName$]).pipe(
+    map(([f, l]) => (f || l) ? `${f ?? ''} ${l ?? ''}`.trim() : null)
+  );
+
   private logoutTimer: any;
 
   constructor(private router: Router) {
@@ -22,12 +29,20 @@ export class AuthService {
     if (t) this.scheduleAutoLogout(t);
   }
 
-  // ---- état & lecture
+  // ---- état & lecture (inchangé)
   isAuthenticated(): boolean { return !!this.readToken(); }
   getToken(): string | null { return this.readToken(); }
   getRole(): UserRole { return this.readRole(this.readToken()); }
 
-  // ---- login / logout
+  /** 🔥 AJOUTS : getters synchrones pratiques */
+  getFirstName(): string | null { return this.readFirstName(this.readToken()); }
+  getLastName():  string | null { return this.readLastName(this.readToken()); }
+  getDisplayName(): string | null {
+    const f = this.getFirstName(), l = this.getLastName();
+    return (f || l) ? `${f ?? ''} ${l ?? ''}`.trim() : null;
+  }
+
+  // ---- login / logout (inchangé)
   login(token: string, remember = false): void {
     // stockage selon "remember me"
     sessionStorage.removeItem(this.TOKEN_KEY);
@@ -54,7 +69,7 @@ export class AuthService {
     this.router.navigate(['/connexion']);
   }
 
-  // ---- expiration / auto-logout
+  // ---- expiration / auto-logout (inchangé)
   scheduleAutoLogout(token: string) {
     clearTimeout(this.logoutTimer);
     const expMs = this.expiryFrom(token);
@@ -81,7 +96,7 @@ export class AuthService {
     }
   }
 
-  // ---- helpers
+  // ---- helpers (base inchangée + lecture prénom/nom)
   private readToken(): string | null {
     return sessionStorage.getItem(this.TOKEN_KEY) ?? localStorage.getItem(this.TOKEN_KEY);
   }
@@ -93,6 +108,51 @@ export class AuthService {
       return (p['role']
         ?? p['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
         ?? null) as UserRole;
+    } catch { return null; }
+  }
+
+  /** 🔥 Lecture robuste des prénoms/noms selon différentes conventions de claims */
+  private readFirstName(token: string | null): string | null {
+    if (!token) return null;
+    try {
+      const p = this.decodeJwt(token);
+      const v =
+        p['given_name'] ??
+        p['firstName'] ??
+        p['firstname'] ??
+        p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] ??
+        null;
+
+      if (typeof v === 'string' && v.trim()) return v.trim();
+
+      // fallback : découper "name"
+      if (typeof p['name'] === 'string' && p['name'].trim()) {
+        return p['name'].trim().split(/\s+/)[0];
+      }
+      return null;
+    } catch { return null; }
+  }
+
+  private readLastName(token: string | null): string | null {
+    if (!token) return null;
+    try {
+      const p = this.decodeJwt(token);
+      const v =
+        p['family_name'] ??
+        p['lastName'] ??
+        p['lastname'] ??
+        p['surname'] ??
+        p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] ??
+        null;
+
+      if (typeof v === 'string' && v.trim()) return v.trim();
+
+      // fallback : découper "name"
+      if (typeof p['name'] === 'string' && p['name'].trim()) {
+        const parts = p['name'].trim().split(/\s+/);
+        return parts.length > 1 ? parts.slice(1).join(' ') : null;
+      }
+      return null;
     } catch { return null; }
   }
 
