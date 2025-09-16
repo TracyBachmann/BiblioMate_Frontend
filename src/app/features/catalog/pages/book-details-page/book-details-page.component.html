@@ -1,19 +1,14 @@
 <section class="book-details-page">
   <div class="page-gutter">
     <div class="content">
-      <!-- Topbar (fait partie du contenu centré) -->
+      <!-- Topbar -->
       <div class="topbar">
         <div class="title-wrap">
           <app-section-title [title]="title()"></app-section-title>
 
-          <!-- Partager : bouton (toujours cliquable) -->
           <div class="share-wrap">
-            <button
-              type="button"
-              class="styled-button secondary btn-sm btn-icon"
-              (click)="share()"
-              aria-haspopup="dialog"
-              aria-controls="share-dialog">
+            <button type="button" class="styled-button secondary btn-sm btn-icon"
+                    (click)="share()" aria-haspopup="dialog" aria-controls="share-dialog">
               <span class="icon i-share" aria-hidden="true"></span>
               <span>Partager</span>
             </button>
@@ -66,27 +61,45 @@
             </div>
           </dl>
 
-          <!-- CTA sous les champs -->
-          <div *ngIf="auth.isAuthenticated$ | async; else guestCta" class="cta-row cta-right">
-            <!-- Réserver (placeholder, désactivé) -->
-            <button class="styled-button btn-lg btn-icon" type="button" disabled>
-              <span class="icon i-calendar-add" aria-hidden="true"></span>
-              <span>Réserver</span>
-            </button>
-
-            <!-- Emprunter -->
+          <!-- CTA -->
+          <div *ngIf="isAuthenticated$ | async; else guestCta" class="cta-row cta-right">
+            <!-- Emprunter : visible en permanence ; affiche l’état dans le bouton -->
             <button
               class="styled-button secondary btn-lg btn-icon"
               type="button"
               (click)="borrow()"
-              [disabled]="!isAvailable() || borrowing()">
+              [disabled]="borrowing() || hasActiveLoan() || !isAvailable()"
+              [attr.title]="hasActiveLoan() && loanDue() ? 'À rendre avant ' + (loanDue() | date:'dd/MM/yyyy') : null">
               <span class="icon i-book-open" aria-hidden="true"></span>
-              <span *ngIf="!borrowing(); else borrowingTpl">Emprunter</span>
+              <span class="btn-label" *ngIf="!borrowing(); else borrowingTpl">
+                <strong>{{ hasActiveLoan() ? 'Emprunt en cours' : 'Emprunter' }}</strong>
+                <small *ngIf="hasActiveLoan() && loanDue()">retour {{ loanDue() | date:'dd/MM/yyyy' }}</small>
+              </span>
             </button>
             <ng-template #borrowingTpl>Traitement…</ng-template>
+
+            <!-- Réserver : toujours visible ; se désactive si non pertinent -->
+            <button
+              class="styled-button outline btn-lg btn-icon"
+              type="button"
+              (click)="reserve()"
+              [disabled]="isAvailable() || reserving() || hasReserved() || hasActiveLoan()"
+              [attr.title]="
+                isAvailable() ? 'Le livre est disponible : empruntez-le' :
+                hasActiveLoan() ? 'Vous avez déjà un emprunt en cours sur ce livre' :
+                hasReserved() ? 'Réservation déjà enregistrée' : null
+              ">
+              <span class="icon i-calendar-add" aria-hidden="true"></span>
+              <span class="btn-label">
+                <strong *ngIf="!hasReserved(); else reservedTpl">
+                  {{ reserving() ? 'Traitement…' : 'Réserver' }}
+                </strong>
+              </span>
+            </button>
+            <ng-template #reservedTpl>Réservé</ng-template>
           </div>
 
-          <!-- Message invité -->
+          <!-- Invité -->
           <ng-template #guestCta>
             <p class="cta-guest">
               <a routerLink="/connexion">Connectez-vous</a>
@@ -112,7 +125,7 @@
       </div>
     </div>
 
-    <!-- État "non trouvé" -->
+    <!-- Not found -->
     <div class="empty" *ngIf="notFound()">
       <img ngSrc="assets/images/empty.svg" alt="" width="64" height="64" />
       <p>Oups… ce livre n’existe pas (ou plus).</p>
@@ -125,61 +138,39 @@
 
   <!-- ======= MODALE DE PARTAGE ======= -->
   <div *ngIf="shareOpen()" class="share-modal" (click)="closeShare()">
-    <div
-      class="share-dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="share-title"
-      id="share-dialog"
-      (click)="$event.stopPropagation()">
+    <div class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="share-title" id="share-dialog"
+         (click)="$event.stopPropagation()">
       <div class="dialog-header">
         <h3 id="share-title">Partager ce livre</h3>
         <button type="button" class="close-btn" (click)="closeShare()" aria-label="Fermer">×</button>
       </div>
 
       <ul class="share-grid">
-        <li>
-          <a class="share-btn x" [href]="shareHref('x')" target="_blank" rel="noopener">
-            <img ngSrc="/assets/images/twitter.svg" width="26" height="26" alt="" />
-            <span>X / Twitter</span>
-          </a>
-        </li>
-        <li>
-          <a class="share-btn facebook" [href]="shareHref('facebook')" target="_blank" rel="noopener">
-            <img ngSrc="/assets/images/facebook.svg" width="26" height="26" alt="" />
-            <span>Facebook</span>
-          </a>
-        </li>
-        <li>
-          <a class="share-btn linkedin" [href]="shareHref('linkedin')" target="_blank" rel="noopener">
-            <img ngSrc="/assets/images/linkedin.svg" width="26" height="26" alt="" />
-            <span>LinkedIn</span>
-          </a>
-        </li>
-        <li>
-          <a class="share-btn whatsapp" [href]="shareHref('whatsapp')" target="_blank" rel="noopener">
-            <img ngSrc="/assets/images/whatsapp.svg" width="26" height="26" alt="" />
-            <span>WhatsApp</span>
-          </a>
-        </li>
-        <li>
-          <a class="share-btn email" [href]="shareHref('email')">
-            <img ngSrc="/assets/images/icon-mail.svg" width="26" height="26" alt="" />
-            <span>E-mail</span>
-          </a>
-        </li>
-        <li>
-          <button type="button" class="share-btn copy" (click)="copyLink()">
-            <img ngSrc="/assets/images/share.svg" width="26" height="26" alt="" />
-            <span>Copier le lien</span>
-          </button>
-        </li>
+        <li><a class="share-btn x"        [href]="shareHref('x')"        target="_blank" rel="noopener">
+          <img ngSrc="/assets/images/twitter.svg" width="26" height="26" alt="" /><span>X / Twitter</span></a></li>
+        <li><a class="share-btn facebook" [href]="shareHref('facebook')" target="_blank" rel="noopener">
+          <img ngSrc="/assets/images/facebook.svg" width="26" height="26" alt="" /><span>Facebook</span></a></li>
+        <li><a class="share-btn linkedin" [href]="shareHref('linkedin')" target="_blank" rel="noopener">
+          <img ngSrc="/assets/images/linkedin.svg" width="26" height="26" alt="" /><span>LinkedIn</span></a></li>
+        <li><a class="share-btn whatsapp" [href]="shareHref('whatsapp')" target="_blank" rel="noopener">
+          <img ngSrc="/assets/images/whatsapp.svg" width="26" height="26" alt="" /><span>WhatsApp</span></a></li>
+        <li><a class="share-btn email"    [href]="shareHref('email')">
+          <img ngSrc="/assets/images/icon-mail.svg" width="26" height="26" alt="" /><span>E-mail</span></a></li>
+        <li><button type="button" class="share-btn copy" (click)="copyLink()">
+          <img ngSrc="/assets/images/share.svg" width="26" height="26" alt="" /><span>Copier le lien</span></button></li>
       </ul>
     </div>
   </div>
+
+  <!-- Toast -->
+  <div class="toast-root" *ngIf="toast() as t" aria-live="polite">
+    <div class="toast" [class.success]="t.type==='success'"
+         [class.error]="t.type==='error'"
+         [class.info]="t.type==='info'">
+      <span class="t-icon" aria-hidden="true"></span>
+      <div class="t-content">{{ t.message }}</div>
+      <button class="t-close" (click)="toast.set(null)" aria-label="Fermer">×</button>
+    </div>
+  </div>
 </section>
-
-
-
-
 

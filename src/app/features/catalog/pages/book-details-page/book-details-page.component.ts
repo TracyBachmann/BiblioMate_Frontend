@@ -7,6 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { BookService, Book } from '../../../../core/services/book.service';
 import { SectionTitleComponent } from '../../../../shared/components/section-title/section-title.component';
 import { LoansService, LoanCreateResponse } from '../../../../core/services/loan.service';
+import { ReservationsService } from '../../../../core/services/reservations.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
 type SharePlatform = 'x' | 'facebook' | 'linkedin' | 'whatsapp' | 'email';
@@ -19,13 +20,16 @@ type SharePlatform = 'x' | 'facebook' | 'linkedin' | 'whatsapp' | 'email';
   styleUrls: ['./book-details-page.component.scss'],
 })
 export class BookDetailsPageComponent implements OnInit, OnDestroy {
-
   // services
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private api: BookService = inject(BookService);
   private loans: LoansService = inject(LoansService);
-  auth: AuthService = inject(AuthService);    // utilisé dans le template
+  private reservations: ReservationsService = inject(ReservationsService);
+  auth: AuthService = inject(AuthService);
+
+  // exposé pour le template
+  isAuthenticated$ = this.auth.isAuthenticated$;
 
   // state
   book = signal<Book | any | null>(null);
@@ -34,6 +38,17 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
 
   shareOpen = signal(false);
   borrowing = signal(false);
+
+  // réservation
+  reserving = signal(false);
+  hasReserved = signal(false);
+
+  // état “emprunt en cours”
+  hasActiveLoan = signal(false);
+  loanDue = signal<Date | null>(null);
+
+  // toast
+  toast = signal<{type:'success'|'error'|'info', message:string} | null>(null);
 
   private sub?: Subscription;
 
@@ -46,7 +61,6 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
       this.fetch(id);
     });
   }
-
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
 
   @HostListener('document:keydown.escape')
@@ -56,14 +70,50 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   private fetch(id: number): void {
     this.loading.set(true);
     this.api.getById(id).subscribe({
-      next: b => { this.book.set(b ?? null); this.notFound.set(!b); this.loading.set(false); },
-      error: () => this.markNotFound(),
+      next: b => {
+        this.book.set(b ?? null);
+        this.notFound.set(!b);
+        this.loading.set(false);
+        this.refreshReservationFlag();
+        this.refreshActiveLoanFlag(); // 👈 récupère l’info depuis le back
+      },
+      error: err => {
+        console.error('Book load error', err);
+        this.markNotFound();
+      },
     });
   }
   private markNotFound(): void { this.book.set(null); this.notFound.set(true); this.loading.set(false); }
 
+  private refreshReservationFlag(): void {
+    const b: any = this.book();
+    if (!b || !this.auth.isAuthenticated()) { this.hasReserved.set(false); return; }
+    const bookId = Number(b?.bookId ?? b?.id);
+    if (!Number.isFinite(bookId)) return;
+    this.reservations.hasForCurrentUser(bookId).subscribe(v => this.hasReserved.set(v));
+  }
+
+  private refreshActiveLoanFlag(): void {
+    const b: any = this.book();
+    if (!b || !this.auth.isAuthenticated()) { this.hasActiveLoan.set(false); this.loanDue.set(null); return; }
+    const bookId = Number(b?.bookId ?? b?.id);
+    if (!Number.isFinite(bookId)) return;
+    this.loans.hasActiveForCurrentUser(bookId).subscribe({
+      next: r => {
+        const active = !!r?.hasActive;
+        this.hasActiveLoan.set(active);
+        this.loanDue.set(active && r?.dueDate ? new Date(r.dueDate) : null);
+      },
+      error: () => {
+        // en cas d'erreur, ne bloque pas l’UI, on considère "pas d’emprunt actif"
+        this.hasActiveLoan.set(false);
+        this.loanDue.set(null);
+      }
+    });
+  }
+
   // ======== helpers ========
-  private safe(v: any): string { if (v==null) return '—'; const s=String(v); return s.trim()===''?'—':s; }
+  private safe(v: any): string { if (v == null) return '—'; const s = String(v); return s.trim() === '' ? '—' : s; }
   private pick(...c: any[]) { for (const x of c){ if (x==null) continue; const s=typeof x==='string'?x.trim():String(x); if (s!=='') return s; } return undefined; }
   private nested(){ const b:any=this.book()??{}; const sl=b.shelfLevel??b.stock?.shelfLevel??null; const s=sl?.shelf??null; const z=s?.zone??null; return {shelfLevel:sl,shelf:s,zone:z}; }
 
@@ -111,7 +161,6 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
 
   // ======== partage ========
   private absoluteUrl(): string { return new URL(this.router.url, location.origin).toString(); }
-
   async share(): Promise<void> {
     const url=this.absoluteUrl(), title=this.title(), text=`${title}${this.author() ? ' — ' + this.author() : ''}`;
     if ((navigator as any).share) {
@@ -121,7 +170,6 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     this.shareOpen.set(true);
   }
   closeShare(): void { this.shareOpen.set(false); }
-
   shareHref(p: SharePlatform): string {
     const url = encodeURIComponent(this.absoluteUrl());
     const title = encodeURIComponent(this.title());
@@ -134,34 +182,33 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
       case 'email':    return `mailto:?subject=${title}&body=${text}%0A%0A${url}`;
     }
   }
-
   async copyLink(): Promise<void> {
     const url = this.absoluteUrl();
-    try {
-      await navigator.clipboard.writeText(url);
-      alert('Lien copié dans le presse-papiers.');
-    } catch {
-      // fallback
-      prompt('Copier le lien :', url);
-    }
+    try { await navigator.clipboard.writeText(url); this.showToast('Lien copié dans le presse-papiers.', 'info'); }
+    catch { prompt('Copier le lien :', url); }
+  }
+
+  private showToast(message: string, type: 'success'|'error'|'info' = 'success') {
+    this.toast.set({ type, message });
+    setTimeout(() => { if (this.toast()?.message === message) this.toast.set(null); }, 4000);
   }
 
   // ======== Emprunter ========
   borrow(): void {
-    if (this.borrowing()) return;
+    if (this.borrowing() || this.hasActiveLoan()) return;
     const b: any = this.book();
     const bookId = Number(b?.bookId ?? b?.id);
-    if (!Number.isFinite(bookId)) { alert('Livre introuvable.'); return; }
-    if (!this.isAvailable()) { alert('Livre indisponible.'); return; }
+    if (!Number.isFinite(bookId)) { this.showToast('Livre introuvable.', 'error'); return; }
+    if (!this.isAvailable()) { this.showToast('Livre indisponible.', 'error'); return; }
 
     this.borrowing.set(true);
     this.loans.createLoanForCurrentUser(bookId).subscribe({
       next: (resp: LoanCreateResponse) => {
-        const due = resp?.dueDate ? new Date(resp.dueDate).toLocaleDateString() : null;
-        if (due) alert(`Emprunt créé ! À rendre avant le ${due}.`);
-        else alert('Emprunt créé !');
+        const due = resp?.dueDate ? new Date(resp.dueDate) : null;
+        this.loanDue.set(due);
+        this.hasActiveLoan.set(true);
 
-        // met à jour le stock local pour refléter l’emprunt
+        // met à jour le stock local
         const copy: any = { ...(this.book() as any) };
         const currentQty = Number(copy?.stock?.quantity ?? 0);
         const newQty = Math.max(0, currentQty - 1);
@@ -169,21 +216,47 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
         copy.isAvailable = newQty > 0;
         this.book.set(copy);
 
+        this.showToast(
+          due ? `Emprunt créé ! Retour avant le ${due.toLocaleDateString()}.` : 'Emprunt créé !',
+          'success'
+        );
         this.borrowing.set(false);
       },
       error: (err: HttpErrorResponse) => {
+        console.error('Loan error', err);
         this.borrowing.set(false);
-        if (err.status === 401) {
-          alert('Connectez-vous pour emprunter ce livre.');
-        } else if (err.status === 403) {
-          alert('Vous n’êtes pas autorisé à emprunter ce livre.');
-        } else if (typeof err.error?.error === 'string') {
-          alert(err.error.error);
-        } else {
-          alert('Impossible d’emprunter ce livre pour le moment.');
-        }
+        if (err.status === 401) this.showToast('Connectez-vous pour emprunter ce livre.', 'error');
+        else if (err.status === 403) this.showToast('Vous n’êtes pas autorisé à emprunter ce livre.', 'error');
+        else if (typeof err.error?.error === 'string') this.showToast(err.error.error, 'error');
+        else if (typeof err.error?.details === 'string') this.showToast(err.error.details, 'error');
+        else this.showToast('Impossible d’emprunter ce livre pour le moment.', 'error');
+      }
+    });
+  }
+
+  // ======== Réserver ========
+  reserve(): void {
+    if (this.reserving() || this.hasReserved()) return;
+    const b: any = this.book();
+    const bookId = Number(b?.bookId ?? b?.id);
+    if (!Number.isFinite(bookId)) { this.showToast('Livre introuvable.', 'error'); return; }
+    if (this.isAvailable()) { this.showToast('Le livre est disponible : empruntez-le directement.', 'info'); return; }
+
+    this.reserving.set(true);
+    this.reservations.createForCurrentUser(bookId).subscribe({
+      next: _dto => {
+        this.reserving.set(false);
+        this.hasReserved.set(true);
+        this.showToast('Réservation enregistrée. Vous serez notifié quand un exemplaire sera disponible.', 'success');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Reservation error', err);
+        this.reserving.set(false);
+        if (err.status === 401) this.showToast('Connectez-vous pour réserver ce livre.', 'error');
+        else if (err.status === 403) this.showToast('Action non autorisée.', 'error');
+        else if (typeof err.error?.error === 'string') this.showToast(err.error.error, 'error');
+        else this.showToast('Impossible de créer la réservation pour le moment.', 'error');
       }
     });
   }
 }
-

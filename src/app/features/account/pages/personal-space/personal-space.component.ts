@@ -1,5 +1,5 @@
 // src/app/features/account/pages/personal-space/personal-space.component.ts
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NavCardComponent } from '../../../../shared/components/nav-card/nav-card.component';
@@ -21,6 +21,24 @@ function mapRole(r: ServiceRole | null): UserRole {
   if (norm.includes('admin')) return 'admin';
   if (norm.includes('librarian')) return 'librarian';
   return 'user';
+}
+
+/** Décodage local du JWT (debug only) */
+function parseJwt(token: string | null): any | null {
+  if (!token) return null;
+  try {
+    const base64 = token.split('.')[1];
+    const normalized = base64.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(
+      atob(normalized)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
 }
 
 @Component({
@@ -98,6 +116,46 @@ export class PersonalSpaceComponent {
     return base;
   });
 
+  // --- Getters utilisés par le template
   get fullName(): string { return this._fullName(); }
   get options(): NavOption[] { return this._options(); }
+
+  // --- Logs de diagnostic (automatiques dès que les valeurs changent)
+  private _logUserInfo = effect(() => {
+    const f = this.firstName();
+    const l = this.lastName();
+    const r = this.roleSrv();
+    const fn = this._fullName();
+
+    // token + claims
+    const token = this.auth.getToken?.() ?? null;
+    const claims = parseJwt(token);
+
+    console.groupCollapsed('%c[PersonalSpace] Diagnostic utilisateur', 'color:#0E5AA6;font-weight:600;');
+    console.log('firstName$', f);
+    console.log('lastName$', l);
+    console.log('role$', r);
+    console.log('fullName (computed)', fn);
+    console.log('token présent ?', !!token);
+    if (claims) {
+      console.log('claims keys:', Object.keys(claims));
+      console.log('→ given_name:', claims.given_name);
+      console.log('→ family_name:', claims.family_name);
+      console.log('→ name:', claims.name);
+      console.log('→ firstName / lastName (custom):', claims.firstName, claims.lastName);
+      console.log('→ .NET claims:',
+        claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
+        claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname']
+      );
+      console.log('payload complet:', claims);
+    } else {
+      console.log('Impossible de décoder le JWT (token null ou format invalide).');
+    }
+    console.groupEnd();
+  });
+
+  private _logOptions = effect(() => {
+    const opts = this._options();
+    console.debug('[PersonalSpace] Options visibles:', opts.map(o => o.title));
+  });
 }

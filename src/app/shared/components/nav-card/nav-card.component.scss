@@ -1,54 +1,157 @@
-.nav-card {
+// NAV CARD COMPONENT - Corrections principales
+:host {
   display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.nav-card {
+  display: flex;
+  flex-direction: column;
+  // Hauteur encore plus importante
+  min-height: 700px;
+  height: 100%;
+  width: 100%;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   overflow: hidden;
   background: #fff;
   text-decoration: none;
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  color: inherit;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
   transition: transform .12s ease, box-shadow .12s ease;
+}
 
-  &:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.10); }
-  &:focus-visible { outline: 2px solid #04446B; outline-offset: 3px; }
+.nav-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .10);
+}
 
-  &.disabled {
-    pointer-events: none;
-    opacity: .6;
+.nav-card:focus-visible {
+  outline: 2px solid #04446B;
+  outline-offset: 3px;
+}
+
+.nav-card.disabled {
+  pointer-events: none;
+  opacity: .6;
+}
+
+.image-wrap {
+  width: 100%;
+  // Hauteur d'image beaucoup plus grande
+  height: 520px;
+  overflow: hidden;
+  background: #f3f4f6;
+  flex-shrink: 0;
+}
+
+.image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform .25s ease;
+}
+
+.nav-card:hover .image-wrap img {
+  transform: scale(1.03);
+}
+
+/* FOOTER - Prend l'espace restant */
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  padding: 20px 16px; // Padding réduit
+  background: #FFF7D6;
+  color: #0E5AA6;
+  border-top: 1px solid #f0e7c8;
+  min-height: 80px; // Hauteur minimum beaucoup plus petite
+}
+
+.texts {
+  width: 100%;
+}
+
+.title {
+  display: block;
+  margin: 0 0 8px 0;
+  font-family: 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.subtitle {
+  display: block;
+  margin: 0;
+  font-family: 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.35;
+  color: #6b7280;
+}
+
+/* Ajustements pour mobile */
+@media (max-width: 640px) {
+  .personal-page {
+    max-width: 100%;
+    padding-inline: 16px;
+    min-height: 85vh; // Encore plus réduit sur mobile
+  }
+
+  .action-grid {
+    grid-template-columns: 1fr;
+    min-height: 500px;
+    gap: 20px;
+  }
+
+  .nav-card {
+    min-height: 600px;
   }
 
   .image-wrap {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-
-    img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      transition: transform .25s ease;
-    }
+    height: 450px; // Plus grande sur mobile aussi
   }
 
-  &:hover .image-wrap img { transform: scale(1.03); }
+  .card-footer {
+    padding: 16px 12px; // Padding encore plus réduit
+    min-height: 70px; // Hauteur minimum plus petite
+    justify-content: flex-start;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}
+
+/* Ajustements pour très grands écrans */
+@media (min-width: 1400px) {
+  .personal-page {
+    max-width: 1600px;
+  }
+
+  .action-grid {
+    gap: 48px;
+    min-height: 750px;
+  }
+
+  .nav-card {
+    min-height: 750px;
+  }
+
+  .image-wrap {
+    height: 580px; // Encore plus grande sur grands écrans
+  }
 
   .card-footer {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 16px;
-    background: #FFF7D6; /* jaune doux */
-    color: #0E5AA6;
-
-    .title {
-      font: 600 16px 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      display: block;
-      line-height: 1.1;
-    }
-    .subtitle {
-      margin-top: 2px;
-      display: block;
-      font: 400 13px 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: #6b7280;
-    }
+    min-height: 90px; // Footer reste petit même sur grands écrans
+    padding: 24px 20px;
   }
 }

@@ -1,9 +1,12 @@
+// Personal page styles
 .personal-page {
-  --gutter: clamp(16px, 3vw, 32px);
-  --maxw: 1200px;
-  padding-inline: var(--gutter);
+  padding-inline: clamp(16px, 3vw, 32px);
   margin-inline: auto;
-  max-width: var(--maxw);
+  max-width: 1400px;
+  min-height: 90vh; // Réduit pour éviter que le footer sorte
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   font-family: 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
@@ -14,20 +17,30 @@
   align-items: center;
   column-gap: 16px;
   row-gap: 8px;
-  margin: clamp(10px, 2vw, 18px) 0 clamp(14px, 2.5vw, 22px);
+  margin: clamp(12px, 2vw, 20px) 0 clamp(16px, 2.5vw, 28px);
 
   .avatar {
-    width: 48px; height: 48px; border-radius: 50%;
-    display: grid; place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
     background: #e8eef8;
-    img { display: block; }
+
+    img {
+      display: block;
+      width: 48px;
+      height: 48px;
+    }
   }
 
-  .texts { min-width: 0; }
+  .texts {
+    min-width: 0;
+  }
 
   h1 {
-    margin: 0 0 4px;
-    font-size: clamp(20px, 2.2vw + 12px, 28px);
+    margin: 0 0 6px;
+    font-size: 36px;
     font-weight: 700;
     color: #111827;
     line-height: 1.2;
@@ -36,17 +49,35 @@
   .subline {
     margin: 0;
     color: #6b7280;
-    font-size: clamp(13px, 1.2vw + 10px, 15px);
+    font-size: 16px;
   }
 }
 
-/* GRID — 3/2/1 colonnes selon la largeur */
+// GRID D'ACTIONS - Corrections principales
 .action-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: clamp(12px, 2vw, 24px);
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  align-items: stretch;
+  justify-items: stretch;
+  // Hauteur encore plus importante
+  min-height: 700px;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .action-grid {
+    grid-template-columns: repeat(2, 1fr);
+    min-height: 600px;
+  }
 }
 
 @media (max-width: 640px) {
-  .personal-hero .avatar { width: 40px; height: 40px; }
+  .personal-hero .avatar {
+    width: 48px;
+    height: 48px;
+  }
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,3 +1,4 @@
+// src/app/core/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
@@ -11,38 +12,52 @@ export class AuthService {
 
   private _token$ = new BehaviorSubject<string | null>(this.readToken());
   readonly token$ = this._token$.asObservable();
-  readonly isAuthenticated$ = this.token$.pipe(map(t => !!t));
+
+  readonly isAuthenticated$ = this.token$.pipe(
+    map(t => !!t && !this.isTokenExpired(t))
+  );
+
   readonly role$ = this.token$.pipe(map(t => this.readRole(t)));
 
-  /** 🔥 AJOUTS : flux dérivés pour prénom / nom / affichage */
+  /** Flux dérivés : prénom / nom / nom complet (sans fallback approximatif) */
   readonly firstName$ = this.token$.pipe(map(t => this.readFirstName(t)));
   readonly lastName$  = this.token$.pipe(map(t => this.readLastName(t)));
-  readonly displayName$ = combineLatest([this.firstName$, this.lastName$]).pipe(
-    map(([f, l]) => (f || l) ? `${f ?? ''} ${l ?? ''}`.trim() : null)
+  readonly displayName$ = combineLatest([this.firstName$, this.lastName$, this.token$]).pipe(
+    map(([f, l, t]) => {
+      // si 'name' est fourni par le backend, on l'utilise tel quel
+      const n = this.readName(t);
+      if (typeof n === 'string' && n.trim()) return n.trim();
+
+      // sinon, concat given_name + family_name s'ils existent
+      const parts = [f ?? '', l ?? ''].map(s => s.trim()).filter(Boolean);
+      return parts.length ? parts.join(' ') : null;
+    })
   );
 
   private logoutTimer: any;
 
   constructor(private router: Router) {
-    // si un token est déjà présent au chargement, on programme l’auto-logout
     const t = this.readToken();
     if (t) this.scheduleAutoLogout(t);
   }
 
-  // ---- état & lecture (inchangé)
+  // -------- état & lecture synchrone
   isAuthenticated(): boolean { return !!this.readToken(); }
   getToken(): string | null { return this.readToken(); }
   getRole(): UserRole { return this.readRole(this.readToken()); }
 
-  /** 🔥 AJOUTS : getters synchrones pratiques */
   getFirstName(): string | null { return this.readFirstName(this.readToken()); }
   getLastName():  string | null { return this.readLastName(this.readToken()); }
   getDisplayName(): string | null {
-    const f = this.getFirstName(), l = this.getLastName();
-    return (f || l) ? `${f ?? ''} ${l ?? ''}`.trim() : null;
+    const t = this.readToken();
+    const direct = this.readName(t);
+    if (direct && direct.trim()) return direct.trim();
+    const f = this.readFirstName(t), l = this.readLastName(t);
+    const parts = [f ?? '', l ?? ''].map(s => s.trim()).filter(Boolean);
+    return parts.length ? parts.join(' ') : null;
   }
 
-  // ---- login / logout (inchangé)
+  // -------- login / logout
   login(token: string, remember = false): void {
     // stockage selon "remember me"
     sessionStorage.removeItem(this.TOKEN_KEY);
@@ -58,6 +73,19 @@ export class AuthService {
 
     this._token$.next(token);
     this.scheduleAutoLogout(token);
+
+    // DEBUG (opt-in)
+    const DEBUG = false;
+    if (DEBUG) {
+      try {
+        const p = this.decodeJwt(token);
+        // eslint-disable-next-line no-console
+        console.groupCollapsed('%c[AuthService] JWT claims', 'color:#0E5AA6;font-weight:600;');
+        console.log(p);
+        console.log('given_name:', p?.given_name, 'family_name:', p?.family_name, 'name:', p?.name);
+        console.groupEnd();
+      } catch { /* ignore */ }
+    }
   }
 
   logout(): void {
@@ -69,7 +97,7 @@ export class AuthService {
     this.router.navigate(['/connexion']);
   }
 
-  // ---- expiration / auto-logout (inchangé)
+  // -------- expiration / auto-logout
   scheduleAutoLogout(token: string) {
     clearTimeout(this.logoutTimer);
     const expMs = this.expiryFrom(token);
@@ -89,14 +117,13 @@ export class AuthService {
   private expiryFrom(token: string): number | null {
     try {
       const payload = this.decodeJwt(token);
-      // exp (seconds) -> ms
       return typeof payload?.exp === 'number' ? payload.exp * 1000 : null;
     } catch {
       return null;
     }
   }
 
-  // ---- helpers (base inchangée + lecture prénom/nom)
+  // -------- helpers
   private readToken(): string | null {
     return sessionStorage.getItem(this.TOKEN_KEY) ?? localStorage.getItem(this.TOKEN_KEY);
   }
@@ -111,48 +138,47 @@ export class AuthService {
     } catch { return null; }
   }
 
-  /** 🔥 Lecture robuste des prénoms/noms selon différentes conventions de claims */
+  /** lit 'name' si fourni par le backend (pas d'inférence) */
+  private readName(token: string | null): string | null {
+    if (!token) return null;
+    try {
+      const p = this.decodeJwt(token);
+      const v =
+        p['name'] ??
+        p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ??
+        null;
+      return (typeof v === 'string' && v.trim()) ? v : null;
+    } catch { return null; }
+  }
+
+  /** lit 'given_name' (ou équivalents standards) — pas de fallback heuristique */
   private readFirstName(token: string | null): string | null {
     if (!token) return null;
     try {
       const p = this.decodeJwt(token);
       const v =
         p['given_name'] ??
-        p['firstName'] ??
+        p['firstName'] ??               // si le backend envoie un custom
         p['firstname'] ??
         p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] ??
         null;
-
-      if (typeof v === 'string' && v.trim()) return v.trim();
-
-      // fallback : découper "name"
-      if (typeof p['name'] === 'string' && p['name'].trim()) {
-        return p['name'].trim().split(/\s+/)[0];
-      }
-      return null;
+      return (typeof v === 'string' && v.trim()) ? v.trim() : null;
     } catch { return null; }
   }
 
+  /** lit 'family_name' (ou équivalents standards) — pas de fallback heuristique */
   private readLastName(token: string | null): string | null {
     if (!token) return null;
     try {
       const p = this.decodeJwt(token);
       const v =
         p['family_name'] ??
-        p['lastName'] ??
+        p['lastName'] ??                // si le backend envoie un custom
         p['lastname'] ??
         p['surname'] ??
         p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] ??
         null;
-
-      if (typeof v === 'string' && v.trim()) return v.trim();
-
-      // fallback : découper "name"
-      if (typeof p['name'] === 'string' && p['name'].trim()) {
-        const parts = p['name'].trim().split(/\s+/);
-        return parts.length > 1 ? parts.slice(1).join(' ') : null;
-      }
-      return null;
+      return (typeof v === 'string' && v.trim()) ? v.trim() : null;
     } catch { return null; }
   }
 
