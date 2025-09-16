@@ -27,5 +27,32 @@
     <ng-template #disabledLink>
       <span class="book-card__link is-disabled" aria-disabled="true" title="Identifiant manquant">Voir le détail</span>
     </ng-template>
+
+      <div *ngIf="reservationDate || expirationDate" class="book-card__reservation">
+          <p *ngIf="reservationDate">Date de réservation : {{ reservationDate }}</p>
+          <p *ngIf="expirationDate">Expiration : {{ expirationDate }}</p>
+      </div>
+
+      <button
+              *ngIf="cancellable"
+              type="button"
+              class="styled-button secondary"
+              (click)="onCancelClick()">
+          {{ cancelLabel }}
+      </button>
+
+      <div *ngIf="loanDate || returnDate" class="book-card__loan">
+          <p *ngIf="loanDate">Date d’emprunt : {{ loanDate }}</p>
+          <p *ngIf="returnDate">Date de retour : {{ returnDate }}</p>
+      </div>
+
+      <button
+              *ngIf="extendable"
+              type="button"
+              class="styled-button secondary"
+              (click)="onExtendClick()">
+          {{ extendLabel }}
+      </button>
+      
   </div>
 </div>

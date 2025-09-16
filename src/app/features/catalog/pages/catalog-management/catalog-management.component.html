@@ -1,0 +1,86 @@
+<div class="catalog-management-page">
+
+  <!-- HERO -->
+  <header class="catalog-hero">
+    <img
+      ngSrc="assets/images/catalog-management-background.png"
+      width="1920" height="350" alt="Gestion du catalogue"
+      class="hero-bg" fetchpriority="high" />
+
+    <div class="page-gutter hero-inner">
+      <app-section-title class="hero-title" [title]="'Gestion du catalogue'"></app-section-title>
+
+      <div class="action-row">
+        <button class="styled-button" (click)="createBook()">Ajouter un livre</button>
+        <button class="styled-button secondary" (click)="importCSV()">Importation CSV</button>
+      </div>
+
+      <!-- Barre de recherche -->
+      <div class="searchbar-pill">
+        <input
+          type="search"
+          placeholder="Tapez votre recherche..."
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+          (keyup.enter)="search()" />
+
+        <button type="button" class="icon-btn" aria-label="Rechercher" (click)="search()">
+          <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
+        </button>
+
+        <label class="adv-toggle">
+          <span>Recherche avancée</span>
+          <input type="checkbox" [checked]="advanced()" (change)="advanced.set($any($event.target).checked)" />
+          <i aria-hidden="true"></i>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- Résultats -->
+  <section class="section-block page-gutter">
+    <div class="meta">
+      <span>{{ results().length }} résultats</span>
+    </div>
+
+    <ng-template [ngIf]="results().length === 0" [ngIfElse]="listTpl">
+      <div class="empty-state">
+        <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
+        <h3>Aucun livre trouvé</h3>
+        <p>Ajoutez un livre ou importez un CSV pour commencer.</p>
+      </div>
+    </ng-template>
+
+    <ng-template #listTpl>
+      <div class="cards-grid">
+        <app-book-card
+          *ngFor="let b of pagedResults()"
+          [showStatus]="true"
+          [status]="bookStatus(b)"
+          [title]="b.title"
+          [image]="b.coverUrl"
+          [description]="b.description"
+          [bookId]="b.id">
+          <!-- Slot actions admin -->
+          <div class="admin-actions" actions>
+            <button type="button" class="icon-btn" (click)="editBook(b.id)" title="Modifier">
+              <img ngSrc="assets/images/icon-edit.svg" width="20" height="20" alt="Modifier" />
+            </button>
+            <button type="button" class="icon-btn" (click)="deleteBook(b.id)" title="Supprimer">
+              <img ngSrc="assets/images/icon-trash.svg" width="20" height="20" alt="Supprimer" />
+            </button>
+          </div>
+        </app-book-card>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="pagination">
+        <button (click)="prevPage()" [disabled]="pageIndex() === 0">Précédent</button>
+        <ng-container *ngFor="let p of totalPages(); let i = index">
+          <button (click)="goToPage(i)" [class.is-active]="pageIndex() === i">{{ i+1 }}</button>
+        </ng-container>
+        <button (click)="nextPage()" [disabled]="pageIndex() >= totalPages().length - 1">Suivant</button>
+      </nav>
+    </ng-template>
+  </section>
+</div>

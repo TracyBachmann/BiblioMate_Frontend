@@ -1,0 +1,58 @@
+<div class="user-profile-page page-gutter">
+  <header class="hero">
+    <h1>
+      Bonjour <span>{{ firstName }} {{ lastName }}</span>, voici vos informations personnelles
+    </h1>
+  </header>
+
+  <form [formGroup]="profileForm" (ngSubmit)="submit()" class="profile-form">
+    <div class="avatar-block">
+      <img
+        [ngSrc]="avatarUrl || 'assets/images/icon-user-circle.svg'"
+        width="120"
+        height="120"
+        alt="Avatar utilisateur"
+        class="avatar"
+      />
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <input type="text" formControlName="lastName" placeholder="Nom" />
+      </div>
+      <div class="form-field">
+        <input type="text" formControlName="firstName" placeholder="Prénom" />
+      </div>
+      <div class="form-field full">
+        <input type="email" formControlName="email" placeholder="Adresse de messagerie" />
+      </div>
+      <div class="form-field">
+        <input type="tel" formControlName="phone" placeholder="Téléphone" />
+      </div>
+      <div class="form-field">
+        <input type="date" formControlName="dateOfBirth" placeholder="Date de naissance" />
+      </div>
+      <div class="form-field full">
+        <input type="text" formControlName="address1" placeholder="Adresse 1" />
+      </div>
+      <div class="form-field full">
+        <input type="text" formControlName="address2" placeholder="Adresse 2 (facultatif)" />
+      </div>
+      <div class="form-field">
+        <input type="password" formControlName="password" placeholder="Mot de passe" />
+      </div>
+      <div class="form-field full">
+        <select formControlName="options" multiple>
+          <option *ngFor="let opt of availableOptions" [value]="opt">{{ opt }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button type="submit" class="styled-button">Modifier mes informations personnelles</button>
+      <button type="button" class="styled-button secondary" (click)="deactivate()">
+        Désactiver mon profil
+      </button>
+    </div>
+  </form>
+</div>

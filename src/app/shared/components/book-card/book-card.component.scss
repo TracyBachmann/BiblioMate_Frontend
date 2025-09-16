@@ -167,3 +167,27 @@
     .book-card__link { font-size: 15px; }
   }
 }
+
+.book-card__reservation {
+  font-size: 14px;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: .5rem;
+}
+
+button.styled-button.secondary {
+  margin-top: .75rem;
+  font-size: 14px;
+  align-self: start;
+}
+
+.book-card__loan {
+  font-size: 14px;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: .5rem;
+}

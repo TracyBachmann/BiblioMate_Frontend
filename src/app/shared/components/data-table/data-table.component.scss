@@ -1,0 +1,60 @@
+.data-table-wrapper {
+  width: 100%;
+  overflow-x: auto; // permet le scroll horizontal sur mobile/tablette
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px; // évite de tout compresser sur petit écran
+
+  thead {
+    background: #f3f4f6;
+    border-bottom: 2px solid #e5e7eb;
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #374151;
+      white-space: nowrap;
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+
+    &:hover {
+      background: #f9fafb;
+    }
+
+    td {
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #1f2937;
+      vertical-align: middle;
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+
+      .icon-btn {
+        border: none;
+        background: transparent;
+        padding: 4px;
+        border-radius: 6px;
+        cursor: pointer;
+
+        &:hover {
+          background: rgba(14, 90, 166, .1);
+        }
+
+        img {
+          display: block;
+        }
+      }
+    }
+  }
+}

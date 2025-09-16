@@ -1,0 +1,56 @@
+@use '../../catalog/pages/catalog-page/catalog-page.component.scss' as catalog;
+
+.catalog-management-page {
+  @extend .catalog-page;
+
+  .action-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .admin-actions {
+    display: flex;
+    gap: .5rem;
+    margin-top: .5rem;
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      background: #f3f4f6;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background .2s;
+      &:hover { background: #e5e7eb; }
+      img { display: block; }
+    }
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    margin-top: 2rem;
+
+    button {
+      min-width: 36px;
+      padding: .4rem .75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      &.is-active {
+        background: #0e5aa6;
+        color: #fff;
+        font-weight: 600;
+      }
+      &:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

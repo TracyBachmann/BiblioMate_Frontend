@@ -1,0 +1,30 @@
+<div class="data-table-wrapper">
+  <table class="data-table">
+    <thead>
+    <tr>
+      <th *ngFor="let col of columns" [style.width]="col.width">
+        {{ col.label }}
+      </th>
+      <th *ngIf="actions.length">Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let row of data">
+      <td *ngFor="let col of columns">
+        {{ getValue(row, col) }}
+      </td>
+      <td *ngIf="actions.length" class="actions-cell">
+        <button
+          *ngFor="let action of actions"
+          type="button"
+          class="icon-btn"
+          [attr.aria-label]="action.label"
+          (click)="action.handler(row)">
+          <img [src]="action.icon" [alt]="action.label" width="18" height="18" />
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

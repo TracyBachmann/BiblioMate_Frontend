@@ -29,7 +29,50 @@ export const routes: Routes = [
         .then(m => m.BookDetailsPageComponent)
   },
 
-  { path: 'espace', component: PersonalSpaceComponent, canActivate: [authGuard] },
+  {
+    path: 'espace',
+    canActivate: [authGuard],
+    children: [
+      { path: '', component: PersonalSpaceComponent },
+      {
+        path: 'profil',
+        loadComponent: () =>
+          import('./features/account/pages/user-profile/user-profile.component')
+            .then(m => m.UserProfileComponent)
+      },
+      {
+        path: 'mes-reservations',
+        loadComponent: () =>
+          import('./features/account/pages/my-reservations/my-reservations.component')
+            .then(m => m.MyReservationsComponent)
+      },
+      {
+        path: 'mes-emprunts',
+        loadComponent: () =>
+          import('./features/account/pages/my-loans/my-loans.component')
+            .then(m => m.MyLoansComponent)
+      },
+      {
+        path: 'gestion-emprunts-reservations',
+        loadComponent: () =>
+          import('./features//management/loans-reservation-management/loans-reservation-management.component')
+            .then(m => m.LoansReservationManagementComponent)
+      }
+    ]
+  },
+
+  {
+    path: 'catalogue/ajout-livre',
+    loadComponent: () =>
+      import('./features/catalog/pages/book-creation/book-creation.component')
+        .then(m => m.BookCreationComponent)
+  },
+  {
+    path: 'catalogue/gestion',
+    loadComponent: () =>
+      import('./features/catalog/pages/catalog-management/catalog-management.component')
+        .then(m => m.CatalogManagementComponent)
+  },
 
   { path: 'contact', loadComponent: () => import('./features/info/pages/contact-page/contact-page.component').then(m => m.ContactPageComponent) },
   { path: 'a-propos', loadComponent: () => import('./features/info/pages/about-page/about-page.component').then(m => m.AboutPageComponent) },

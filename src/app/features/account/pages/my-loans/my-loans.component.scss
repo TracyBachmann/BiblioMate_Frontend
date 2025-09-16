@@ -1,0 +1,19 @@
+@use '../../../catalog/pages/catalog-page/catalog-page.component.scss' as catalog;
+
+.loans-page {
+  @extend .catalog-page;
+
+  .loans-hero {
+    @extend .catalog-hero;
+  }
+
+  .cards-grid {
+    @extend .cards-grid;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+  }
+}

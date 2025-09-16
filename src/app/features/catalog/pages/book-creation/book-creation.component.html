@@ -1,0 +1,107 @@
+<div class="book-creation-page page-gutter">
+
+  <header class="form-header">
+    <h1>Ajout d’un livre au catalogue</h1>
+    <a routerLink="/catalogue/management" class="back-link">← Retourner sur le catalogue</a>
+  </header>
+
+  <form class="book-form" (ngSubmit)="onSubmit()" #f="ngForm">
+
+    <!-- Titre & description -->
+    <div class="form-grid">
+      <label>
+        Titre du livre
+        <input type="text" name="title" [(ngModel)]="model.title" required />
+      </label>
+
+      <label class="wide">
+        Description
+        <textarea name="description" [(ngModel)]="model.description" rows="4"></textarea>
+      </label>
+    </div>
+
+    <!-- Couverture -->
+    <div class="form-grid">
+      <label class="wide">
+        Affiche de couverture
+        <input type="file" (change)="onCoverSelected($event)" accept="image/*" />
+        <div class="cover-preview" *ngIf="coverPreview">
+          <img [src]="coverPreview" alt="Prévisualisation" />
+        </div>
+      </label>
+    </div>
+
+    <!-- Métadonnées -->
+    <div class="form-grid">
+      <label>
+        Auteur
+        <input type="text" name="author" [(ngModel)]="model.author" />
+      </label>
+      <label>
+        Éditeur
+        <input type="text" name="publisher" [(ngModel)]="model.publisher" />
+      </label>
+      <label>
+        ISBN
+        <input type="text" name="isbn" [(ngModel)]="model.isbn" />
+      </label>
+      <label>
+        Date de publication
+        <input type="date" name="publicationDate" [(ngModel)]="model.publicationDate" />
+      </label>
+    </div>
+
+    <!-- Genres et tags -->
+    <div class="form-grid">
+      <label class="wide">
+        Genres
+        <select multiple name="genres" [(ngModel)]="model.genres">
+          <option *ngFor="let g of availableGenres" [value]="g">{{ g }}</option>
+        </select>
+      </label>
+
+      <label class="wide">
+        Tags
+        <input
+          type="text"
+          name="tags"
+          [(ngModel)]="tagsInput"
+          (keyup.enter)="addTag()"
+          placeholder="Appuyez sur Entrée pour ajouter un tag" />
+        <div class="tag-list">
+          <span *ngFor="let t of model.tags" class="tag">
+            {{ t }}
+            <button type="button" (click)="removeTag(t)">×</button>
+          </span>
+        </div>
+      </label>
+    </div>
+
+    <!-- Localisation -->
+    <div class="form-grid">
+      <label>
+        Allée
+        <select name="allee" [(ngModel)]="model.allee" (change)="updateRayons()">
+          <option *ngFor="let a of allees" [value]="a">{{ a }}</option>
+        </select>
+      </label>
+      <label>
+        Rayon
+        <select name="rayon" [(ngModel)]="model.rayon" (change)="updateEtagères()">
+          <option *ngFor="let r of rayons" [value]="r">{{ r }}</option>
+        </select>
+      </label>
+      <label>
+        Étagère
+        <select name="etagere" [(ngModel)]="model.etagere">
+          <option *ngFor="let e of etageres" [value]="e">{{ e }}</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- Bouton submit -->
+    <div class="form-actions">
+      <button type="submit" class="styled-button">Ajouter le livre</button>
+    </div>
+  </form>
+</div>

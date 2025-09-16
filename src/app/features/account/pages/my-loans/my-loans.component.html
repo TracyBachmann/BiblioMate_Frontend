@@ -1,0 +1,65 @@
+<div class="loans-page">
+
+  <!-- HERO -->
+  <header class="loans-hero">
+    <img
+      ngSrc="assets/images/loans-background.png"
+      width="1920" height="350" alt="Mes emprunts"
+      class="hero-bg" fetchpriority="high" />
+
+    <div class="page-gutter hero-inner">
+      <app-section-title class="hero-title" [title]="'Mes emprunts'"></app-section-title>
+
+      <div class="searchbar-pill">
+        <input
+          type="search"
+          placeholder="Rechercher dans mes emprunts..."
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+          (keyup.enter)="search()" />
+
+        <button type="button" class="icon-btn" aria-label="Rechercher" (click)="search()">
+          <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
+        </button>
+
+        <label class="adv-toggle">
+          <span>Recherche avancée</span>
+          <input type="checkbox" [checked]="advanced()" (change)="advanced.set($any($event.target).checked)" />
+          <i aria-hidden="true"></i>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- LISTE DES EMPRUNTS -->
+  <section class="section-block page-gutter">
+    <div class="meta">
+      <span>Total : {{ loans().length }}</span>
+    </div>
+
+    <ng-template [ngIf]="loans().length === 0" [ngIfElse]="listTpl">
+      <div class="empty-state">
+        <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
+        <h3>Aucun emprunt en cours</h3>
+        <p>Vos livres empruntés apparaîtront ici.</p>
+      </div>
+    </ng-template>
+
+    <ng-template #listTpl>
+      <div class="cards-grid">
+        <app-book-card
+          *ngFor="let l of loans()"
+          [title]="l.title"
+          [image]="l.coverUrl"
+          [description]="l.description"
+          [loanDate]="l.loanDate"
+          [returnDate]="l.returnDate"
+          [extendable]="true"
+          [extendLabel]="'Prolonger l\'emprunt'"
+          [loanId]="l.id"
+          [extendFn]="extend">
+        </app-book-card>
+      </div>
+    </ng-template>
+  </section>
+</div>

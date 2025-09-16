@@ -1,0 +1,130 @@
+.book-creation-page {
+  color: #1f2937;
+  font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: clamp(24px, 4vw, 40px);
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .back-link {
+      font-size: 16px;
+      color: #0e5aa6;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  form.book-form {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vw, 32px);
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+
+      label {
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+        font-weight: 500;
+        color: #374151;
+
+        input,
+        textarea,
+        select {
+          margin-top: 6px;
+          padding: .65rem .9rem;
+          border: 2px solid #04446B;
+          border-radius: 10px;
+          font-size: 16px;
+          font-weight: 400;
+          color: #111827;
+          background: #fff;
+
+          &:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(4, 68, 107, .2);
+          }
+        }
+
+        textarea {
+          resize: vertical;
+        }
+      }
+
+      &.wide {
+        grid-column: span 2;
+      }
+    }
+
+    .cover-preview {
+      margin-top: 10px;
+      max-width: 180px;
+
+      img {
+        display: block;
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      }
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+
+      .tag {
+        background: #e0f2fe;
+        border: 1px solid #0ea5e9;
+        border-radius: 16px;
+        padding: 4px 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        button {
+          background: none;
+          border: none;
+          color: #0f172a;
+          cursor: pointer;
+          font-size: 16px;
+          line-height: 1;
+          padding: 0;
+
+          &:hover {
+            color: #dc2626;
+          }
+        }
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    form.book-form .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
