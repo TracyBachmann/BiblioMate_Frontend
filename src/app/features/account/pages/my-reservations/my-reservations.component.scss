@@ -1,4 +1,4 @@
-@use '../../catalog/catalog-page/catalog-page.component.scss' as catalog;
+@use '../../../catalog/pages/catalog-page/catalog-page.component.scss' as catalog;
 
 .reservations-page {
   @extend .catalog-page;

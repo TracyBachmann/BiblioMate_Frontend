@@ -55,7 +55,7 @@ export class BookCreationComponent {
     this.etageres = [];
   }
 
-  updateEtagères() {
+  updateEtageres() {
     // TODO: charger dynamiquement selon rayon
     this.etageres = ['Étagère 1', 'Étagère 2', 'Étagère 3'];
   }

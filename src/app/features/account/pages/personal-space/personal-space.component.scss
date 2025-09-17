@@ -40,7 +40,7 @@
 
   h1 {
     margin: 0 0 6px;
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 700;
     color: #111827;
     line-height: 1.2;
@@ -60,15 +60,14 @@
   gap: clamp(20px, 3vw, 40px);
   align-items: stretch;
   justify-items: stretch;
-  // Hauteur encore plus importante
-  min-height: 700px;
+  min-height: 500px;
   width: 100%;
+  padding-bottom: 10p
 }
 
 @media (max-width: 1024px) {
   .action-grid {
-    grid-template-columns: repeat(2, 1fr);
-    min-height: 600px;
+    min-height: 500px;
   }
 }
 

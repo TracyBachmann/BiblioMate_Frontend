@@ -48,7 +48,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   loanDue = signal<Date | null>(null);
 
   // toast
-  toast = signal<{type:'success'|'error'|'info', message:string} | null>(null);
+  toast = signal<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
   private sub?: Subscription;
 
@@ -75,7 +75,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
         this.notFound.set(!b);
         this.loading.set(false);
         this.refreshReservationFlag();
-        this.refreshActiveLoanFlag(); // 👈 récupère l’info depuis le back
+        this.refreshActiveLoanFlag(); // récupère l’info depuis le back (si le service l’expose)
       },
       error: err => {
         console.error('Book load error', err);
@@ -98,14 +98,15 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     if (!b || !this.auth.isAuthenticated()) { this.hasActiveLoan.set(false); this.loanDue.set(null); return; }
     const bookId = Number(b?.bookId ?? b?.id);
     if (!Number.isFinite(bookId)) return;
-    this.loans.hasActiveForCurrentUser(bookId).subscribe({
+    // Méthode côté service : `hasActiveForCurrentUser(bookId)` => { hasActive: boolean; dueDate?: string }
+    this.loans.hasActiveForCurrentUser?.(bookId).subscribe({
       next: r => {
         const active = !!r?.hasActive;
         this.hasActiveLoan.set(active);
         this.loanDue.set(active && r?.dueDate ? new Date(r.dueDate) : null);
       },
       error: () => {
-        // en cas d'erreur, ne bloque pas l’UI, on considère "pas d’emprunt actif"
+        // en cas d'erreur, ne bloque pas l’UI
         this.hasActiveLoan.set(false);
         this.loanDue.set(null);
       }
@@ -188,6 +189,35 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     catch { prompt('Copier le lien :', url); }
   }
 
+  // ======== mini traducteur de secours (regex tolérantes) ========
+  private translateMessage(input?: string | null): string {
+    const msg = (input ?? '').toString().trim();
+    if (!msg) return '';
+
+    const table: Array<[RegExp, ((...m: string[]) => string) | string]> = [
+      // prêts
+      [/maximum\s+active\s+loans?\s*\((\d+)\)\s*reached/i, (_all, n) => `Nombre maximum d’emprunts actifs (${n}) atteint.`],
+      [/existing\s+active\s+loan/i, 'Vous avez déjà un emprunt actif pour ce livre.'],
+      [/book\s+unavailable|no\s+copies?\s+available|no\s+copy\s+available/i, 'Aucun exemplaire disponible.'],
+      [/invalid\s+user|user\s+mismatch/i, 'Utilisateur invalide.'],
+      [/user\s+not\s+found/i, 'Utilisateur introuvable.'],
+
+      // réservations
+      [/existing\s+active\s+reservation/i, 'Vous avez déjà une réservation active pour ce livre.'],
+
+      // génériques backend/dev
+      [/internal\s*error|internalerror/i, 'Erreur interne. Veuillez réessayer plus tard.'],
+      [/forbidden/i, 'Action non autorisée.'],
+      [/unauthori[sz]ed/i, 'Authentification requise.']
+    ];
+
+    for (const [re, out] of table) {
+      const m = msg.match(re);
+      if (m) return typeof out === 'string' ? out : out(...m);
+    }
+    return msg; // à défaut, on affiche le message original
+  }
+
   private showToast(message: string, type: 'success'|'error'|'info' = 'success') {
     this.toast.set({ type, message });
     setTimeout(() => { if (this.toast()?.message === message) this.toast.set(null); }, 4000);
@@ -225,11 +255,18 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
       error: (err: HttpErrorResponse) => {
         console.error('Loan error', err);
         this.borrowing.set(false);
-        if (err.status === 401) this.showToast('Connectez-vous pour emprunter ce livre.', 'error');
-        else if (err.status === 403) this.showToast('Vous n’êtes pas autorisé à emprunter ce livre.', 'error');
-        else if (typeof err.error?.error === 'string') this.showToast(err.error.error, 'error');
-        else if (typeof err.error?.details === 'string') this.showToast(err.error.details, 'error');
-        else this.showToast('Impossible d’emprunter ce livre pour le moment.', 'error');
+
+        // Codes prioritaires
+        if (err.status === 401) { this.showToast('Connectez-vous pour emprunter ce livre.', 'error'); return; }
+        if (err.status === 403) { this.showToast('Vous n’êtes pas autorisé à emprunter ce livre.', 'error'); return; }
+
+        // Messages renvoyés par le backend (error/details) -> traducteur
+        const raw =
+          (typeof err.error?.error === 'string' && err.error.error) ||
+          (typeof err.error?.details === 'string' && err.error.details) ||
+          err.message;
+        const fr = this.translateMessage(raw) || 'Impossible d’emprunter ce livre pour le moment.';
+        this.showToast(fr, 'error');
       }
     });
   }
@@ -252,11 +289,18 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
       error: (err: HttpErrorResponse) => {
         console.error('Reservation error', err);
         this.reserving.set(false);
-        if (err.status === 401) this.showToast('Connectez-vous pour réserver ce livre.', 'error');
-        else if (err.status === 403) this.showToast('Action non autorisée.', 'error');
-        else if (typeof err.error?.error === 'string') this.showToast(err.error.error, 'error');
-        else this.showToast('Impossible de créer la réservation pour le moment.', 'error');
+
+        if (err.status === 401) { this.showToast('Connectez-vous pour réserver ce livre.', 'error'); return; }
+        if (err.status === 403) { this.showToast('Action non autorisée.', 'error'); return; }
+
+        const raw =
+          (typeof err.error?.error === 'string' && err.error.error) ||
+          (typeof err.error?.details === 'string' && err.error.details) ||
+          err.message;
+        const fr = this.translateMessage(raw) || 'Impossible de créer la réservation pour le moment.';
+        this.showToast(fr, 'error');
       }
     });
   }
 }
+

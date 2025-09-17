@@ -1,4 +1,4 @@
-@use '../../catalog/pages/catalog-page/catalog-page.component.scss' as catalog;
+@use '../../../catalog/pages/catalog-page/catalog-page.component.scss' as catalog;
 
 .catalog-management-page {
   @extend .catalog-page;

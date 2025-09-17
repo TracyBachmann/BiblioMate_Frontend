@@ -51,12 +51,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/account/pages/my-loans/my-loans.component')
             .then(m => m.MyLoansComponent)
-      },
-      {
-        path: 'gestion-emprunts-reservations',
-        loadComponent: () =>
-          import('./features//management/loans-reservation-management/loans-reservation-management.component')
-            .then(m => m.LoansReservationManagementComponent)
       }
     ]
   },
