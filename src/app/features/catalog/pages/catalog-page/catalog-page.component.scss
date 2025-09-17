@@ -190,7 +190,6 @@
       grid-column: span 6;
       display: flex; align-items: center; gap: 10px;
       background: #fff;
-      border: 2px solid #04446B;
       padding: .65rem .9rem;
       border-radius: 10px;
       font-size: 16px;
@@ -200,10 +199,18 @@
   }
 
   .action-row {
-    display: flex; gap: 10px;
+    display: flex;
     justify-content: flex-end;
     margin-top: 12px;
     flex-wrap: wrap;
+    gap: 10px;
+
+    .empty-state .actions {
+      display: flex;
+      gap: 10px;        /* espace horizontal entre les boutons */
+      justify-content: center; /* ou flex-start si tu veux les aligner à gauche */
+      flex-wrap: wrap;  /* permet de passer à la ligne sur mobile */
+    }
   }
 }
 
@@ -454,4 +461,10 @@ app-book-card { display: block; }
 /* 3) Même traitement quand on affiche l'empty state. */
 .section-block .empty-state {
   margin-bottom: clamp(32px, 6vw, 96px);
+}
+
+.section-block .empty-state .actions {
+  display: flex;
+  gap: 10px;          /* spacing between the two buttons */
+  flex-wrap: wrap;
 }

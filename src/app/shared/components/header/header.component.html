@@ -9,8 +9,15 @@
       [attr.aria-expanded]="isMenuOpen">
       <img ngSrc="assets/images/icon-menu.svg" alt="Menu" width="60" height="60" />
     </button>
-
-    <img class="header__logo" ngSrc="assets/images/logo.svg" alt="BiblioMate Logo" width="500" height="382" />
+    <a routerLink="/">
+      <img
+        class="header__logo"
+        ngSrc="assets/images/logo.svg"
+        alt="BiblioMate Logo"
+        width="500"
+        height="382"
+      />
+    </a>
   </div>
 
   <!-- Icônes -->
@@ -49,43 +56,92 @@
     </button>
 
     <nav>
-      <a #drawerFirstLink routerLink="/" (click)="closeMenu()" [class.active]="isActive('/')"
-         [attr.aria-current]="isActive('/') ? 'page' : null">Accueil</a>
+      <!-- Accueil -->
+      <a routerLink="/"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         (click)="closeMenu()"
+         aria-current="page">
+        Accueil
+      </a>
 
-      <a routerLink="/catalogue" (click)="closeMenu()" [class.active]="isActive('/catalogue')"
-         [attr.aria-current]="isActive('/catalogue') ? 'page' : null">Catalogue</a>
+      <!-- Catalogue -->
+      <a routerLink="/catalogue"
+         routerLinkActive="active"
+         (click)="closeMenu()">
+        Catalogue
+      </a>
 
       <!-- Non connecté -->
       <ng-container *ngIf="(auth.isAuthenticated$ | async) === false">
-        <a routerLink="/connexion" (click)="closeMenu()" [class.active]="isActive('/connexion')">Se connecter</a>
+        <a routerLink="/connexion"
+           routerLinkActive="active"
+           (click)="closeMenu()">
+          Se connecter
+        </a>
         <hr />
       </ng-container>
 
       <!-- Connecté -->
       <ng-container *ngIf="auth.isAuthenticated$ | async">
-        <a routerLink="/espace" (click)="closeMenu()" [class.active]="isActive('/espace')">
+        <a routerLink="/espace"
+           routerLinkActive="active"
+           (click)="closeMenu()">
           Espace personnel
         </a>
 
         <ng-container *ngIf="(auth.role$ | async) === 'Librarian'">
-          <a routerLink="/gestion" (click)="closeMenu()">Gestion</a>
+          <a routerLink="/gestion"
+             routerLinkActive="active"
+             (click)="closeMenu()">
+            Gestion
+          </a>
         </ng-container>
 
         <ng-container *ngIf="(auth.role$ | async) === 'Admin'">
-          <a routerLink="/admin" (click)="closeMenu()">Administration</a>
-          <a routerLink="/rapports" (click)="closeMenu()">Rapports</a>
+          <a routerLink="/admin"
+             routerLinkActive="active"
+             (click)="closeMenu()">
+            Administration
+          </a>
+          <a routerLink="/rapports"
+             routerLinkActive="active"
+             (click)="closeMenu()">
+            Rapports
+          </a>
         </ng-container>
 
         <a (click)="auth.logout()">Se déconnecter</a>
         <hr />
       </ng-container>
 
-      <a routerLink="/contact" (click)="closeMenu()">Contact</a>
-      <a routerLink="/a-propos" (click)="closeMenu()">À propos</a>
-      <a routerLink="/faq" (click)="closeMenu()">FAQ</a>
-      <a routerLink="/mentions-legales" (click)="closeMenu()">Mentions légales</a>
+      <!-- Autres pages -->
+      <a routerLink="/contact"
+         routerLinkActive="active"
+         (click)="closeMenu()">
+        Contact
+      </a>
+
+      <a routerLink="/a-propos"
+         routerLinkActive="active"
+         (click)="closeMenu()">
+        À propos
+      </a>
+
+      <a routerLink="/faq"
+         routerLinkActive="active"
+         (click)="closeMenu()">
+        FAQ
+      </a>
+
+      <a routerLink="/mentions-legales"
+         routerLinkActive="active"
+         (click)="closeMenu()">
+        Mentions légales
+      </a>
     </nav>
   </aside>
+
 
   <!-- ======= Tiroir RECHERCHE ======= -->
   <aside class="header__search" role="dialog" aria-modal="true"
@@ -124,6 +180,11 @@
       </div>
     </div>
 
+    <p class="search-hint page-gutter">
+      <img src="assets/images/alerte.svg" alt="" class="icon-alert" />
+      Vos recherches s’ouvriront dans le <a routerLink="/catalogue">catalogue.</a>
+    </p>
+
     <!-- Filtres avancés -->
     <form *ngIf="advanced()" class="filters page-gutter" (ngSubmit)="applyNow()">
       <div class="grid">
@@ -138,6 +199,7 @@
         </select>
         <input [ngModel]="filters().tags"      (ngModelChange)="onFilterChange('tags', $event)"      name="tags"      placeholder="Tags (séparés par des virgules)" />
         <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Éditeur" />
+        <input [ngModel]="filters().exclude"   (ngModelChange)="onFilterChange('exclude', $event)"   name="exclude"   placeholder="Exclure de la recherche..." />
         <label class="inline">
           <input type="checkbox"
                  [ngModel]="filters().availableNow"
@@ -145,7 +207,6 @@
                  name="availableNow" />
           Est disponible immédiatement
         </label>
-        <input [ngModel]="filters().exclude"   (ngModelChange)="onFilterChange('exclude', $event)"   name="exclude"   placeholder="Exclure de la recherche..." />
       </div>
 
       <div class="action-row">

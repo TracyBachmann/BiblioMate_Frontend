@@ -289,7 +289,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
     border: 2px solid #04446B;
     border-radius: 999px;
     padding: 10px 14px; /* +haute */
-    box-shadow: 0 10px 28px rgba(0,0,0,.12);
 
     input[type="search"] {
       width: 100%;
@@ -337,8 +336,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
     &.secondary { background: transparent; color: #0e5aa6; border-color: #0e5aa6; &:hover { background: rgba(14,90,166,.08); } }
   }
 
-  /* ===== Filtres : 2 colonnes (PC/tablette) puis 1 mobile,
-           + plus de “respiration” verticale ===== */
   .filters {
     margin-top: clamp(18px, 3vh, 32px);
 
@@ -349,50 +346,143 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
       row-gap: clamp(16px, 2.4vh, 24px);   /* GAP VERTICAL ↑ */
       align-items: stretch;
 
-      /* 2 par ligne => span 6 ; champs plus hauts */
-      input, select {
+      /* Champs texte & select */
+      input,
+      select {
         grid-column: span 6;
         width: 100%;
-        padding: .9rem 1rem;                /* HAUTEUR ↑ */
+        height: 48px;                   /* hauteur uniforme */
+        box-sizing: border-box;
+        padding: 0 1rem;                /* contenu centré verticalement */
         background: #fff;
         border: 2px solid #04446B;
         border-radius: 10px;
-        font-size: 16px; color: #111827; min-width: 0;
-        &::placeholder { color: #6b7280; font-weight: 300; }
-        &:focus { outline: none; box-shadow: 0 0 0 2px rgba(4,68,107,.2); }
+        font-size: 16px;
+        color: #111827;
+        min-width: 0;
+
+        &::placeholder {
+          color: #6b7280;
+          font-weight: 300;
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(4, 68, 107, .2);
+        }
       }
 
-      select.is-empty, input[type="date"].is-empty { font-weight: 300; color: #6b7280; }
+      /* Style spécifique pour le select */
+      select {
+        appearance: none; /* supprime le rendu natif */
+        padding-right: 2rem; /* espace pour la flèche */
+        background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2304446B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>")
+        no-repeat right 12px center;
+        background-size: 16px auto;
+      }
 
-      /* case à cocher sur une demi-ligne (garde le rythme 2 colonnes) */
+      select.is-empty,
+      input[type="date"].is-empty {
+        font-weight: 300;
+        color: #6b7280;
+      }
+
+      /* case à cocher sur une demi-ligne */
       label.inline {
         grid-column: span 6;
-        display: flex; align-items: center; gap: 10px;
-        background: #fff; border: 2px solid #04446B;
-        padding: .9rem 1rem;                /* HAUTEUR ↑ */
-        border-radius: 10px; font-size: 16px;
-        input[type="checkbox"] { width: 18px; height: 18px; }
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 48px;                   /* même hauteur */
+        background: #fff;
+        color: #111827;
+        border-radius: 10px;
+        font-size: 16px;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+        }
       }
 
       /* Mobile : 1 colonne */
       @media (max-width: 640px) {
-        input, select, label.inline { grid-column: span 12; }
+        input,
+        select,
+        label.inline {
+          grid-column: span 12;
+        }
       }
     }
 
     .action-row {
-      display: flex; gap: 12px; justify-content: flex-end; margin-top: clamp(14px, 2vh, 22px); flex-wrap: wrap;
-      @media (max-width: 640px) { justify-content: stretch; .styled-button { flex: 1 1 auto; } }
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: clamp(14px, 2vh, 22px);
+      flex-wrap: wrap;
+
+      @media (max-width: 640px) {
+        justify-content: stretch;
+
+        .styled-button {
+          flex: 1 1 auto;
+        }
+      }
     }
+  }
+
+
+.header__search__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  background: transparent;   // plus de rond
+  border: none;              // plus de contour
+  border-radius: 0;          // plus de cercle
+
+  padding: 0;
+  cursor: pointer;
+  z-index: 5;
+
+  img {
+    width: 22px;
+    height: 22px;
+  }
+
+  &:hover {
+    opacity: 0.7; // petit feedback au survol
+  }
+}
+}
+
+.search-hint {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 300;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* espace entre l’icône et le texte */
+
+  .icon-alert {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  a {
+    color: #0e5aa6;
+    text-decoration: underline;
+    font-weight: 400;
   }
 }
 
-/* Croix du tiroir */
-.header__search__close {
-  position: absolute; top: 10px; right: 10px;
-  width: 44px; height: 44px; display: grid; place-items: center;
-  background: #ffffff; border: 2px solid #04446B; border-radius: 999px;
-  appearance: none; padding: 0; cursor: pointer; z-index: 5;
-  img { width: 22px; height: 22px; filter: none; }
-  &:hover { background: #f3f8ff; }
-}
+

@@ -55,11 +55,11 @@
       </select>
       <input [ngModel]="filters().tags" (ngModelChange)="onFilterChange('tags', $event)" name="tags" placeholder="Tags (séparés par des virgules)" />
       <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Éditeur" />
+      <input [ngModel]="filters().exclude" (ngModelChange)="onFilterChange('exclude', $event)" name="exclude" placeholder="Exclure de la recherche..." />
       <label class="inline">
         <input type="checkbox" [ngModel]="filters().availableNow" (ngModelChange)="onFilterChange('availableNow', $event)" name="availableNow" />
         Est disponible immédiatement
       </label>
-      <input [ngModel]="filters().exclude" (ngModelChange)="onFilterChange('exclude', $event)" name="exclude" placeholder="Exclure de la recherche..." />
     </div>
 
     <div class="action-row">

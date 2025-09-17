@@ -18,16 +18,13 @@ export class AuthService {
 
   readonly role$ = this.token$.pipe(map(t => this.readRole(t)));
 
-  /** Flux dérivés : prénom / nom / nom complet (sans fallback approximatif) */
+  /** Flux dérivés : prénom / nom / nom complet */
   readonly firstName$ = this.token$.pipe(map(t => this.readFirstName(t)));
   readonly lastName$  = this.token$.pipe(map(t => this.readLastName(t)));
   readonly displayName$ = combineLatest([this.firstName$, this.lastName$, this.token$]).pipe(
     map(([f, l, t]) => {
-      // si 'name' est fourni par le backend, on l'utilise tel quel
       const n = this.readName(t);
       if (typeof n === 'string' && n.trim()) return n.trim();
-
-      // sinon, concat given_name + family_name s'ils existent
       const parts = [f ?? '', l ?? ''].map(s => s.trim()).filter(Boolean);
       return parts.length ? parts.join(' ') : null;
     })
@@ -58,7 +55,6 @@ export class AuthService {
 
   // -------- login / logout
   login(token: string, remember = false): void {
-    // stockage selon "remember me"
     sessionStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.TOKEN_KEY);
 
@@ -72,19 +68,6 @@ export class AuthService {
 
     this._token$.next(token);
     this.scheduleAutoLogout(token);
-
-    // DEBUG (opt-in)
-    const DEBUG = false;
-    if (DEBUG) {
-      try {
-        const p = this.decodeJwt(token);
-        // eslint-disable-next-line no-console
-        console.groupCollapsed('%c[AuthService] JWT claims', 'color:#0E5AA6;font-weight:600;');
-        console.log(p);
-        console.log('given_name:', p?.given_name, 'family_name:', p?.family_name, 'name:', p?.name);
-        console.groupEnd();
-      } catch { /* ignore */ }
-    }
   }
 
   logout(): void {
@@ -137,7 +120,6 @@ export class AuthService {
     } catch { return null; }
   }
 
-  /** lit 'name' si fourni par le backend (pas d'inférence) */
   private readName(token: string | null): string | null {
     if (!token) return null;
     try {
@@ -150,14 +132,13 @@ export class AuthService {
     } catch { return null; }
   }
 
-  /** lit 'given_name' (ou équivalents standards) — pas de fallback heuristique */
   private readFirstName(token: string | null): string | null {
     if (!token) return null;
     try {
       const p = this.decodeJwt(token);
       const v =
         p['given_name'] ??
-        p['firstName'] ??               // si le backend envoie un custom
+        p['firstName'] ??
         p['firstname'] ??
         p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] ??
         null;
@@ -165,14 +146,13 @@ export class AuthService {
     } catch { return null; }
   }
 
-  /** lit 'family_name' (ou équivalents standards) — pas de fallback heuristique */
   private readLastName(token: string | null): string | null {
     if (!token) return null;
     try {
       const p = this.decodeJwt(token);
       const v =
         p['family_name'] ??
-        p['lastName'] ??                // si le backend envoie un custom
+        p['lastName'] ??
         p['lastname'] ??
         p['surname'] ??
         p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] ??

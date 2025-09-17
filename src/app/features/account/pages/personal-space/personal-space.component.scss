@@ -3,7 +3,7 @@
   padding-inline: clamp(16px, 3vw, 32px);
   margin-inline: auto;
   max-width: 1400px;
-  min-height: 90vh; // Réduit pour éviter que le footer sorte
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -62,7 +62,8 @@
   justify-items: stretch;
   min-height: 500px;
   width: 100%;
-  padding-bottom: 10p
+  padding-bottom: 10px;
+  max-width: 100%;
 }
 
 @media (max-width: 1024px) {

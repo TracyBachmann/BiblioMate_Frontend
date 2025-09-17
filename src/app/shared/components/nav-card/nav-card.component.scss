@@ -7,7 +7,7 @@
 /* Tuile haute */
 .nav-card {
   flex-direction: column;
-  min-height: 700px;           /* tuile bien grande */
+  min-height: 700px;
   height: 100%;
   overflow: hidden;
   background: #fff;
@@ -26,7 +26,6 @@
   width: 100%;
   overflow: hidden;
   background: #f3f4f6;
-  flex-shrink: 0;
 }
 .image-wrap img {
   width: 100%;
@@ -34,6 +33,8 @@
   object-position: center;
   display: block;
   transition: transform .25s ease;
+  border: 2px solid #8ECAE6;
+  border-top: 3px solid #8ECAE6;
 }
 .nav-card:hover .image-wrap img { transform: scale(1.03); }
 
@@ -47,8 +48,8 @@
   align-items: flex-start;     /* aligne à gauche */
   text-align: left;
   padding: 18px 16px;
-  background: #8ECAE6;         /* demandé */
-  color: #04446B;              /* demandé */
+  background: #8ECAE6;
+  color: #04446B;
   min-height: 120px;
 }
 

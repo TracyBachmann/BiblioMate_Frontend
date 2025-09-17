@@ -3,13 +3,16 @@
    ========================================================= */
 .book-details-page {
 
-  .page-gutter { padding-inline: clamp(30px, 7vw, 120px); }
+  .page-gutter {
+    padding-inline: clamp(30px, 7vw, 120px);
+    padding-top: clamp(24px, 4vh, 48px);
+  }
 
   .content {
     min-height: calc(100vh - 220px);
     display: grid;
     grid-auto-rows: min-content;
-    align-content: center;
+    align-content: start;
     row-gap: clamp(28px, 6vh, 72px);
   }
 
@@ -34,9 +37,13 @@
   }
 
   /* Couverture */
-  .left .cover { width: clamp(560px, 46vw, 820px); aspect-ratio: 600 / 375; margin: 0; }
+  .left .cover {
+    width: clamp(280px, 40vw, 550px); /* mini = 280px, max = 480px */
+    aspect-ratio: 600 / 375;
+    margin: 0 auto;
+  }
   .left .cover img {
-    display: block; width: 100%; height: 100%; object-fit: cover;
+    display: block; width: 100%; height: auto; max-width: 100%; object-fit: cover;
     border: 2px solid #04446B; border-radius: 12px; background: #f3f6fb;
   }
 
@@ -128,7 +135,7 @@
   .description p { margin: 0; }
 
   .props--loc {
-    display: grid; grid-template-columns: repeat(4, max-content);
+     display: grid; grid-template-columns: repeat(4, max-content);
     justify-content: space-between; column-gap: clamp(24px, 5vw, 72px); white-space: nowrap;
   }
   .props--loc > div { display: grid; grid-template-columns: max-content 1fr; column-gap: 10px; }
@@ -178,7 +185,7 @@
   @media (max-width: 1024px) {
     .page-gutter { padding-inline: clamp(20px, 6vw, 60px); }
     .grid { column-gap: clamp(20px, 4vw, 40px); }
-    .left .cover { width: clamp(520px, 60vw, 575px); }
+    .left .cover { width: clamp(500px, 60vw, 555px); }
   }
   @media (max-width: 700px) {
     .content { min-height: auto; align-content: start; }
@@ -206,6 +213,7 @@
   .share-btn:focus-visible { outline: 0; box-shadow: 0 0 0 3px rgba(14,90,166,.25); }
   .share-btn img { display: block; width: 24px; height: 24px; }
   .share-btn.copy img { filter: brightness(0) invert(1); }
+  overflow-x: hidden;
   @media (max-width: 640px) { .share-dialog { width: min(520px, 96vw); } .share-grid { grid-template-columns: 1fr 1fr; } }
 }
 
