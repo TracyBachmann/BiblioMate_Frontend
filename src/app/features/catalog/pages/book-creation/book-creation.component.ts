@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SectionTitleComponent } from '../../../../shared/components/section-title/section-title.component';
 
 import { BookService } from '../../../../core/services/book.service';
 
 @Component({
   standalone: true,
   selector: 'app-book-creation',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SectionTitleComponent],
   templateUrl: './book-creation.component.html',
   styleUrls: ['./book-creation.component.scss']
 })
@@ -22,11 +23,15 @@ export class BookCreationComponent {
     publicationDate: '',
     genres: [] as string[],
     tags: [] as string[],
+    etage: '',
     allee: '',
     rayon: '',
     etagere: '',
     coverFile: null as File | null,
   };
+
+  etages = ['Rez-de-chaussée', '1er étage', '2ème étage']; // TODO: charger dynamiquement
+
 
   tagsInput = '';
   coverPreview: string | null = null;

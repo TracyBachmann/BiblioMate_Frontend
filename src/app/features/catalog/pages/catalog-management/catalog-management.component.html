@@ -10,11 +10,19 @@
     <div class="page-gutter hero-inner">
       <app-section-title class="hero-title" [title]="'Gestion du catalogue'"></app-section-title>
 
+      <!-- Actions admin -->
       <div class="action-row">
         <button class="styled-button" (click)="createBook()">Ajouter un livre</button>
-        <button class="styled-button secondary" (click)="importCSV()">Importation CSV</button>
+        <button class="styled-button csv-btn" type="button" (click)="fileInput.click()">Importation CSV</button>
+        <input
+          #fileInput
+          type="file"
+          accept=".csv"
+          (change)="onCSVSelected($event)"
+          hidden
+        />
+        <button class="styled-button csv-btn" type="button" (click)="exportCSV()">Exportation CSV</button>
       </div>
-
       <!-- Barre de recherche -->
       <div class="searchbar-pill">
         <input
@@ -37,6 +45,31 @@
     </div>
   </header>
 
+  <!-- Filtres avancés -->
+  <form *ngIf="advanced()" class="filters page-gutter" (ngSubmit)="search()">
+    <div class="grid">
+      <input [ngModel]="filters().isbn" (ngModelChange)="onFilterChange('isbn', $event)" name="isbn" placeholder="ISBN" />
+      <input [ngModel]="filters().author" (ngModelChange)="onFilterChange('author', $event)" name="author" placeholder="Auteur" />
+      <input [ngModel]="filters().date" (ngModelChange)="onFilterChange('date', $event)" name="date" type="date" placeholder="Date de publication" />
+      <select [ngModel]="filters().genre" (ngModelChange)="onFilterChange('genre', $event)" name="genre">
+        <option value="" disabled selected hidden>Genre</option>
+        <option *ngFor="let g of genres()">{{ g }}</option>
+      </select>
+      <input [ngModel]="filters().tags" (ngModelChange)="onFilterChange('tags', $event)" name="tags" placeholder="Tags (séparés par des virgules)" />
+      <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Éditeur" />
+      <label class="inline">
+        <input type="checkbox" [ngModel]="filters().availableNow" (ngModelChange)="onFilterChange('availableNow', $event)" name="availableNow" />
+        Est disponible immédiatement
+      </label>
+      <input [ngModel]="filters().exclude" (ngModelChange)="onFilterChange('exclude', $event)" name="exclude" placeholder="Exclure de la recherche..." />
+    </div>
+
+    <div class="action-row">
+      <button type="button" class="styled-button secondary" (click)="resetFilters()">Réinitialiser</button>
+      <button type="submit" class="styled-button">Rechercher</button>
+    </div>
+  </form>
+
   <!-- Résultats -->
   <section class="section-block page-gutter">
     <div class="meta">
@@ -51,6 +84,25 @@
       </div>
     </ng-template>
 
-    
+    <div class="cards-grid" *ngIf="results().length > 0">
+      <app-book-card
+        *ngFor="let b of pagedResults()"
+        [title]="b.title"
+        [image]="b.coverUrl"
+        [description]="b.description"
+        [status]="bookStatus(b)"
+        [bookId]="b.id">
+      </app-book-card>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages().length > 1">
+      <button (click)="prevPage()" [disabled]="pageIndex() === 0">‹</button>
+      <button *ngFor="let i of totalPages()" [class.is-active]="i === pageIndex()" (click)="goToPage(i)">
+        {{ i + 1 }}
+      </button>
+      <button (click)="nextPage()" [disabled]="pageIndex() === totalPages().length - 1">›</button>
+    </div>
   </section>
 </div>
+

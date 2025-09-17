@@ -1,29 +1,17 @@
+@use '../../../catalog/pages/catalog-page/catalog-page.component.scss' as catalog;
+
 .book-creation-page {
-  color: #1f2937;
-  font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  @extend .catalog-page;
 
-  .form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: clamp(24px, 4vw, 40px);
+  .back-link {
+    display: inline-block;
+    margin-top: -12px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #0e5aa6;
+    text-decoration: none;
 
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #0f172a;
-      margin: 0;
-    }
-
-    .back-link {
-      font-size: 16px;
-      color: #0e5aa6;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+    &:hover { text-decoration: underline; }
   }
 
   form.book-form {
@@ -36,17 +24,20 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 16px;
 
-      label {
+      .form-field {
         display: flex;
         flex-direction: column;
-        font-size: 16px;
-        font-weight: 500;
-        color: #374151;
+
+        label {
+          font-size: 16px;
+          font-weight: 500;
+          margin-bottom: 6px;
+          color: #374151;
+        }
 
         input,
         textarea,
         select {
-          margin-top: 6px;
           padding: .65rem .9rem;
           border: 2px solid #04446B;
           border-radius: 10px;
@@ -61,28 +52,82 @@
           }
         }
 
-        textarea {
-          resize: vertical;
-        }
+        textarea { resize: vertical; }
       }
 
-      &.wide {
-        grid-column: span 2;
+      .wide { grid-column: span 2; }
+    }
+
+    /* --- Ligne spéciale : titre + couverture + description --- */
+    .cover-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 2fr;
+      gap: 16px;
+      align-items: stretch;
+
+      .title-col {
+        grid-column: 1 / 4; /* le titre prend toute la largeur */
+      }
+
+      .cover-col {
+        grid-column: 1 / 2;
+        grid-row: 2;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .description-col {
+        grid-column: 2 / 4;
+        grid-row: 2;
       }
     }
 
-    .cover-preview {
-      margin-top: 10px;
-      max-width: 180px;
+    /* Dropzone couverture */
+    .cover-dropzone {
+      border: 2px dashed #0e5aa6;
+      border-radius: 12px;
+      flex: 1;
+      padding: 1rem;
+      text-align: center;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: background .2s ease;
+      flex-direction: column;
+      justify-content: center;
+
+      &:hover { background: #f1f5f9; }
+
+      p {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      small {
+        display: block;
+        font-size: 12px;
+        color: #6b7280;
+      }
 
       img {
-        display: block;
-        width: 100%;
+        max-width: 100%;
         border-radius: 8px;
-        border: 1px solid #e5e7eb;
+        display: block;
+        margin: 0 auto .5rem;
+      }
+
+      .tiny {
+        margin-top: .25rem;
+        height: 32px;
+        padding: 0 .75rem;
+        border-radius: 8px;
+        border: 1px solid #0e5aa6;
+        background: #fff;
+        cursor: pointer;
       }
     }
 
+    /* Tags */
     .tag-list {
       display: flex;
       flex-wrap: wrap;
@@ -108,20 +153,33 @@
           line-height: 1;
           padding: 0;
 
-          &:hover {
-            color: #dc2626;
-          }
+          &:hover { color: #dc2626; }
         }
       }
     }
 
+    /* Boutons */
     .form-actions {
       display: flex;
       justify-content: flex-end;
     }
   }
 
-  /* Responsive */
+  /* --- Responsive --- */
+  @media (max-width: 1024px) {
+    form.book-form .cover-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+
+      .title-col,
+      .cover-col,
+      .description-col {
+        grid-column: 1;
+        grid-row: auto;
+      }
+    }
+  }
+
   @media (max-width: 768px) {
     form.book-form .form-grid {
       grid-template-columns: 1fr;

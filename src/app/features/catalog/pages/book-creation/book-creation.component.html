@@ -1,68 +1,87 @@
-<div class="book-creation-page page-gutter">
+<div class="book-creation-page page-gutter section-block">
 
-  <header class="form-header">
-    <h1>Ajout d’un livre au catalogue</h1>
-    <a routerLink="/catalogue/management" class="back-link">← Retourner sur le catalogue</a>
-  </header>
+  <!-- Section title -->
+  <app-section-title [title]="'Ajout d’un livre au catalogue'"></app-section-title>
+  <a routerLink="/catalogue/management" class="back-link">← Retourner sur le catalogue</a>
 
   <form class="book-form" (ngSubmit)="onSubmit()" #f="ngForm">
 
-    <!-- Titre & description -->
-    <div class="form-grid">
-      <label>
-        Titre du livre
-        <input type="text" name="title" [(ngModel)]="model.title" required />
-      </label>
+    <!-- Titre + couverture + description -->
+    <div class="form-grid cover-row">
+      <!-- Titre -->
+      <div class="form-field title-col">
+        <label for="title">Titre du livre</label>
+        <input id="title" type="text" name="title" [(ngModel)]="model.title" required />
+      </div>
 
-      <label class="wide">
-        Description
-        <textarea name="description" [(ngModel)]="model.description" rows="4"></textarea>
-      </label>
-    </div>
-
-    <!-- Couverture -->
-    <div class="form-grid">
-      <label class="wide">
-        Affiche de couverture
-        <input type="file" (change)="onCoverSelected($event)" accept="image/*" />
-        <div class="cover-preview" *ngIf="coverPreview">
-          <img [src]="coverPreview" alt="Prévisualisation" />
+      <!-- Couverture -->
+      <div class="form-field cover-col">
+        <label for="cover">Affiche de couverture</label>
+        <div class="cover-dropzone" (click)="fileInput.click()">
+          <input
+            #fileInput
+            type="file"
+            id="cover"
+            (change)="onCoverSelected($event)"
+            accept="image/*"
+            hidden />
+          <ng-container *ngIf="!coverPreview">
+            <p>Cliquez pour choisir un fichier ou glissez-le ici</p>
+            <small>PNG / JPG • &lt; 5 Mo</small>
+          </ng-container>
+          <ng-container *ngIf="coverPreview as url">
+            <img [src]="url" alt="Prévisualisation" />
+            <button type="button" class="tiny" (click)="coverPreview=null; model.coverFile=null">Retirer</button>
+          </ng-container>
         </div>
-      </label>
+      </div>
+
+      <!-- Description -->
+      <div class="form-field description-col">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" [(ngModel)]="model.description" rows="10"></textarea>
+      </div>
     </div>
 
-    <!-- Métadonnées -->
+    <!-- Auteur / Éditeur -->
     <div class="form-grid">
-      <label>
-        Auteur
-        <input type="text" name="author" [(ngModel)]="model.author" />
-      </label>
-      <label>
-        Éditeur
-        <input type="text" name="publisher" [(ngModel)]="model.publisher" />
-      </label>
-      <label>
-        ISBN
-        <input type="text" name="isbn" [(ngModel)]="model.isbn" />
-      </label>
-      <label>
-        Date de publication
-        <input type="date" name="publicationDate" [(ngModel)]="model.publicationDate" />
-      </label>
+      <div class="form-field">
+        <label for="author">Auteur</label>
+        <input id="author" type="text" name="author" [(ngModel)]="model.author" />
+      </div>
+
+      <div class="form-field">
+        <label for="publisher">Éditeur</label>
+        <input id="publisher" type="text" name="publisher" [(ngModel)]="model.publisher" />
+      </div>
     </div>
 
-    <!-- Genres et tags -->
+    <!-- ISBN / Date -->
     <div class="form-grid">
-      <label class="wide">
-        Genres
-        <select multiple name="genres" [(ngModel)]="model.genres">
+      <div class="form-field">
+        <label for="isbn">ISBN</label>
+        <input id="isbn" type="text" name="isbn" [(ngModel)]="model.isbn" />
+      </div>
+
+      <div class="form-field">
+        <label for="publicationDate">Date de publication</label>
+        <input id="publicationDate" type="date" name="publicationDate" [(ngModel)]="model.publicationDate" />
+      </div>
+    </div>
+
+    <!-- Genres / Tags -->
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="genres">Genres</label>
+        <select id="genres" multiple name="genres" [(ngModel)]="model.genres">
           <option *ngFor="let g of availableGenres" [value]="g">{{ g }}</option>
         </select>
-      </label>
+      </div>
 
-      <label class="wide">
-        Tags
+      <div class="form-field">
+        <label for="tags">Tags</label>
         <input
+          id="tags"
           type="text"
           name="tags"
           [(ngModel)]="tagsInput"
@@ -74,29 +93,38 @@
             <button type="button" (click)="removeTag(t)">×</button>
           </span>
         </div>
-      </label>
+      </div>
     </div>
 
     <!-- Localisation -->
     <div class="form-grid">
-      <label>
-        Allée
-        <select name="allee" [(ngModel)]="model.allee" (change)="updateRayons()">
+      <div class="form-field">
+        <label for="etage">Étage</label>
+        <select id="etage" name="etage" [(ngModel)]="model.etage">
+          <option *ngFor="let et of etages" [value]="et">{{ et }}</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="allee">Allée</label>
+        <select id="allee" name="allee" [(ngModel)]="model.allee" (change)="updateRayons()">
           <option *ngFor="let a of allees" [value]="a">{{ a }}</option>
         </select>
-      </label>
-      <label>
-        Rayon
-        <select name="rayon" [(ngModel)]="model.rayon" (change)="updateEtageres()">
+      </div>
+
+      <div class="form-field">
+        <label for="rayon">Rayon</label>
+        <select id="rayon" name="rayon" [(ngModel)]="model.rayon" (change)="updateEtageres()">
           <option *ngFor="let r of rayons" [value]="r">{{ r }}</option>
         </select>
-      </label>
-      <label>
-        Étagère
-        <select name="etagere" [(ngModel)]="model.etagere">
+      </div>
+
+      <div class="form-field">
+        <label for="etagere">Étagère</label>
+        <select id="etagere" name="etagere" [(ngModel)]="model.etagere">
           <option *ngFor="let e of etageres" [value]="e">{{ e }}</option>
         </select>
-      </label>
+      </div>
     </div>
 
     <!-- Bouton submit -->
@@ -105,3 +133,4 @@
     </div>
   </form>
 </div>
+

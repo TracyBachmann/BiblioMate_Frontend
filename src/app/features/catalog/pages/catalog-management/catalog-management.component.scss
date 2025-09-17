@@ -5,27 +5,14 @@
 
   .action-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
-    margin-bottom: 1rem;
-  }
+    margin-bottom: 1.5rem;
 
-  .admin-actions {
-    display: flex;
-    gap: .5rem;
-    margin-top: .5rem;
-
-    .icon-btn {
-      width: 32px;
-      height: 32px;
-      border: none;
-      border-radius: 6px;
-      background: #f3f4f6;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      transition: background .2s;
-      &:hover { background: #e5e7eb; }
-      img { display: block; }
+    .styled-button {
+      flex: 1 1 auto;
+      max-width: 240px;
+      text-align: center;
     }
   }
 
@@ -54,3 +41,34 @@
     }
   }
 }
+
+.catalog-management-page {
+  @extend .catalog-page;
+
+  .action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .styled-button {
+      flex: 1 1 auto;
+      max-width: 240px;
+      text-align: center;
+    }
+
+    .csv-btn {
+      background: #fff;            // fond blanc
+      color: #0e5aa6;              // texte bleu
+      border: 2px solid #0e5aa6;   // bordure bleue
+
+      &:hover {
+        background: #f1f5f9;       // léger gris au survol
+      }
+      &:active {
+        background: #e2e8f0;       // un peu plus foncé au clic
+      }
+    }
+  }
+}
+
