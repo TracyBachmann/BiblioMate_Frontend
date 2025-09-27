@@ -1,27 +1,31 @@
-<div class="loans-page">
+<div class="loans-page catalog-page">
 
-  <!-- HERO -->
-  <header class="loans-hero">
+  <!-- HERO SECTION -->
+  <header class="catalog-hero">
+    <!-- Background image -->
     <img
-      ngSrc="assets/images/loans-background.png"
+      ngSrc="assets/images/catalog-background.png"
       width="1920" height="350" alt="Mes emprunts"
       class="hero-bg" fetchpriority="high" />
 
     <div class="page-gutter hero-inner">
+      <!-- Page title -->
       <app-section-title class="hero-title" [title]="'Mes emprunts'"></app-section-title>
 
+      <!-- Search bar with advanced toggle -->
       <div class="searchbar-pill">
         <input
           type="search"
           placeholder="Rechercher dans mes emprunts..."
           [ngModel]="query()"
-          (ngModelChange)="query.set($event)"
-          (keyup.enter)="search()" />
+          (ngModelChange)="onQueryChange($event)"
+          (keyup.enter)="applyFiltersNow()" />
 
-        <button type="button" class="icon-btn" aria-label="Rechercher" (click)="search()">
+        <button type="button" class="icon-btn" aria-label="Rechercher" (click)="applyFiltersNow()">
           <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
         </button>
 
+        <!-- Advanced search toggle -->
         <label class="adv-toggle">
           <span>Recherche avancée</span>
           <input type="checkbox" [checked]="advanced()" (change)="advanced.set($any($event.target).checked)" />
@@ -31,29 +35,133 @@
     </div>
   </header>
 
-  <!-- LISTE DES EMPRUNTS -->
-  <section class="section-block page-gutter">
-    <div class="meta">
-      <span>Total : {{ loans().length }}</span>
+  <!-- ADVANCED FILTERS -->
+  <form *ngIf="advanced()" class="filters page-gutter loans-filters" (ngSubmit)="applyFiltersNow()">
+    <div class="grid">
+      <!-- Sorting field -->
+      <div class="field">
+        <label for="sortBy">Tri</label>
+        <select id="sortBy" name="sortBy"
+                [ngModel]="filters().sortBy"
+                (ngModelChange)="onFilterChange('sortBy', $event)">
+          <option value="dueDate">Échéance</option>
+          <option value="loanDate">Date d’emprunt</option>
+          <option value="title">Titre</option>
+        </select>
+      </div>
+
+      <!-- Sorting direction -->
+      <div class="field">
+        <label for="sortDir">Ordre</label>
+        <select id="sortDir" name="sortDir"
+                [ngModel]="filters().sortDir"
+                (ngModelChange)="onFilterChange('sortDir', $event)">
+          <option value="asc">Ascendant</option>
+          <option value="desc">Descendant</option>
+        </select>
+      </div>
+
+      <!-- Loans due soon filter -->
+      <div class="field">
+        <label for="dueSoon">À rendre sous</label>
+        <div class="with-suffix">
+          <input id="dueSoon" type="number" min="1" inputmode="numeric" name="dueSoonDays"
+                 [ngModel]="filters().dueSoonDays ?? ''"
+                 (ngModelChange)="onFilterChange('dueSoonDays', toNumberOrNull($event))" />
+          <span class="suffix">jours</span>
+        </div>
+      </div>
+
+      <!-- Overdue only checkbox -->
+      <div class="field checkbox-field">
+        <label class="checkbox-label" for="overdueOnly">
+          <input type="checkbox" id="overdueOnly" name="overdueOnly"
+                 [ngModel]="filters().overdueOnly"
+                 (ngModelChange)="onFilterChange('overdueOnly', $event)" />
+          <span>En retard uniquement</span>
+        </label>
+      </div>
+
+      <!-- Loan period filters -->
+      <div class="field">
+        <label>Emprunté entre (Du)</label>
+        <input type="date" name="loanFrom"
+               [ngModel]="filters().loanFrom"
+               (ngModelChange)="onFilterChange('loanFrom', $event)" />
+      </div>
+
+      <div class="field">
+        <label>Emprunté entre (Au)</label>
+        <input type="date" name="loanTo"
+               [ngModel]="filters().loanTo"
+               (ngModelChange)="onFilterChange('loanTo', $event)" />
+      </div>
+
+      <!-- Due date period filters -->
+      <div class="field">
+        <label>Échéance entre (Du)</label>
+        <input type="date" name="dueFrom"
+               [ngModel]="filters().dueFrom"
+               (ngModelChange)="onFilterChange('dueFrom', $event)" />
+      </div>
+
+      <div class="field">
+        <label>Échéance entre (Au)</label>
+        <input type="date" name="dueTo"
+               [ngModel]="filters().dueTo"
+               (ngModelChange)="onFilterChange('dueTo', $event)" />
+      </div>
     </div>
 
+    <!-- Filter action buttons -->
+    <div class="action-row">
+      <button type="button" class="styled-button secondary" (click)="resetFilters()">Réinitialiser</button>
+      <button type="submit" class="styled-button">Appliquer</button>
+    </div>
+  </form>
+
+  <!-- LOANS LIST SECTION -->
+  <section class="section-block page-gutter" aria-live="polite">
+    <div class="meta">
+      <!-- Total number of loans -->
+      <span>Total : {{ loans().length }}</span>
+
+      <!-- View mode toggle -->
+      <div class="view-switch" role="tablist" aria-label="Changer l'affichage">
+        <button type="button" class="switch-btn"
+                [class.is-active]="viewMode() === 'grid'"
+                (click)="viewMode.set('grid')">Vue grille</button>
+        <button type="button" class="switch-btn"
+                [class.is-active]="viewMode() === 'list'"
+                (click)="viewMode.set('list')">Liste</button>
+      </div>
+    </div>
+
+    <!-- Empty state when no loans -->
     <ng-template [ngIf]="loans().length === 0" [ngIfElse]="listTpl">
       <div class="empty-state">
         <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
         <h3>Aucun emprunt en cours</h3>
         <p>Vos livres empruntés apparaîtront ici.</p>
+        <div class="actions">
+          <button type="button" class="styled-button secondary" (click)="resetFilters()">Réinitialiser</button>
+          <button type="button" class="styled-button" (click)="advanced.set(false)">Masquer les filtres</button>
+        </div>
       </div>
     </ng-template>
 
+    <!-- Loans grid/list -->
     <ng-template #listTpl>
-      <div class="cards-grid">
+      <div class="cards-grid" [class.is-list]="viewMode() === 'list'">
         <app-book-card
           *ngFor="let l of loans()"
+          [compact]="viewMode() === 'list'"
           [title]="l.title"
           [image]="l.coverUrl"
           [description]="l.description"
           [loanDate]="l.loanDate"
           [returnDate]="l.returnDate"
+          [bookId]="l.bookId"
           [extendable]="true"
           [extendLabel]="'Prolonger l\'emprunt'"
           [loanId]="l.id"
@@ -63,3 +171,4 @@
     </ng-template>
   </section>
 </div>
+

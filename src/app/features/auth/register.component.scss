@@ -1,6 +1,8 @@
 @use './login.component.scss' as *;
 
+/* Extend login form styles with additional registration-specific elements */
 .login-form {
+  /* Wrapper for Google button with extra spacing */
   .button-wrapper.alt-spacing {
     display: flex;
     flex-direction: column;
@@ -9,6 +11,7 @@
     width: 100%;
   }
 
+  /* Divider with horizontal lines and centered "OU" text */
   .divider {
     display: flex;
     align-items: center;
@@ -38,6 +41,7 @@
   }
 }
 
+/* Stepper navigation (large version) */
 .stepper.stepper-lg {
   display: flex;
   justify-content: center;
@@ -58,12 +62,14 @@
     background: transparent;
     transition: background .2s ease;
 
+    /* Active step highlight */
     &.active {
       background: #fbbc05;
       color: #000;
     }
   }
 
+  /* Separator line between steps */
   .sep {
     display: inline-block;
     width: 34px;
@@ -73,6 +79,7 @@
   }
 }
 
+/* Helper text under inputs */
 .hint {
   color: #f1f1f1;
   font-size: .8rem;
@@ -80,6 +87,7 @@
   opacity: .9;
 }
 
+/* Dropzone for avatar upload */
 .dropzone {
   background: #fff;
   border: 2px dashed #fbbc05;
@@ -95,6 +103,7 @@
     margin: 0 auto .5rem;
   }
 
+  /* Small remove button under preview */
   .tiny {
     margin-top: .25rem;
     height: 32px;
@@ -105,6 +114,7 @@
   }
 }
 
+/* Genre chips selector */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -117,18 +127,21 @@
     padding: .35rem .8rem;
     cursor: pointer;
 
+    /* Highlight selected genre */
     &.selected {
       background: #fdf5dc;
     }
   }
 }
 
+/* Navigation buttons (previous/next/submit) */
 .wizard-nav {
   display: flex;
   gap: .5rem;
   justify-content: center;
   margin-top: .75rem;
 
+  /* Secondary button (outlined style) */
   .secondary {
     background: transparent;
     color: #fff;

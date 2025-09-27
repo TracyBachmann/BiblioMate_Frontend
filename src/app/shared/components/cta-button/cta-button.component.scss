@@ -1,8 +1,16 @@
+/* ============================================================
+   CTA Button Styles
+   - Defines layout, typography, and responsiveness
+   - Supports color variants: yellow and blue
+   - Includes hover states and responsive scaling for icon & text
+   ============================================================ */
+
 .cta-button {
+  /* Base button layout */
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.5rem;                /* Spacing between icon and text */
   border: none;
   font-size: 22px;
   font-weight: 400;
@@ -15,21 +23,24 @@
   max-width: 500px;
   transition: background-color 0.3s ease, text-decoration 0.3s ease;
 
+  /* Icon inside button */
   img {
     width: 30px;
     height: 30px;
-    flex-shrink: 0;
+    flex-shrink: 0;           /* Prevent icon from shrinking */
   }
 
+  /* ===== Yellow variant ===== */
   &.yellow {
     background-color: #fbbc05;
 
     &:hover {
       background-color: #e2a903;
-      text-decoration: underline;
+      text-decoration: underline; /* Adds emphasis on hover */
     }
   }
 
+  /* ===== Blue variant ===== */
   &.blue {
     background-color: #004b87;
 
@@ -39,10 +50,14 @@
     }
   }
 
+  /* ===== Responsive breakpoints ===== */
+
+  /* Large screens (desktop) - increase max width */
   @media (min-width: 1024px) {
     max-width: 600px;
   }
 
+  /* Medium screens (tablets and small laptops) */
   @media (max-width: 750px) {
     height: 80px;
     font-size: 18px;
@@ -53,6 +68,7 @@
     }
   }
 
+  /* Small screens (mobile) */
   @media (max-width: 480px) {
     height: 70px;
     font-size: 16px;
@@ -64,3 +80,4 @@
     }
   }
 }
+

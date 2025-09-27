@@ -1,28 +1,68 @@
+<!--
+  ==============================================================================
+  Legal Mentions Article Template
+  ------------------------------------------------------------------------------
+  Purpose:
+  - Displays the legal mentions ("Mentions légales") of the site.
+  - Uses semantic HTML and Schema.org microdata for the organization.
+
+  Key Notes:
+  - Root element carries itemscope/itemtype=Organization to expose organization
+    metadata (name, address, telephone, email) to search engines and assistive
+    technologies that parse microdata.
+  - Visual layout and typography are provided by the `.legal` and `.page-gutter`
+    classes defined in the stylesheet.
+  - The section headers use <h3> within a contained <article>; the page-level
+    heading is handled by <app-section-title>.
+
+  Angular:
+  - <app-section-title> is a custom component; it receives `title` as an input.
+
+  Accessibility:
+  - Headings follow a consistent hierarchy.
+  - Links for email use `mailto:` and preserve the visible address.
+
+  Maintenance:
+  - Replace placeholder content (hosting provider, publication director, credits)
+    with actual data before going live.
+  - Keep microdata attributes (`itemprop`) aligned with Schema.org Organization.
+  ==============================================================================
+-->
+
 <article class="legal page-gutter" itemscope itemtype="https://schema.org/Organization">
   <header>
+    <!-- Page section title component (framework-provided UI heading) -->
     <app-section-title [title]="'Mentions légales'"></app-section-title>
   </header>
 
+  <!-- Organization identity and contact details exposed via microdata -->
   <section>
     <h3>Éditeur du site</h3>
+    <!-- Organization legal or public-facing name -->
     <p itemprop="name"><strong>Bibliothèque Montferrand</strong></p>
     <p>
+      <!-- Physical address of the organization; consider using PostalAddress for granularity if needed -->
       <span itemprop="address">12 rue des Érables, 63100 Montferrand</span><br />
+      <!-- Primary telephone number in a human-readable format -->
       <span>Tél. : <span itemprop="telephone">04 00 00 00 00</span></span><br />
+      <!-- Contact email; `mailto:` URI enables direct email clients -->
       <span>Email : <a itemprop="email" href="mailto:contact@bibliomate.fr">contact&#64;bibliomate.fr</a></span>
     </p>
   </section>
 
+  <!-- Hosting provider details (mandatory in many jurisdictions) -->
   <section>
     <h3>Hébergement</h3>
     <p>Hébergeur : À compléter (raison sociale, adresse, téléphone).</p>
   </section>
 
+  <!-- Publication director information (editorial responsibility) -->
   <section>
     <h3>Directeur / Directrice de la publication</h3>
     <p>À compléter.</p>
   </section>
 
+  <!-- Intellectual property notice for site content -->
   <section>
     <h3>Propriété intellectuelle</h3>
     <p>
@@ -31,6 +71,7 @@
     </p>
   </section>
 
+  <!-- Personal data processing and contact for data subjects' rights -->
   <section>
     <h3>Données personnelles</h3>
     <p>
@@ -39,11 +80,13 @@
     </p>
   </section>
 
+  <!-- Cookie usage disclosure; consider linking to a detailed policy if applicable -->
   <section>
     <h3>Cookies</h3>
     <p>Ce site utilise des cookies techniques nécessaires au fonctionnement. Les préférences peuvent être gérées depuis votre navigateur.</p>
   </section>
 
+  <!-- Asset credits and licensing; ensure all third-party licenses are respected -->
   <section>
     <h3>Crédits</h3>
     <p>Icones, photos et illustrations : préciser les crédits et licences.</p>

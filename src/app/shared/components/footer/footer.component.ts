@@ -1,9 +1,36 @@
 import { Component } from "@angular/core";
-import {CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
-type FooterLink = { label: string; href: string };
-type FooterSocialLink = FooterLink & { icon: string };
+/**
+ * Basic footer link.
+ * Represents a simple navigation link with label and href.
+ */
+type FooterLink = {
+  /** Visible text for the link */
+  label: string;
+  /** Target URL for the link */
+  href: string;
+};
 
+/**
+ * Social link with an icon.
+ * Extends FooterLink by adding an icon path.
+ */
+type FooterSocialLink = FooterLink & {
+  /** Path to the social network icon */
+  icon: string;
+};
+
+/**
+ * FooterComponent
+ * -----------------
+ * Standalone Angular component that renders the site footer.
+ * Features:
+ * - Displays official information links
+ * - Displays social links with icons
+ * - Supports collapsible sections (accordion style) for small screens
+ * - Provides accessible roles and ARIA attributes
+ */
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
@@ -12,8 +39,20 @@ type FooterSocialLink = FooterLink & { icon: string };
   imports: [CommonModule, NgOptimizedImage],
 })
 export class FooterComponent {
+  /**
+   * State object tracking which footer sections are expanded.
+   * Keys correspond to section IDs, values are booleans.
+   */
   openSections: Record<string, boolean> = {};
 
+  /**
+   * Array of footer sections.
+   * Each section contains:
+   * - unique id
+   * - display title
+   * - CSS class
+   * - list of links (standard or social)
+   */
   footerSections: {
     id: string;
     title: string;
@@ -46,14 +85,28 @@ export class FooterComponent {
     }
   ];
 
+  /**
+   * Toggles the open/closed state of a footer section.
+   * @param id Section identifier
+   */
   toggleSection(id: string): void {
     this.openSections[id] = !this.openSections[id];
   }
 
+  /**
+   * Checks whether a footer section is currently open.
+   * @param id Section identifier
+   * @returns true if the section is open, false otherwise
+   */
   isSectionOpen(id: string): boolean {
     return this.openSections[id];
   }
 
+  /**
+   * Type guard to check if a link is a social link.
+   * @param link Footer link (basic or social)
+   * @returns true if the link includes an icon property
+   */
   isSocialLink(link: FooterLink | FooterSocialLink): link is FooterSocialLink {
     return 'icon' in link;
   }

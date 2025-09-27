@@ -1,9 +1,26 @@
-<button class="cta-button" [ngClass]="color" type="button" [routerLink]="routerLink">
-  <img *ngIf="icon"
-       [ngSrc]="'assets/images/icon-' + icon + '.svg'"
-       width="20" height="20"
-       [alt]="icon"
-       fetchpriority="auto"
-       decoding="async" />
-  {{ text }}
+<!-- ============================================================
+     CTA Button Component Template
+     - Displays a call-to-action button with optional icon
+     - Supports configurable color, text, and navigation link
+     - Uses Angular routerLink for internal navigation
+   ============================================================ -->
+
+<button
+  class="cta-button"
+  [ngClass]="color" 
+type="button"
+[routerLink]="routerLink">
+  
+<!-- Optional icon displayed before text -->
+<img
+  *ngIf="icon"
+  [ngSrc]="'assets/images/icon-' + icon + '.svg'"
+width="20"
+height="20"
+[alt]="icon" 
+fetchpriority="auto"
+decoding="async" /> 
+
+<!-- Button label text -->
+{{ text }}
 </button>

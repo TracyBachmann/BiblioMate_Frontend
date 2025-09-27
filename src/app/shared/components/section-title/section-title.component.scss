@@ -1,29 +1,47 @@
+/* ============================================================
+   Section Title Styles
+   - Styles for <h2 class="section-title">
+   - Creates a centered banner-like heading with responsive sizing
+   ============================================================ */
+
 .section-title {
+  /* Flex layout to center text both vertically and horizontally */
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Background and text appearance */
   background-color: #004b87;
   color: #fff;
   font-size: 40px;
   font-weight: 400;
   font-family: 'League Gothic', sans-serif;
+
+  /* Spacing and sizing */
   padding: 0 1rem;
   margin: 0;
   text-align: center;
   box-sizing: border-box;
+
+  /* Fixed height and constrained width */
   height: 98px;
   width: 275px;
   max-width: 500px;
 
+  /* ===== Responsive adjustments ===== */
+
+  /* Large screens: allow slightly larger width */
   @media (min-width: 1024px) {
     max-width: 600px;
   }
 
+  /* Medium screens: reduce height and font size */
   @media (max-width: 750px) {
     height: 80px;
     font-size: 28px;
   }
 
+  /* Small screens: further reduce height and font size */
   @media (max-width: 480px) {
     height: 70px;
     font-size: 24px;

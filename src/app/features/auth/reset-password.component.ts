@@ -19,8 +19,10 @@ import { environment } from '../../../environment';
           <h1>Réinitialiser le mot de passe</h1>
 
           <ng-container [ngSwitch]="state">
+            <!-- Error state: invalid or expired link -->
             <p class="status error" *ngSwitchCase="'error'">Lien invalide ou expiré ❌</p>
 
+            <!-- Default state: show reset password form -->
             <form *ngSwitchDefault [formGroup]="form" (ngSubmit)="submit()">
               <div class="form-field">
                 <input type="password" placeholder="Nouveau mot de passe" formControlName="password"
@@ -38,6 +40,7 @@ import { environment } from '../../../environment';
               </div>
             </form>
 
+            <!-- Success state: password successfully reset -->
             <p class="status ok" *ngIf="done">Mot de passe mis à jour ✅</p>
           </ng-container>
         </section>
@@ -65,23 +68,26 @@ import { environment } from '../../../environment';
   `]
 })
 export default class ResetPasswordComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private http  = inject(HttpClient);
-  private fb    = inject(FormBuilder);
+  private route = inject(ActivatedRoute);  // Access to query params (token)
+  private http  = inject(HttpClient);      // HTTP client for API calls
+  private fb    = inject(FormBuilder);     // Reactive forms builder
 
-  token: string | null = null;
-  state: 'form' | 'error' = 'form';
-  form!: FormGroup;
-  done = false;
-  loading = false;
+  token: string | null = null;             // Token from the reset link
+  state: 'form' | 'error' = 'form';        // Component state: show form or error
+  form!: FormGroup;                        // Form with password field
+  done = false;                            // Flag for success message
+  loading = false;                         // Flag for button loading state
 
   ngOnInit(): void {
+    // Extract token from query params
     this.token = this.route.snapshot.queryParamMap.get('token');
     this.state = this.token ? 'form' : 'error';
 
+    // Initialize the form with password field
     this.form = this.fb.group({ password: ['', [Validators.required, Validators.minLength(6)]] });
   }
 
+  /** Submit the form and call the API to reset the password */
   submit(): void {
     if (this.state === 'error' || this.form.invalid || !this.token) return;
     this.loading = true;
@@ -95,5 +101,7 @@ export default class ResetPasswordComponent implements OnInit {
     });
   }
 
+  /** Getter for easier access to the password control */
   get passwordCtrl() { return this.form.get('password'); }
 }
+

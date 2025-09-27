@@ -1,9 +1,8 @@
-// src/app/features/auth/confirm-email.component.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError } from 'rxjs';
 import { environment } from '../../../environment';
 
 @Component({
@@ -19,10 +18,12 @@ import { environment } from '../../../environment';
         <section class="login-form">
           <h1>Confirmation de l’email</h1>
 
+          <!-- Dynamic status messages -->
           <p class="status loading" *ngIf="state==='loading'">Vérification en cours…</p>
           <p class="status ok" *ngIf="state==='ok'">Votre email a bien été confirmé ✅</p>
           <p class="status error" *ngIf="state==='error'">Lien invalide ou expiré ❌</p>
 
+          <!-- Navigation back to login page -->
           <div class="button-wrapper single">
             <a routerLink="/connexion" class="styled-button">Aller à la connexion</a>
           </div>
@@ -48,20 +49,26 @@ import { environment } from '../../../environment';
 export default class ConfirmEmailComponent {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
+
+  // Component state: used to show loading, success or error message
   state: 'loading' | 'ok' | 'error' = 'loading';
 
   ngOnInit() {
+    // Extract token from query string
     const token = this.route.snapshot.queryParamMap.get('token');
-    if (!token) { this.state = 'error'; return; }
+    if (!token) {
+      this.state = 'error';
+      return;
+    }
 
+    // Two possible backend endpoints: with or without version prefix
     const urlV1 = `${environment.apiBase}/api/v1/Auths/confirm-email`;
     const urlNoV = `${environment.apiBase}/api/auths/confirm-email`;
 
+    // First attempt: call versioned endpoint
+    // If it fails, retry with non-versioned endpoint
     this.http.get(urlV1, { params: { token } }).pipe(
-      catchError(err => {
-        // tentative de repli sur la route non versionnée
-        return this.http.get(urlNoV, { params: { token } });
-      })
+      catchError(() => this.http.get(urlNoV, { params: { token } }))
     ).subscribe({
       next: () => this.state = 'ok',
       error: () => this.state = 'error'

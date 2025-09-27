@@ -1,4 +1,3 @@
-// src/app/features/auth/login.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -17,10 +16,16 @@ type LoginResponse = { token: string };
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  // Reactive form instance for login
   loginForm: FormGroup;
+
+  // Stores error message for display in the template
   errorMessage: string | null = null;
+
+  // Indicates if a login request is in progress
   isSubmitting = false;
 
+  // Endpoint for authentication
   private readonly API_URL = `${environment.apiBase}/api/auths/login`;
 
   constructor(
@@ -30,6 +35,7 @@ export class LoginComponent implements OnInit {
     private auth: AuthService,
     private route: ActivatedRoute
   ) {
+    // Define form structure and validation rules
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -38,11 +44,13 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // If user is already authenticated, redirect to personal space
     if (this.auth.isAuthenticated()) {
       this.router.navigateByUrl('/espace', { replaceUrl: true });
       return;
     }
 
+    // Handle query params for post-registration message
     const qp = this.route.snapshot.queryParamMap;
     if (qp.get('registered') === '1') {
       const email = qp.get('email') || 'votre adresse e-mail';
@@ -50,6 +58,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  /** Triggered when the form is submitted */
   submit(): void {
     if (this.loginForm.invalid || this.isSubmitting) {
       this.loginForm.markAllAsTouched();
@@ -59,23 +68,30 @@ export class LoginComponent implements OnInit {
     this.isSubmitting = true;
     this.errorMessage = null;
 
+    // Extract values from the form
     const { email, password, remember } = this.loginForm.value as {
       email: string; password: string; remember: boolean;
     };
 
+    // Send login request to the API
     this.http.post<LoginResponse>(this.API_URL, { email, password }).subscribe({
       next: (res) => {
+        // Validate response
         if (!res?.token) {
           this.errorMessage = 'Réponse invalide du serveur.';
           this.isSubmitting = false;
           return;
         }
+
+        // Save token in AuthService
         this.auth.login(res.token, !!remember);
 
+        // Redirect to returnUrl or default to /espace
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/espace';
         this.router.navigateByUrl(returnUrl, { replaceUrl: true });
       },
       error: (err) => {
+        // Map API error messages to user-friendly text
         const apiMsg = err?.error?.error || err?.error;
         if (apiMsg === 'Account awaiting admin approval.') {
           this.errorMessage = 'Votre compte a bien été créé, mais il doit être approuvé par un·e bibliothécaire.';
@@ -91,11 +107,13 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /** Utility: check if a control is invalid and touched/dirty */
   hasError(name: string): boolean {
     const c = this.loginForm.get(name);
     return !!(c && c.invalid && (c.touched || c.dirty));
   }
 
+  /** Utility: return a proper error message for a control */
   getErrorMessage(name: string): string {
     const c = this.loginForm.get(name);
     if (c?.hasError('required')) return 'Ce champ est requis';

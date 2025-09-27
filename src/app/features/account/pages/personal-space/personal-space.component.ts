@@ -1,4 +1,3 @@
-// src/app/features/account/pages/personal-space/personal-space.component.ts
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -15,6 +14,10 @@ interface NavOption {
   link: string | any[];
 }
 
+/**
+ * Maps the role coming from AuthService (ServiceRole)
+ * into normalized lowercase roles used by this component.
+ */
 function mapRole(r: ServiceRole | null): UserRole {
   if (!r) return 'user';
   const norm = String(r).toLowerCase();
@@ -33,20 +36,29 @@ function mapRole(r: ServiceRole | null): UserRole {
 export class PersonalSpaceComponent {
   public auth = inject(AuthService);
 
+  // Signals derived from AuthService observables
   private firstName = toSignal(this.auth.firstName$, { initialValue: 'Prénom' as string | null });
   private lastName  = toSignal(this.auth.lastName$,  { initialValue: 'NOM' as string | null });
   private roleSrv   = toSignal(this.auth.role$,      { initialValue: null as ServiceRole });
 
+  // Static subtitle displayed under the hero welcome message
   readonly subline =
     'Gérez facilement vos informations et vos interactions avec la bibliothèque.';
 
+  // Computed full name (fallbacks if first/last names are null)
   private readonly _fullName = computed(
     () => `${this.firstName() ?? 'Prénom'} ${this.lastName() ?? 'NOM'}`.trim()
   );
 
+  /**
+   * Computed navigation options for the personal space.
+   * The list of navigation cards changes depending on the user role.
+   */
   private readonly _options = computed<NavOption[]>(() => {
     const role = mapRole(this.roleSrv());
-    const base: NavOption[] = [
+
+    // Cards available for regular users
+    const personal: NavOption[] = [
       {
         title: 'Profil',
         subtitle: 'Modifier vos informations personnelles',
@@ -67,36 +79,52 @@ export class PersonalSpaceComponent {
       },
     ];
 
-    if (role === 'librarian' || role === 'admin') {
-      base.push(
-        {
-          title: 'Gestion des livres',
-          subtitle: 'Ajouter, éditer, supprimer des titres',
-          image: 'assets/images/manage-books.jpg',
-          link: ['/gestion/livres'],
-        },
-        {
-          title: 'Demandes & réservations',
-          subtitle: 'Valider, refuser, notifier',
-          image: 'assets/images/manage-requests.jpg',
-          link: ['/gestion/reservations'],
-        }
-      );
-    }
+    // Cards available for librarians
+    const staff: NavOption[] = [
+      {
+        title: 'Gestion des livres',
+        subtitle: 'Cataloguer les titres et gérer le stock',
+        image: 'assets/images/manage-books.jpg',
+        link: ['/catalogue/gestion'],
+      },
+      {
+        title: 'Suivi des prêts',
+        subtitle: 'Prêts, retours, prolongations et réservations',
+        image: 'assets/images/manage-requests.jpg',
+        link: ['/gestion/reservations'],
+      },
+      {
+        title: 'Notifications',
+        subtitle: 'Envoyer des messages et des relances',
+        image: 'assets/images/notifications.jpg',
+        link: ['/gestion/notifications'],
+      }
+    ];
 
-    if (role === 'admin') {
-      base.push({
+    // Extra cards only visible for administrators
+    const adminOnly: NavOption[] = [
+      {
         title: 'Utilisateurs',
         subtitle: 'Comptes, rôles et permissions',
         image: 'assets/images/users.jpg',
         link: ['/admin/utilisateurs'],
-      });
-    }
+      },
+    ];
 
-    return base;
+    // Selection rules based on role
+    switch (role) {
+      case 'librarian':
+        return [...staff];               // Librarians only see staff cards
+      case 'admin':
+        return [...staff, ...adminOnly]; // Admins see staff + admin cards
+      case 'user':
+      default:
+        return [...personal];            // Regular users only see personal cards
+    }
   });
 
-  // --- Getters utilisés par le template
+  // --- Getters used by the template
   get fullName(): string { return this._fullName(); }
   get options(): NavOption[] { return this._options(); }
 }
+

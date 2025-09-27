@@ -1,5 +1,6 @@
 <div class="login-wrapper">
   <div class="login-page">
+    <!-- Background image -->
     <img
       ngSrc="assets/images/hero-background.png"
       width="1920"
@@ -10,14 +11,17 @@
       priority
     />
 
+    <!-- Login form -->
     <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
       <h1>Se connecter</h1>
 
+      <!-- Link to registration page -->
       <p class="login-subtext">
         Pas de compte ?
         <a routerLink="/inscription">Inscrivez-vous gratuitement</a>
       </p>
 
+      <!-- Email input -->
       <div class="form-field">
         <input
           type="email"
@@ -31,6 +35,7 @@
         </div>
       </div>
 
+      <!-- Password input -->
       <div class="form-field">
         <input
           type="password"
@@ -44,8 +49,10 @@
         </div>
       </div>
 
+      <!-- Forgot password link -->
       <a class="forgot-password" routerLink="/mot-de-passe-oublie">Mot de passe oublié ?</a>
 
+      <!-- Remember me checkbox -->
       <div class="checkbox-line">
         <input type="checkbox" id="remember" formControlName="remember" />
         <label for="remember">
@@ -53,7 +60,9 @@
         </label>
       </div>
 
+      <!-- Action buttons -->
       <div class="button-wrapper">
+        <!-- Submit button -->
         <button
           type="submit"
           class="styled-button"
@@ -64,8 +73,10 @@
           <span *ngIf="isSubmitting">Connexion en cours...</span>
         </button>
 
+        <!-- Divider between normal login and Google login -->
         <div class="divider"><span>OU</span></div>
 
+        <!-- Google login button (currently disabled) -->
         <button type="button" class="google-button styled-button" disabled>
           <img
             ngSrc="assets/images/icon-google.svg"
@@ -78,6 +89,7 @@
         </button>
       </div>
 
+      <!-- Error message displayed when login fails -->
       <div class="error-message" *ngIf="errorMessage">
         {{ errorMessage }}
       </div>

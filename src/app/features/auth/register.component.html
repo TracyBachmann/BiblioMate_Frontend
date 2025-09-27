@@ -1,5 +1,6 @@
 <div class="login-wrapper">
   <div class="login-page">
+    <!-- Background image -->
     <img
       ngSrc="assets/images/hero-background.png"
       width="1920"
@@ -10,8 +11,9 @@
       priority
     />
 
+    <!-- Registration form with stepper -->
     <form [formGroup]="registerForm" (ngSubmit)="submit()" class="login-form">
-      <!-- 1) Google -->
+      <!-- Step 0: Google Sign-up button (currently disabled) -->
       <div class="button-wrapper alt-spacing">
         <button type="button" class="google-button styled-button" disabled>
           <img
@@ -25,8 +27,10 @@
         </button>
       </div>
 
+      <!-- Divider between Google and manual form -->
       <div class="divider"><span>OU</span></div>
 
+      <!-- Stepper showing progression (1 to 5) -->
       <div class="stepper stepper-lg">
         <span [class.active]="step>=1">1</span><i class="sep" aria-hidden="true"></i>
         <span [class.active]="step>=2">2</span><i class="sep" aria-hidden="true"></i>
@@ -35,13 +39,16 @@
         <span [class.active]="step>=5">5</span>
       </div>
 
+      <!-- Form title -->
       <h1>Créer votre compte</h1>
 
+      <!-- Link to login if user already has an account -->
       <p class="login-subtext">
         Vous avez un compte ?
         <a routerLink="/connexion">Connectez-vous</a>
       </p>
 
+      <!-- Step 1: Basic info (name, first name, email) -->
       <ng-container *ngIf="step === 1">
         <div class="form-field">
           <input
@@ -80,6 +87,7 @@
         </div>
       </ng-container>
 
+      <!-- Step 2: Contact info and address -->
       <ng-container *ngIf="step === 2">
         <div class="form-field">
           <input
@@ -114,6 +122,7 @@
         </div>
       </ng-container>
 
+      <!-- Step 3: Date of birth and password setup -->
       <ng-container *ngIf="step === 3">
         <div class="form-field">
           <input type="date" placeholder="Date de naissance" formControlName="dateOfBirth" />
@@ -145,6 +154,7 @@
         </div>
       </ng-container>
 
+      <!-- Step 4: Avatar upload -->
       <ng-container *ngIf="step === 4">
         <div class="dropzone" (click)="fileInput.click()">
           <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
@@ -160,6 +170,7 @@
         <div class="hint">L’image est optionnelle. Rien n’est téléversé tant que l’API n’est pas câblée.</div>
       </ng-container>
 
+      <!-- Step 5: Favorite genres and terms acceptance -->
       <ng-container *ngIf="step === 5">
         <div class="form-field">
           <label>Genres favoris (facultatif)</label>
@@ -176,6 +187,7 @@
           </div>
         </div>
 
+        <!-- Terms and conditions -->
         <div class="checkbox-line">
           <input id="accept" type="checkbox" formControlName="acceptTerms" />
           <label for="accept">J’accepte les conditions d’utilisation.</label>
@@ -185,6 +197,7 @@
         </div>
       </ng-container>
 
+      <!-- Navigation buttons (previous/next/submit) -->
       <div class="wizard-nav">
         <button *ngIf="step>1" type="button" class="styled-button secondary" (click)="prev()">
           Étape précédente
@@ -206,6 +219,7 @@
         </button>
       </div>
 
+      <!-- Error and success messages -->
       <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
       <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
     </form>

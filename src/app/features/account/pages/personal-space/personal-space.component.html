@@ -1,16 +1,26 @@
 <div class="personal-page">
-  <!-- HERO -->
+  <!-- ========================
+       HERO section
+       - Displays avatar, welcome title, and subline
+       ======================== -->
   <div class="personal-hero">
     <div class="avatar" aria-hidden="true">
+      <!-- Static user icon (decorative) -->
       <img ngSrc="assets/images/icon-user-circle.svg" width="48" height="48" alt="" />
     </div>
     <div class="texts">
+      <!-- Dynamic welcome message -->
       <h1>Bienvenue dans votre espace utilisateur, {{ fullName }}</h1>
+      <!-- Subline below the title (contextual info) -->
       <p class="subline">{{ subline }}</p>
     </div>
   </div>
 
-  <!-- GRID D’ACTIONS -->
+  <!-- ========================
+       ACTION GRID
+       - Displays a set of navigation cards
+       - Each card redirects to a user-related section
+       ======================== -->
   <div class="action-grid">
     <app-nav-card
       *ngFor="let opt of options"

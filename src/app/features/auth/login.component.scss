@@ -1,10 +1,12 @@
 .login-wrapper {
+  /* Root container for login page */
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 .login-page {
+  /* Centers login form on the page with background */
   position: relative;
   flex: 1;
   display: flex;
@@ -15,6 +17,7 @@
   box-sizing: border-box;
 
   .login-background {
+    /* Fullscreen background image */
     position: absolute;
     inset: 0;
     width: 100%;
@@ -25,6 +28,7 @@
 }
 
 .login-form {
+  /* Card-like form styling */
   position: relative;
   z-index: 1;
   background: rgba(4, 68, 107, 0.8);
@@ -47,17 +51,20 @@
   }
 
   .form-field {
+    /* Input wrapper */
     display: flex;
     flex-direction: column;
   }
 
   .error-text {
+    /* Validation error message */
     color: #ffc107;
     font-size: 0.8rem;
     margin-top: 0.25rem;
   }
 
   input:not([type="checkbox"]) {
+    /* Base style for text inputs */
     padding: 0.75rem 1rem;
     height: 50px;
     background-color: #ffffff;
@@ -69,10 +76,12 @@
   }
 
   .invalid {
+    /* Highlight invalid inputs */
     border-color: red !important;
   }
 
   .button-wrapper {
+    /* Layout for form buttons */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -80,6 +89,7 @@
   }
 
   .styled-button {
+    /* Standard button */
     height: 50px;
     border-radius: 20px;
     border: 2px solid #fbbc05;
@@ -99,12 +109,14 @@
     }
 
     &.loading {
+      /* Disabled appearance when submitting */
       opacity: 0.6;
       pointer-events: none;
     }
   }
 
   .google-button {
+    /* Special style for Google login button */
     gap: 0.5rem;
 
     img {
@@ -114,6 +126,7 @@
   }
 
   .divider {
+    /* Horizontal divider with "OU" label */
     display: flex;
     align-items: center;
     text-align: center;
@@ -138,6 +151,7 @@
   }
 
   .error-message {
+    /* General error message for failed login */
     color: red;
     text-align: center;
     font-size: 0.9rem;
@@ -145,6 +159,7 @@
 }
 
 .login-subtext {
+  /* Text below title with link to registration */
   font-size: 20px;
   text-align: center;
   font-weight: 300;
@@ -161,6 +176,7 @@
 }
 
 .forgot-password {
+  /* Forgot password link */
   color: #fbbc05;
   font-size: 0.9rem;
   align-self: flex-start;
@@ -172,12 +188,14 @@
 }
 
 .checkbox-line {
+  /* Layout for "remember me" checkbox */
   font-size: 0.8rem;
   display: flex;
   align-items: flex-start;
   gap: 0.625rem;
 
   input[type="checkbox"] {
+    /* Custom styled checkbox */
     appearance: none;
     width: 18px;
     height: 18px;
@@ -192,6 +210,7 @@
     flex-shrink: 0;
 
     &:checked::after {
+      /* Checkmark when selected */
       content: "";
       position: absolute;
       top: 1px;
@@ -211,6 +230,7 @@
   }
 }
 
+/* Tablet breakpoint */
 @media (max-width: 1024px) {
   .login-page {
     padding-top: 80px;
@@ -241,6 +261,7 @@
   }
 }
 
+/* Mobile breakpoint (medium screens) */
 @media (max-width: 768px) {
   .login-page {
     padding-top: 100px;
@@ -297,6 +318,7 @@
   }
 }
 
+/* Small mobile breakpoint */
 @media (max-width: 480px) {
   .login-page {
     padding-top: 140px;

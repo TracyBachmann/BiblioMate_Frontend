@@ -1,9 +1,28 @@
+/* =============================================================================
+   Team Presentation — Styles (SCSS, BEM)
+   -----------------------------------------------------------------------------
+   Purpose:
+   - Styles a two-column "team presentation" section with an image and text area.
+   - Uses BEM-style element names nested under the `.team-presentation` block.
+
+   Layout:
+   - Desktop: horizontal split (image 35% / text 65%).
+   - Tablet/phone: stacks vertically below 750px.
+
+   Accessibility & UX:
+   - Ensure the image has a meaningful `alt` in markup (decorative if not needed).
+   - Maintain sufficient text contrast (white on #04446b background).
+
+   Notes:
+   - Comments only; no style changes from the provided rules.
+============================================================================= */
+
 .team-presentation {
   position: relative;
   margin-bottom: 4rem;
   font-family: 'Lato', sans-serif;
   z-index: 30;
-  margin-top: -20px;
+  margin-top: -20px;            /* Overlaps preceding section for a tighter layout */
   background-color: transparent;
 
   &__content {
@@ -11,16 +30,16 @@
     align-items: stretch;
     justify-content: center;
     margin: 0 auto;
-    padding: 0 10rem;
-    z-index: 31;
+    padding: 0 10rem;           /* Wide horizontal gutters on large screens */
+    z-index: 31;                /* Above surrounding context when overlapping */
     position: relative;
 
     @media (max-width: 1024px) {
-      padding: 0 2rem;
+      padding: 0 2rem;          /* Reduce side padding on medium screens */
     }
 
     @media (max-width: 750px) {
-      flex-direction: column;
+      flex-direction: column;   /* Stack image and text on small screens */
     }
   }
 
@@ -31,8 +50,8 @@
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      display: block;
+      object-fit: cover;        /* Preserve aspect ratio while filling the area */
+      display: block;           /* Remove baseline gap below images */
     }
 
     @media (max-width: 750px) {
@@ -40,22 +59,22 @@
       height: auto;
 
       img {
-        height: auto;
+        height: auto;           /* Natural height when stacked vertically */
       }
     }
   }
 
   &__text {
     flex: 0 0 65%;
-    background-color: #04446b;
-    color: #fff;
+    background-color: #04446b;  /* Brand-dark background behind copy */
+    color: #fff;                /* High-contrast text */
     padding: 3rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center;    /* Vertically center text content */
 
     @media (max-width: 750px) {
-      padding: 2rem 1.5rem;
+      padding: 2rem 1.5rem;     /* Tighter padding on small screens */
       max-width: 100%;
     }
   }
@@ -63,11 +82,11 @@
   &__title {
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem;        /* Spacing below the heading */
   }
 
   &__description {
     font-size: 18px;
-    line-height: 1.6;
+    line-height: 1.6;           /* Comfortable reading line height */
   }
 }

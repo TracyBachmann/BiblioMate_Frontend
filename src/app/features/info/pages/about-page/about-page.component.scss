@@ -1,20 +1,43 @@
+/* =============================================================================
+   About Page — Stylesheet
+   -----------------------------------------------------------------------------
+   Purpose:
+   - Styles the "About" page, including a visual cover, a mission section with
+     text/media split, and KPI cards in a responsive grid.
+
+   Conventions:
+   - Class-based selectors scoped to this page to avoid global side effects.
+   - Uses clamp() for fluid spacing/sizing and media queries for responsiveness.
+   - Hard-coded hex colors; no CSS variables in this file.
+
+   Accessibility:
+   - Ensure cover text has sufficient contrast against the background image;
+     the overlay gradient in `.cover::after` improves legibility.
+   - Maintain readable line length via `.page-gutter` max-width.
+============================================================================= */
+
+/* Root scope: base text color and font stack for the About page */
 .about-page {
   color: #1f2937;
   font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
+/* Responsive horizontal gutters and centered content wrapper */
 .page-gutter {
   padding-inline: clamp(16px, 5vw, 40px);
   max-width: 1160px;
   margin-inline: auto;
 }
 
-/* bandeau visuel */
+/* =============================================================================
+   Visual Cover (Hero)
+   - Background image with an overlay gradient and centered inner content.
+============================================================================= */
 .cover { position: relative; isolation: isolate; }
 .cover .cover__bg {
   width: 100%;
   height: clamp(180px, 36vw, 300px);
-  object-fit: cover;
+  object-fit: cover;            /* Ensures image covers without distortion */
   display: block;
 }
 .cover::after {
@@ -22,26 +45,29 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(12, 23, 38, 0.35), rgba(12, 23, 38, 0));
-  z-index: 0;
+  z-index: 0;                   /* Places overlay below the inner content */
 }
 .cover .cover__inner {
   position: absolute;
   inset: 0;
-  display: grid;
+  display: grid;                /* Centers content vertically via align-content */
   align-content: center;
   gap: 8px;
-  z-index: 1;
+  z-index: 1;                   /* Above gradient overlay */
 }
 .cover .cover__inner .lede {
   color: #ffffff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); /* Improves text contrast on image */
   margin: 0;
 }
 
-/* section mission */
+/* =============================================================================
+   Mission Section
+   - Two-column layout (text/media) collapsing to single column on narrow viewports.
+============================================================================= */
 .section-block.mission {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1.1fr 0.9fr; /* Slight emphasis on text column */
   gap: clamp(16px, 2.2vw, 24px);
   margin-top: clamp(24px, 4vw, 40px);
 }
@@ -49,7 +75,7 @@
   .section-block.mission { grid-template-columns: 1fr; }
 }
 .section-block.mission .text h3 { margin: 0 0 6px; }
-.section-block.mission .text p { line-height: 1.7; }
+.section-block.mission .text p { line-height: 1.7; } /* Comfortable reading line height */
 .section-block.mission .text .cta-row {
   display: flex;
   gap: 10px;
@@ -59,15 +85,18 @@
 }
 .section-block.mission .text .cta-row .link {
   color: #0e5aa6;
-  text-decoration: underline;
+  text-decoration: underline;   /* Clear visual affordance for links */
 }
 .section-block.mission .media img {
   width: 100%;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e5e7eb;    /* Light card-like edge */
 }
 
-/* KPIs */
+/* =============================================================================
+   KPI Grid
+   - Responsive grid of small stat cards; collapses from 4 to 2 columns.
+============================================================================= */
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -83,12 +112,12 @@
   border-radius: 14px;
   padding: 14px;
   text-align: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04); /* Subtle depth for separation */
 }
 .kpis .kpi strong {
   font-size: 28px;
-  display: block;
+  display: block;               /* Places value above label */
 }
 .kpis .kpi span {
-  color: #6b7280;
+  color: #6b7280;               /* Muted label color for hierarchy */
 }

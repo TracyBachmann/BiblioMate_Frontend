@@ -19,6 +19,7 @@ import { environment } from '../../../environment';
           <h1>Mot de passe oublié</h1>
           <p class="login-subtext">Saisissez votre adresse e-mail, nous vous enverrons un lien.</p>
 
+          <!-- Reset password request form -->
           <form [formGroup]="form" (ngSubmit)="submit()" class="form-vertical">
             <div class="form-field">
               <input type="email" placeholder="Votre email" formControlName="email"
@@ -36,6 +37,7 @@ import { environment } from '../../../environment';
             </div>
           </form>
 
+          <!-- Informational message shown after submission -->
           <p class="info" *ngIf="done">
             Si l’e-mail existe, un lien de réinitialisation a été envoyé.
           </p>
@@ -54,7 +56,6 @@ import { environment } from '../../../environment';
     input{padding:.75rem 1rem;height:50px;background:#fff;border:2px solid #fbbc05;border-radius:20px;outline:none;font-size:16px}
     .invalid{border-color:red!important}
     .error-text{color:#ffc107;font-size:.85rem}
-    /* boutons côte à côte */
     .button-row{display:flex;gap:1rem;justify-content:center;margin-top:2rem}
     .styled-button{flex:1;height:50px;border-radius:20px;border:2px solid #fbbc05;background:#fff;color:#000;font-size:18px;font-weight:400;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;text-decoration:none}
     .styled-button:hover{background:#fdf5dc}
@@ -66,25 +67,39 @@ import { environment } from '../../../environment';
 })
 export default class ForgotPasswordComponent implements OnInit {
   form!: FormGroup;
-  loading = false;
-  done = false;
+  loading = false; // true while the request is in progress
+  done = false;    // true when request has completed (success or error)
 
   constructor(private fb: FormBuilder, private http: HttpClient) {}
 
   ngOnInit(): void {
+    // Initialize form with email control and validators
     this.form = this.fb.group({ email: ['', [Validators.required, Validators.email]] });
   }
 
+  /** Called when the user submits the form */
   submit(): void {
     if (this.form.invalid) return;
-    this.loading = true; this.done = false;
 
+    this.loading = true;
+    this.done = false;
+
+    // Send password reset request to the backend
     this.http.post(`${environment.apiBase}/Auths/request-password-reset`, this.form.value)
       .subscribe({
-        next: () => { this.done = true; this.loading = false; },
-        error: () => { this.done = true; this.loading = false; }
+        next: () => {
+          // Considered successful, show informational message
+          this.done = true;
+          this.loading = false;
+        },
+        error: () => {
+          // Even in case of error, show "done" message (generic response)
+          this.done = true;
+          this.loading = false;
+        }
       });
   }
-  
+
+  // Convenience getter for the email control
   get emailCtrl() { return this.form.get('email'); }
 }

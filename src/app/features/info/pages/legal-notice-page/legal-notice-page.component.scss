@@ -1,24 +1,74 @@
-/* conteneur + typo */
-.legal {
-  color: #1f2937;
-  font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  padding-block: clamp(18px, 3vw, 24px);
-  max-width: 900px;
-  margin-inline: auto;
-}
-.legal header { margin-bottom: 6px; }
-.legal section {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 14px 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-}
-.legal section + section { margin-top: 10px; }
-.legal h3 { margin: 0 0 6px; }
+/* =============================================================================
+   Legal Page Stylesheet
+   -----------------------------------------------------------------------------
+   Purpose:
+   - Styles the legal/terms/privacy pages container and its inner sections.
+   - Provides consistent typography, spacing, and a readable card-like layout.
 
-/* gouttières */
+   Conventions:
+   - Class-based selectors only; no element resets here.
+   - Units: `px` for fixed radii/borders, `clamp()` for responsive paddings.
+   - Colors are hard-coded hex values (no CSS variables in this file).
+
+   Accessibility:
+   - Text color (#1f2937) is a dark gray to maintain contrast on white cards.
+   - Spacing and readable line length (via max-width) aid legibility.
+
+   Dependencies:
+   - Assumes the font "Inria Sans" is loaded elsewhere (e.g., via @import or <link>).
+   - This file does not include global resets or normalize rules.
+
+   Note:
+   - Comments added only; no functional/style changes to original rules.
+============================================================================= */
+
+/* ============================================================================
+   .legal — Container and Typography
+   - Wraps legal content with a constrained width and vertical padding.
+   - Sets the base font family for this section only.
+============================================================================ */
+.legal {
+  color: #1f2937; /* Base text color (dark gray for readability) */
+  font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; /* Font stack with sensible fallbacks */
+  padding-block: clamp(18px, 3vw, 24px); /* Responsive vertical padding: min 18px, scales with viewport, caps at 24px */
+  max-width: 900px; /* Constrains line length for long-form text */
+  margin-inline: auto; /* Centers the container horizontally */
+}
+
+/* Spacing between the header and the first content section inside .legal */
+.legal header {
+  margin-bottom: 6px;
+}
+
+/* ============================================================================
+   .legal section — Card-style Blocks
+   - Each section is styled as a "card" with border, radius, and subtle shadow.
+   - Intended to segment legal content into scannable blocks.
+============================================================================ */
+.legal section {
+  background: #ffffff; /* White card background against page backdrop */
+  border: 1px solid #e5e7eb; /* Light gray border to define edges */
+  border-radius: 12px; /* Soft, modern corner radius */
+  padding: 14px 16px; /* Comfortable inner spacing for paragraphs/lists */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04); /* Low-elevation shadow for depth */
+}
+
+/* Vertical rhythm: adds space between consecutive sections */
+.legal section + section {
+  margin-top: 10px;
+}
+
+/* Headings inside legal cards: remove default top margin and add small bottom gap */
+.legal h3 {
+  margin: 0 0 6px;
+}
+
+/* ============================================================================
+   .page-gutter — Responsive Horizontal Padding Utility
+   - Applies fluid left/right padding to its content area.
+   - Useful as a general-purpose page gutter wrapper.
+============================================================================ */
 .page-gutter {
-  padding-inline: clamp(16px, 5vw, 40px);
-  margin-inline: auto;
+  padding-inline: clamp(16px, 5vw, 40px); /* Fluid horizontal padding scaled by viewport width */
+  margin-inline: auto; /* Centers the wrapped content if it has a max-width set elsewhere */
 }

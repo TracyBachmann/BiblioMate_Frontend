@@ -10,6 +10,7 @@ import { LoansService, LoanCreateResponse } from '../../../../core/services/loan
 import { ReservationsService } from '../../../../core/services/reservations.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
+// Supported share platforms
 type SharePlatform = 'x' | 'facebook' | 'linkedin' | 'whatsapp' | 'email';
 
 @Component({
@@ -20,7 +21,7 @@ type SharePlatform = 'x' | 'facebook' | 'linkedin' | 'whatsapp' | 'email';
   styleUrls: ['./book-details-page.component.scss'],
 })
 export class BookDetailsPageComponent implements OnInit, OnDestroy {
-  // services
+  // ===== Dependency injection =====
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private api: BookService = inject(BookService);
@@ -28,10 +29,10 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   private reservations: ReservationsService = inject(ReservationsService);
   auth: AuthService = inject(AuthService);
 
-  // exposé pour le template
+  // ===== Template bindings =====
   isAuthenticated$ = this.auth.isAuthenticated$;
 
-  // state
+  // ===== Signals for component state =====
   book = signal<Book | any | null>(null);
   loading = signal(false);
   notFound = signal(false);
@@ -39,20 +40,22 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   shareOpen = signal(false);
   borrowing = signal(false);
 
-  // réservation
+  // Reservation state
   reserving = signal(false);
   hasReserved = signal(false);
 
-  // état “emprunt en cours”
+  // Loan state
   hasActiveLoan = signal(false);
   loanDue = signal<Date | null>(null);
 
-  // toast
+  // Toast notifications
   toast = signal<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
   private sub?: Subscription;
 
+  // ===== Lifecycle hooks =====
   ngOnInit(): void {
+    // Subscribe to route params and load the book by ID
     this.sub = this.route.paramMap.subscribe(pm => {
       const idStr = pm.get('id');
       const id = idStr ? Number(idStr) : NaN;
@@ -63,10 +66,11 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
 
+  // Close share modal when pressing Escape
   @HostListener('document:keydown.escape')
   onEsc(): void { if (this.shareOpen()) this.shareOpen.set(false); }
 
-  // ======== load ========
+  // ===== Data loading =====
   private fetch(id: number): void {
     this.loading.set(true);
     this.api.getById(id).subscribe({
@@ -75,7 +79,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
         this.notFound.set(!b);
         this.loading.set(false);
         this.refreshReservationFlag();
-        this.refreshActiveLoanFlag(); // récupère l’info depuis le back (si le service l’expose)
+        this.refreshActiveLoanFlag(); // Also check active loan state
       },
       error: err => {
         console.error('Book load error', err);
@@ -85,20 +89,23 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   }
   private markNotFound(): void { this.book.set(null); this.notFound.set(true); this.loading.set(false); }
 
+  // Check if the user has already reserved this book
   private refreshReservationFlag(): void {
     const b: any = this.book();
     if (!b || !this.auth.isAuthenticated()) { this.hasReserved.set(false); return; }
     const bookId = Number(b?.bookId ?? b?.id);
     if (!Number.isFinite(bookId)) return;
-    this.reservations.hasForCurrentUser(bookId).subscribe(v => this.hasReserved.set(v));
+    this.reservations.hasForCurrentUser(bookId)
+      .subscribe((v: boolean) => this.hasReserved.set(v));
   }
 
+  // Check if the user has an active loan for this book
   private refreshActiveLoanFlag(): void {
     const b: any = this.book();
     if (!b || !this.auth.isAuthenticated()) { this.hasActiveLoan.set(false); this.loanDue.set(null); return; }
     const bookId = Number(b?.bookId ?? b?.id);
     if (!Number.isFinite(bookId)) return;
-    // Méthode côté service : `hasActiveForCurrentUser(bookId)` => { hasActive: boolean; dueDate?: string }
+
     this.loans.hasActiveForCurrentUser?.(bookId).subscribe({
       next: r => {
         const active = !!r?.hasActive;
@@ -106,18 +113,19 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
         this.loanDue.set(active && r?.dueDate ? new Date(r.dueDate) : null);
       },
       error: () => {
-        // en cas d'erreur, ne bloque pas l’UI
+        // Do not block UI in case of error
         this.hasActiveLoan.set(false);
         this.loanDue.set(null);
       }
     });
   }
 
-  // ======== helpers ========
+  // ===== Helper methods =====
   private safe(v: any): string { if (v == null) return '—'; const s = String(v); return s.trim() === '' ? '—' : s; }
   private pick(...c: any[]) { for (const x of c){ if (x==null) continue; const s=typeof x==='string'?x.trim():String(x); if (s!=='') return s; } return undefined; }
   private nested(){ const b:any=this.book()??{}; const sl=b.shelfLevel??b.stock?.shelfLevel??null; const s=sl?.shelf??null; const z=s?.zone??null; return {shelfLevel:sl,shelf:s,zone:z}; }
 
+  // Extract fields for template
   title(): string { return (this.book() as any)?.title ?? ''; }
   description(): string { const b:any=this.book(); return b?.description ?? b?.desc ?? ''; }
   isAvailable(): boolean {
@@ -160,8 +168,9 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   rayon(): string { const b:any=this.book(); const {shelf}=this.nested(); const v=this.pick(b?.rayon, b?.location?.rayon, shelf?.name); return this.safe(v); }
   shelf(): string { const b:any=this.book(); const {shelfLevel}=this.nested(); const v=this.pick(b?.shelf, b?.location?.shelf, shelfLevel?.levelNumber); return this.safe(v); }
 
-  // ======== partage ========
+  // ===== Sharing =====
   private absoluteUrl(): string { return new URL(this.router.url, location.origin).toString(); }
+
   async share(): Promise<void> {
     const url=this.absoluteUrl(), title=this.title(), text=`${title}${this.author() ? ' — ' + this.author() : ''}`;
     if ((navigator as any).share) {
@@ -189,23 +198,23 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     catch { prompt('Copier le lien :', url); }
   }
 
-  // ======== mini traducteur de secours (regex tolérantes) ========
+  // ===== Error translation (backend → French) =====
   private translateMessage(input?: string | null): string {
     const msg = (input ?? '').toString().trim();
     if (!msg) return '';
 
     const table: Array<[RegExp, ((...m: string[]) => string) | string]> = [
-      // prêts
+      // Loans
       [/maximum\s+active\s+loans?\s*\((\d+)\)\s*reached/i, (_all, n) => `Nombre maximum d’emprunts actifs (${n}) atteint.`],
       [/existing\s+active\s+loan/i, 'Vous avez déjà un emprunt actif pour ce livre.'],
       [/book\s+unavailable|no\s+copies?\s+available|no\s+copy\s+available/i, 'Aucun exemplaire disponible.'],
       [/invalid\s+user|user\s+mismatch/i, 'Utilisateur invalide.'],
       [/user\s+not\s+found/i, 'Utilisateur introuvable.'],
 
-      // réservations
+      // Reservations
       [/existing\s+active\s+reservation/i, 'Vous avez déjà une réservation active pour ce livre.'],
 
-      // génériques backend/dev
+      // Generic backend errors
       [/internal\s*error|internalerror/i, 'Erreur interne. Veuillez réessayer plus tard.'],
       [/forbidden/i, 'Action non autorisée.'],
       [/unauthori[sz]ed/i, 'Authentification requise.']
@@ -215,7 +224,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
       const m = msg.match(re);
       if (m) return typeof out === 'string' ? out : out(...m);
     }
-    return msg; // à défaut, on affiche le message original
+    return msg; // Fallback: return original message
   }
 
   private showToast(message: string, type: 'success'|'error'|'info' = 'success') {
@@ -223,7 +232,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     setTimeout(() => { if (this.toast()?.message === message) this.toast.set(null); }, 4000);
   }
 
-  // ======== Emprunter ========
+  // ===== Borrow a book =====
   borrow(): void {
     if (this.borrowing() || this.hasActiveLoan()) return;
     const b: any = this.book();
@@ -238,13 +247,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
         this.loanDue.set(due);
         this.hasActiveLoan.set(true);
 
-        // met à jour le stock local
-        const copy: any = { ...(this.book() as any) };
-        const currentQty = Number(copy?.stock?.quantity ?? 0);
-        const newQty = Math.max(0, currentQty - 1);
-        copy.stock = { ...(copy.stock ?? {}), quantity: newQty, isAvailable: newQty > 0 };
-        copy.isAvailable = newQty > 0;
-        this.book.set(copy);
+        this.fetch(bookId); // Reload book to refresh availability
 
         this.showToast(
           due ? `Emprunt créé ! Retour avant le ${due.toLocaleDateString()}.` : 'Emprunt créé !',
@@ -256,11 +259,9 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
         console.error('Loan error', err);
         this.borrowing.set(false);
 
-        // Codes prioritaires
         if (err.status === 401) { this.showToast('Connectez-vous pour emprunter ce livre.', 'error'); return; }
         if (err.status === 403) { this.showToast('Vous n’êtes pas autorisé à emprunter ce livre.', 'error'); return; }
 
-        // Messages renvoyés par le backend (error/details) -> traducteur
         const raw =
           (typeof err.error?.error === 'string' && err.error.error) ||
           (typeof err.error?.details === 'string' && err.error.details) ||
@@ -271,7 +272,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ======== Réserver ========
+  // ===== Reserve a book =====
   reserve(): void {
     if (this.reserving() || this.hasReserved()) return;
     const b: any = this.book();
@@ -303,4 +304,3 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     });
   }
 }
-

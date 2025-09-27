@@ -1,29 +1,37 @@
 <section class="library-info-section">
+  <!-- Background image: full section width -->
   <img
     ngSrc="assets/images/books-background.png"
     width="1920"
     height="1080"
-    alt="Étagères de livres"
+    alt="Bookshelves background"
     class="library-info-section__background"
     priority
     fetchpriority="high"
   />
 
   <div class="library-info-section__content">
+    <!-- Section header: title + CTA -->
     <div class="library-info-section__header">
-      <app-section-title title="Notre établissement"></app-section-title>
+      <!-- Reusable section title component -->
+      <app-section-title title="Our library"></app-section-title>
+
+      <!-- Call-to-action button leading to the "About" page -->
       <app-cta-button
-        text="Plus d'informations"
+        text="More information"
         color="yellow"
         icon="info"
         routerLink="/a-propos"
       ></app-cta-button>
     </div>
 
+    <!-- Introductory text box -->
     <div class="library-info-section__text-box">
       <p class="library-info-section__description">
-        À la Bibliothèque Montferrand, nous croyons que chaque lecteur mérite un lieu où il peut grandir, s'émerveiller et se connecter aux autres.
-        Avec des milliers d'ouvrages, un espace numérique moderne et des activités pour tous les âges, notre établissement est bien plus qu'une simple bibliothèque.
+        At Montferrand Library, we believe every reader deserves a place to grow,
+        be inspired, and connect with others.
+        With thousands of books, a modern digital space, and activities for all ages,
+        our establishment is much more than a simple library.
       </p>
     </div>
   </div>

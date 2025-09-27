@@ -1,3 +1,17 @@
+/**
+ * Application main route configuration.
+ *
+ * This file defines all routes of the Angular application, including:
+ * - Public routes (home, login, register, catalog, info pages).
+ * - Auth-related routes (email confirmation, password reset, register success).
+ * - Protected routes under "personal space" (`/espace`) guarded by `authGuard`.
+ * - Lazy-loaded components for performance optimization.
+ * - Fallback route redirecting to home (`''`).
+ *
+ * Each route entry maps a URL path to a component, or uses `loadComponent`
+ * for lazy loading. Child routes are used for account-related features.
+ */
+
 import { Routes } from '@angular/router';
 import { HomePageComponent } from './features/home/pages/home-page/home-page.component';
 import { LoginComponent } from './features/auth/login.component';
@@ -12,42 +26,50 @@ import RegisterSuccessComponent from './features/auth/register-success.component
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
+  /** Home route - default landing page */
   { path: '', component: HomePageComponent },
-  { path: 'connexion', component: LoginComponent },
-  { path: 'inscription', component: RegisterComponent },
 
-  { path: 'confirm-email', component: ConfirmEmailComponent },
-  { path: 'mot-de-passe-oublie', component: ForgotPasswordComponent },
-  { path: 'reinitialiser-mot-de-passe', component: ResetPasswordComponent },
-  { path: 'inscription/verification', component: RegisterSuccessComponent },
+  /** Authentication routes */
+  { path: 'connexion', component: LoginComponent }, // Login page
+  { path: 'inscription', component: RegisterComponent }, // Register page
+  { path: 'confirm-email', component: ConfirmEmailComponent }, // Email confirmation
+  { path: 'mot-de-passe-oublie', component: ForgotPasswordComponent }, // Forgot password
+  { path: 'reinitialiser-mot-de-passe', component: ResetPasswordComponent }, // Reset password
+  { path: 'inscription/verification', component: RegisterSuccessComponent }, // Register success
 
-  { path: 'catalogue', component: CatalogPageComponent },
+  /** Catalog routes */
+  { path: 'catalogue', component: CatalogPageComponent }, // Catalog listing
   {
     path: 'livre/:id',
+    // Lazy-loaded book details by ID
     loadComponent: () =>
       import('./features/catalog/pages/book-details-page/book-details-page.component')
         .then(m => m.BookDetailsPageComponent)
   },
 
+  /** Personal account space (protected by authGuard) */
   {
     path: 'espace',
     canActivate: [authGuard],
     children: [
-      { path: '', component: PersonalSpaceComponent },
+      { path: '', component: PersonalSpaceComponent }, // Default personal space page
       {
         path: 'profil',
+        // Lazy-loaded user profile page
         loadComponent: () =>
           import('./features/account/pages/user-profile/user-profile.component')
             .then(m => m.UserProfileComponent)
       },
       {
         path: 'mes-reservations',
+        // Lazy-loaded reservations management page
         loadComponent: () =>
           import('./features/account/pages/my-reservations/my-reservations.component')
             .then(m => m.MyReservationsComponent)
       },
       {
         path: 'mes-emprunts',
+        // Lazy-loaded loans management page
         loadComponent: () =>
           import('./features/account/pages/my-loans/my-loans.component')
             .then(m => m.MyLoansComponent)
@@ -55,6 +77,7 @@ export const routes: Routes = [
     ]
   },
 
+  /** Catalog management (for admins or privileged users) */
   {
     path: 'catalogue/ajout-livre',
     loadComponent: () =>
@@ -68,10 +91,32 @@ export const routes: Routes = [
         .then(m => m.CatalogManagementComponent)
   },
 
-  { path: 'contact', loadComponent: () => import('./features/info/pages/contact-page/contact-page.component').then(m => m.ContactPageComponent) },
-  { path: 'a-propos', loadComponent: () => import('./features/info/pages/about-page/about-page.component').then(m => m.AboutPageComponent) },
-  { path: 'faq', loadComponent: () => import('./features/info/pages/faq-page/faq-page.component').then(m => m.FaqPageComponent) },
-  { path: 'mentions-legales', loadComponent: () => import('./features/info/pages/legal-notice-page/legal-notice-page.component').then(m => m.LegalNoticePageComponent) },
+  /** Informational pages */
+  {
+    path: 'contact',
+    loadComponent: () =>
+      import('./features/info/pages/contact-page/contact-page.component')
+        .then(m => m.ContactPageComponent)
+  },
+  {
+    path: 'a-propos',
+    loadComponent: () =>
+      import('./features/info/pages/about-page/about-page.component')
+        .then(m => m.AboutPageComponent)
+  },
+  {
+    path: 'faq',
+    loadComponent: () =>
+      import('./features/info/pages/faq-page/faq-page.component')
+        .then(m => m.FaqPageComponent)
+  },
+  {
+    path: 'mentions-legales',
+    loadComponent: () =>
+      import('./features/info/pages/legal-notice-page/legal-notice-page.component')
+        .then(m => m.LegalNoticePageComponent)
+  },
 
+  /** Wildcard route - redirects any unknown URL to home */
   { path: '**', redirectTo: '' }
 ];

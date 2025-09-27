@@ -1,6 +1,19 @@
+<!-- ============================================================
+     Header Component Template
+     - Displays site logo, navigation icons, and drawers
+     - Contains:
+       * Logo and menu toggle
+       * Navigation icons (search, contact, account)
+       * Drawer menu (sidebar navigation)
+       * Drawer search (search panel with advanced filters)
+     ============================================================ -->
+
 <header class="header">
-  <!-- Logo + menu toggle -->
+  <!-- ========================
+       Top bar: Logo + menu toggle
+       ======================== -->
   <div class="header__top">
+    <!-- Button to toggle side menu -->
     <button
       #menuToggleButton
       class="header__menu-toggle"
@@ -9,20 +22,24 @@
       [attr.aria-expanded]="isMenuOpen">
       <img ngSrc="assets/images/icon-menu.svg" alt="Menu" width="60" height="60" />
     </button>
+
+    <!-- Logo linking to homepage -->
     <a routerLink="/">
       <img
         class="header__logo"
         ngSrc="assets/images/logo.svg"
-        alt="BiblioMate Logo"
+        alt="Logo BiblioMate"
         width="500"
         height="382"
       />
     </a>
   </div>
 
-  <!-- Icônes -->
+  <!-- ========================
+       Navigation icons
+       ======================== -->
   <nav class="header__nav">
-    <!-- Loupe -> ouvre/ferme le tiroir recherche -->
+    <!-- Search icon: toggles search drawer -->
     <button
       #searchToggleBtn
       type="button"
@@ -32,11 +49,12 @@
       <img ngSrc="assets/images/icon-search.svg" alt="Recherche" width="60" height="60" />
     </button>
 
+    <!-- Contact icon -->
     <a class="header__nav-item contact" routerLink="/contact" aria-label="Contact">
       <img ngSrc="assets/images/icon-contact.svg" alt="Contact" width="60" height="60" />
     </a>
 
-    <!-- icône compte : destination selon état -->
+    <!-- Account icon: destination depends on authentication state -->
     <a class="header__nav-item user"
        [routerLink]="(auth.isAuthenticated$ | async) ? '/espace' : '/connexion'"
        aria-label="Mon compte">
@@ -44,19 +62,26 @@
     </a>
   </nav>
 
-  <!-- Tiroir MENU -->
-  <aside class="header__drawer" role="dialog" aria-modal="true"
+  <!-- ========================
+       Side drawer menu
+       - Accessible via menu toggle
+       - Displays navigation links based on authentication state
+       ======================== -->
+  <aside class="header__drawer"
+         role="dialog"
+         aria-modal="true"
          aria-labelledby="drawer-title"
          [class.is-visible]="isMenuOpen"
          (keydown)="handleKeyDown($event)">
     <h2 id="drawer-title" class="visually-hidden">Menu principal</h2>
 
+    <!-- Close button -->
     <button class="header__drawer__close" (click)="closeMenu()" aria-label="Fermer le menu">
-      <img ngSrc="assets/images/icon-fermer.svg" alt="Fermer le menu" height="39" width="39" />
+      <img ngSrc="assets/images/icon-fermer.svg" alt="Fermer" height="39" width="39" />
     </button>
 
     <nav>
-      <!-- Accueil -->
+      <!-- Home link -->
       <a routerLink="/"
          routerLinkActive="active"
          [routerLinkActiveOptions]="{ exact: true }"
@@ -65,14 +90,14 @@
         Accueil
       </a>
 
-      <!-- Catalogue -->
+      <!-- Catalog link -->
       <a routerLink="/catalogue"
          routerLinkActive="active"
          (click)="closeMenu()">
         Catalogue
       </a>
 
-      <!-- Non connecté -->
+      <!-- Non-authenticated state: login option -->
       <ng-container *ngIf="(auth.isAuthenticated$ | async) === false">
         <a routerLink="/connexion"
            routerLinkActive="active"
@@ -82,7 +107,7 @@
         <hr />
       </ng-container>
 
-      <!-- Connecté -->
+      <!-- Authenticated state: personal space and admin links -->
       <ng-container *ngIf="auth.isAuthenticated$ | async">
         <a routerLink="/espace"
            routerLinkActive="active"
@@ -90,6 +115,8 @@
           Espace personnel
         </a>
 
+        <!-- Librarian section (currently commented out) -->
+        <!--
         <ng-container *ngIf="(auth.role$ | async) === 'Librarian'">
           <a routerLink="/gestion"
              routerLinkActive="active"
@@ -97,7 +124,9 @@
             Gestion
           </a>
         </ng-container>
+        -->
 
+        <!-- Admin-only links -->
         <ng-container *ngIf="(auth.role$ | async) === 'Admin'">
           <a routerLink="/admin"
              routerLinkActive="active"
@@ -111,11 +140,12 @@
           </a>
         </ng-container>
 
+        <!-- Logout link -->
         <a (click)="auth.logout()">Se déconnecter</a>
         <hr />
       </ng-container>
 
-      <!-- Autres pages -->
+      <!-- Additional static pages -->
       <a routerLink="/contact"
          routerLinkActive="active"
          (click)="closeMenu()">
@@ -142,20 +172,25 @@
     </nav>
   </aside>
 
-
-  <!-- ======= Tiroir RECHERCHE ======= -->
-  <aside class="header__search" role="dialog" aria-modal="true"
+  <!-- ========================
+       Search drawer
+       - Accessible via search icon
+       - Contains search bar and advanced filters
+       ======================== -->
+  <aside class="header__search"
+         role="dialog"
+         aria-modal="true"
          aria-labelledby="search-title"
          [class.is-visible]="isSearchOpen"
          (keydown)="handleSearchKeyDown($event)">
     <h2 id="search-title" class="visually-hidden">Recherche</h2>
 
-    <!-- bouton fermer (haut-droite) -->
+    <!-- Close button -->
     <button class="header__search__close" (click)="closeSearch()" aria-label="Fermer la recherche">
       <img ngSrc="assets/images/icon-fermer.svg" alt="" height="39" width="39" />
     </button>
 
-    <!-- Barre + toggle -->
+    <!-- Search bar with advanced toggle -->
     <div class="page-gutter hero-inner">
       <div class="searchbar-pill">
         <input
@@ -180,12 +215,13 @@
       </div>
     </div>
 
+    <!-- Hint text -->
     <p class="search-hint page-gutter">
       <img src="assets/images/alerte.svg" alt="" class="icon-alert" />
       Vos recherches s’ouvriront dans le <a routerLink="/catalogue">catalogue.</a>
     </p>
 
-    <!-- Filtres avancés -->
+    <!-- Advanced filters form -->
     <form *ngIf="advanced()" class="filters page-gutter" (ngSubmit)="applyNow()">
       <div class="grid">
         <input [ngModel]="filters().isbn"      (ngModelChange)="onFilterChange('isbn', $event)"      name="isbn"      placeholder="ISBN" />
@@ -209,6 +245,7 @@
         </label>
       </div>
 
+      <!-- Action buttons -->
       <div class="action-row">
         <button type="button" class="styled-button secondary" (click)="resetAll()">Réinitialiser les filtres</button>
         <button type="submit" class="styled-button">Rechercher avec ces filtres</button>
@@ -216,3 +253,5 @@
     </form>
   </aside>
 </header>
+
+

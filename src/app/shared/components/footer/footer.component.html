@@ -1,17 +1,27 @@
+<!-- ============================================================
+     Footer Component Template
+     - Provides site footer with logo, text, navigation links, and social icons
+     - Supports collapsible sections (accordion style) for mobile accessibility
+     - Uses ARIA roles and attributes for screen-reader support
+   ============================================================ -->
+
 <footer class="footer" role="contentinfo">
   <div class="footer__content">
 
-    <!-- Bloc logo + texte -->
+    <!-- ========================
+         Logo and text block
+         ======================== -->
     <div class="footer__block footer__logo-text">
       <div class="footer__logo-wrapper">
+        <!-- Link back to homepage -->
         <a href="/" class="footer__logo-link" aria-label="Retour à l'accueil">
-        <img
-          ngSrc="assets/images/logo.svg"
-          class="footer__logo"
-          width="110"
-          height="110"
-          alt="Logo BiblioMate"
-        />
+          <img
+            ngSrc="assets/images/logo.svg"
+            class="footer__logo"
+            width="110"
+            height="110"
+            alt="Logo BiblioMate"
+          />
         </a>
         <p class="footer__text">
           © 2025 BiblioMate<br />
@@ -20,8 +30,15 @@
       </div>
     </div>
 
+    <!-- ========================
+         Dynamic footer sections
+         - Generated from footerSections input
+         - Each section may contain navigation links or social links
+         ======================== -->
     <ng-container *ngFor="let section of footerSections">
       <div class="footer__block" [ngClass]="section.class">
+
+        <!-- Section title with accordion toggle (accessible on mobile) -->
         <div class="footer__section-title" role="heading" [attr.aria-level]="2">
           <span>{{ section.title }}</span>
           <button
@@ -31,24 +48,46 @@
             [attr.aria-controls]="section.id + '-content'"
             [attr.aria-label]="'Afficher ou masquer la section ' + section.title"
           >
+            <!-- Accordion arrow indicator -->
             <span class="footer__accordion-arrow" [class.open]="isSectionOpen(section.id)">›</span>
           </button>
         </div>
 
+        <!-- Section content (collapsible accordion body) -->
         <div
           class="footer__accordion-content"
           [id]="section.id + '-content'"
           [class.open]="isSectionOpen(section.id)"
         >
+          <!-- ========================
+               Standard navigation links
+               ======================== -->
           <ng-container *ngIf="section.id !== 'socials'">
-            <a *ngFor="let link of section.links" [href]="link.href" class="footer__link">
+            <a
+              *ngFor="let link of section.links"
+              [href]="link.href"
+              class="footer__link">
               {{ link.label }}
             </a>
           </ng-container>
+
+          <!-- ========================
+               Social links section
+               - Displays icons in a grid
+               ======================== -->
           <ng-container *ngIf="section.id === 'socials'">
             <div class="footer__social-grid">
-              <a *ngFor="let social of section.links" [href]="social.href" [attr.aria-label]="social.label" role="link">
-                <img *ngIf="isSocialLink(social)" [ngSrc]="social.icon" alt="" width="40" height="40" />
+              <a
+                *ngFor="let social of section.links"
+                [href]="social.href"
+                [attr.aria-label]="social.label"
+                role="link">
+                <img
+                  *ngIf="isSocialLink(social)"
+                  [ngSrc]="social.icon"
+                  alt=""
+                  width="40"
+                  height="40" />
               </a>
             </div>
           </ng-container>
@@ -57,3 +96,4 @@
     </ng-container>
   </div>
 </footer>
+

@@ -1,4 +1,7 @@
-// Personal page styles
+// ========================
+// Personal page container
+// - Provides padding, max width, and vertical centering
+// ========================
 .personal-page {
   padding-inline: clamp(16px, 3vw, 32px);
   margin-inline: auto;
@@ -10,7 +13,10 @@
   font-family: 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-/* HERO */
+/* ========================
+   HERO section
+   - Displays avatar, title, and subline
+   ======================== */
 .personal-hero {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -53,7 +59,11 @@
   }
 }
 
-// GRID D'ACTIONS - Corrections principales
+// ========================
+// ACTION GRID
+// - Displays navigation cards in a 3-column grid
+// - Responsive down to single column on mobile
+// ========================
 .action-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -66,6 +76,9 @@
   max-width: 100%;
 }
 
+// ========================
+// RESPONSIVE BREAKPOINTS
+// ========================
 @media (max-width: 1024px) {
   .action-grid {
     min-height: 500px;

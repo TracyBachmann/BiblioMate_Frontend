@@ -60,20 +60,36 @@ export default class RegisterSuccessComponent {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
 
+  // Email extracted from query params, used to display and resend
   email = this.route.snapshot.queryParamMap.get('email') ?? '';
-  resending = false;
-  done = false;
-  error: string | null = null;
 
+  // Flags to manage UI state
+  resending = false;   // true while request is being sent
+  done = false;        // true if resend completed successfully
+  error: string | null = null; // holds error message if resend fails
+
+  /** Resend confirmation email to the provided address */
   resend() {
     if (!this.email) return;
-    this.resending = true; this.done = false; this.error = null;
 
-    // Fonctionne si tu exposes l’endpoint optionnel de la section 3)
+    // Reset state before sending
+    this.resending = true;
+    this.done = false;
+    this.error = null;
+
+    // POST request to resend confirmation endpoint
     this.http.post(`${environment.apiBase}/api/auths/resend-confirmation`, { email: this.email })
       .subscribe({
-        next: () => { this.done = true; this.resending = false; },
-        error: () => { this.error = 'Impossible de renvoyer le message pour le moment.'; this.resending = false; }
+        next: () => {
+          // Success: show success message
+          this.done = true;
+          this.resending = false;
+        },
+        error: () => {
+          // Failure: show error message
+          this.error = 'Impossible de renvoyer le message pour le moment.';
+          this.resending = false;
+        }
       });
   }
 }

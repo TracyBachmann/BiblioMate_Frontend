@@ -1,15 +1,57 @@
+<!--
+  ==============================================================================
+  Contact Page Template (Compact)
+  ------------------------------------------------------------------------------
+  Purpose:
+  - Renders the contact page with a hero/cover image, organization contact info,
+    a quick-access CTA area, an illustrative map, and a validated contact form.
+
+  Structure:
+  - <header.cover>: hero banner with background image and overlaid title/lede.
+  - <section.page-gutter>: two-column grid containing:
+      • Left: contact information card (address, email, phone, hours, CTAs, map).
+      • Right: reactive contact form (Angular Reactive Forms).
+
+  Accessibility:
+  - The cover image is decorative (`alt=""`) to avoid redundant announcements.
+  - The map figure uses `role="img"` and `aria-label` to provide a descriptive
+    text alternative for screen readers.
+  - Form controls use `placeholder` for hints; rely on visible labels where
+    applicable and ensure `aria-invalid`/error text can be bound in the component
+    template if needed (current design marks invalid via `.invalid` class).
+  - The submit button conveys async state via `[disabled]="isSubmitting()"` and a
+    status hint. Success/error messages are conditionally rendered.
+
+  Angular:
+  - The form binds to `form` (`[formGroup]="form"`) and submits via `(ngSubmit)`.
+  - Validation state is reflected with `[class.invalid]="hasError('controlName')"`
+    which ties into component logic.
+  - `isSubmitting()`, `success()`, and `error()` are Angular Signals read in the
+    template; they drive button disabling and feedback messages.
+
+  Notes:
+  - No functional changes; documentation comments only.
+  - Keep asset paths (`assets/images/...`) aligned with your build pipeline.
+  ==============================================================================
+-->
+
 <div class="contact-page">
   <header class="cover">
+    <!-- Decorative hero image; `fetchpriority="high"` hints early load. -->
     <img ngSrc="assets/images/contact.jpg" width="1920" height="350" alt="" class="cover__bg" fetchpriority="high" />
+    <!-- Overlay container with page title and lede, positioned over the image. -->
     <div class="cover__inner page-gutter">
       <app-section-title [title]="'Contact'"></app-section-title>
       <p class="lede">Une question ? Un retour ? Écris-nous.</p>
     </div>
   </header>
 
+  <!-- Main content area: two-column grid on wide screens, single column on narrow. -->
   <section class="page-gutter grid-2">
+    <!-- ======================= Contact Information Card ======================= -->
     <div class="card info">
       <h3>Coordonnées</h3>
+      <!-- Contact coordinates as a simple list; icons are informative decor. -->
       <ul class="coords">
         <li><img ngSrc="assets/images/icon-pin.png" width="20" height="20" alt=""> 12 rue des Érables, 63100 Montferrand</li>
         <li><img ngSrc="assets/images/icon-mail.png" width="20" height="20" alt=""> contact&#64;bibliomate.fr</li>
@@ -17,40 +59,50 @@
         <li><img ngSrc="assets/images/icon-clock.png" width="20" height="20" alt=""> Mar–Sam : 9h–18h</li>
       </ul>
 
+      <!-- Inline CTAs for quick actions; actual behavior is encapsulated in the component. -->
       <div class="inline-cta">
         <app-cta-button text="Nous appeler" color="yellow" icon="call"></app-cta-button>
         <app-cta-button text="Itinéraire" color="yellow" icon="itinerary"></app-cta-button>
       </div>
 
+      <!-- Map illustration with accessible label; replace placeholder with a live map if needed. -->
       <figure class="map" role="img" aria-label="Plan d'accès — Bibliothèque Montferrand">
         <img ngSrc="assets/images/map-placeholder.jpg" width="840" height="420" alt="">
         <figcaption>Plan d’accès (illustration)</figcaption>
       </figure>
     </div>
 
+    <!-- ============================ Contact Form Card ========================= -->
+    <!-- Reactive form: control names and validation mirror the component setup. -->
     <form class="card form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <h3>Écrire un message</h3>
 
+      <!-- Row of two inputs (stacks on small screens via CSS). -->
       <div class="row">
         <input formControlName="lastName" placeholder="Nom *" [class.invalid]="hasError('lastName')" />
         <input formControlName="firstName" placeholder="Prénom *" [class.invalid]="hasError('firstName')" />
       </div>
 
+      <!-- Email and subject fields with validation state reflected via class binding. -->
       <input formControlName="email" type="email" placeholder="Email *" [class.invalid]="hasError('email')" />
       <input formControlName="subject" placeholder="Sujet *" [class.invalid]="hasError('subject')" />
 
+      <!-- Message textarea; `rows` provides an initial height, CSS enforces min-height. -->
       <textarea formControlName="message" rows="6" placeholder="Votre message *" [class.invalid]="hasError('message')"></textarea>
 
+      <!-- Consent checkbox required (Validators.requiredTrue). -->
       <label class="check">
         <input type="checkbox" formControlName="consent" />
         <span>J’accepte que mes données soient utilisées pour répondre à ma demande.</span>
       </label>
 
+      <!-- Submit action area: button disables while submitting; a hint indicates progress. -->
       <div class="actions">
         <button class="styled-button" type="submit" [disabled]="isSubmitting()">Envoyer</button>
         <span class="hint" *ngIf="isSubmitting()">Envoi en cours…</span>
       </div>
 
+      <!-- Submission feedback messages bound to signals in the component. -->
       <p class="success" *ngIf="success()">{{ success() }}</p>
       <p class="error" *ngIf="error()">{{ error() }}</p>
     </form>

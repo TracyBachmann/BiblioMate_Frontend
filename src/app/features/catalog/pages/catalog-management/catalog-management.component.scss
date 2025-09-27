@@ -1,39 +1,50 @@
 @use '../../../catalog/pages/catalog-page/catalog-page.component.scss' as catalog;
 
+/* ============================================================
+   Catalog management page styles
+   Extends the base catalog page layout
+   ============================================================ */
 .catalog-management-page {
   @extend .catalog-page;
 
+  /* ===== Row of admin action buttons (Add / Import / Export) ===== */
   .action-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    flex-wrap: wrap;   // allow wrapping on small screens
+    gap: 1rem;         // spacing between buttons
     margin-bottom: 1.5rem;
 
+    /* Default styled button inside this row */
     .styled-button {
-      flex: 1 1 auto;
-      max-width: 240px;
-      text-align: center;
+      flex: 1 1 auto;     // flexible width
+      max-width: 240px;   // prevent oversized buttons
+      text-align: center; // center text inside
     }
   }
 
+  /* ===== Pagination controls ===== */
   .pagination {
     display: flex;
-    justify-content: center;
+    justify-content: center; // center the pagination horizontally
     gap: .5rem;
     margin-top: 2rem;
 
     button {
-      min-width: 36px;
+      min-width: 36px;            // minimum width for clickable area
       padding: .4rem .75rem;
-      border: 1px solid #d1d5db;
+      border: 1px solid #d1d5db;  // light gray border
       border-radius: 6px;
-      background: #fff;
+      background: #fff;           // white background
       cursor: pointer;
+
+      /* Active page button */
       &.is-active {
-        background: #0e5aa6;
-        color: #fff;
+        background: #0e5aa6; // primary blue
+        color: #fff;         // white text
         font-weight: 600;
       }
+
+      /* Disabled state */
       &:disabled {
         opacity: .5;
         cursor: not-allowed;
@@ -42,6 +53,10 @@
   }
 }
 
+/* ============================================================
+   Specific overrides for catalog-management-page
+   - Custom CSV buttons styling
+   ============================================================ */
 .catalog-management-page {
   @extend .catalog-page;
 
@@ -57,16 +72,17 @@
       text-align: center;
     }
 
+    /* CSV import/export buttons */
     .csv-btn {
-      background: #fff;            // fond blanc
-      color: #0e5aa6;              // texte bleu
-      border: 2px solid #0e5aa6;   // bordure bleue
+      background: #fff;            // white background
+      color: #0e5aa6;              // primary blue text
+      border: 2px solid #0e5aa6;   // blue border
 
       &:hover {
-        background: #f1f5f9;       // léger gris au survol
+        background: #f1f5f9;       // light gray on hover
       }
       &:active {
-        background: #e2e8f0;       // un peu plus foncé au clic
+        background: #e2e8f0;       // slightly darker gray on click
       }
     }
   }

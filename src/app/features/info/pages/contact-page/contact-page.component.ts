@@ -1,3 +1,32 @@
+/**
+ * ContactPageComponent
+ * -----------------------------------------------------------------------------
+ * Purpose:
+ * - Renders a contact form with validation and submission feedback.
+ * - Demonstrates Angular Reactive Forms combined with Signals for UI state.
+ *
+ * Key Concepts:
+ * - Reactive Forms: `FormBuilder` constructs a strongly-typed `FormGroup`.
+ * - Validators: required, max/min length, email format, and consent checkbox.
+ * - Signals: `isSubmitting`, `success`, `error` hold transient UI state.
+ * - UX: on invalid submit, marks all controls as touched and shows an error.
+ *
+ * Implementation Notes:
+ * - `submit()` currently simulates an async API call via `setTimeout`.
+ * - Replace the placeholder with a real HTTP request when integrating.
+ * - After success: clears transient error, shows success, resets the form
+ *   (keeps consent unchecked by default).
+ *
+ * Accessibility:
+ * - Use `hasError(name)` in the template to conditionally render error messages
+ *   and `aria-invalid`/`aria-describedby` bindings for each field.
+ *
+ * Maintenance:
+ * - Keep the validation rules in sync with backend constraints.
+ * - If adding fields, define validators here and update the template bindings.
+ * - This file adds documentation comments only; no functional changes were made.
+ */
+
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -22,12 +51,35 @@ import { CtaButtonComponent } from '../../../../shared/components/cta-button/cta
   styleUrls: ['./contact-page.component.scss']
 })
 export class ContactPageComponent {
+  /**
+   * Reactive form builder.
+   * Injected via `inject()` for tree-shakable DI in a standalone component.
+   */
   private fb = inject(FormBuilder);
 
+  /**
+   * Transient UI state:
+   * - `isSubmitting`: true while the (simulated) request is in-flight.
+   * - `success`: success message to display after a successful submission.
+   * - `error`: error message for validation or submission failures.
+   */
   isSubmitting = signal(false);
   success = signal<string | null>(null);
   error = signal<string | null>(null);
 
+  /**
+   * Contact form definition and validation rules.
+   * Controls:
+   * - `lastName` / `firstName`: required, max length 80.
+   * - `email`: required, must match email format.
+   * - `subject`: required, max length 120.
+   * - `message`: required, length between 10 and 1500.
+   * - `consent`: must be explicitly checked (requiredTrue).
+   *
+   * Usage in template:
+   * - Bind inputs via `formControlName`.
+   * - Use `hasError('controlName')` for displaying inline error states.
+   */
   form = this.fb.group({
     lastName: ['', [Validators.required, Validators.maxLength(80)]],
     firstName: ['', [Validators.required, Validators.maxLength(80)]],
@@ -37,6 +89,19 @@ export class ContactPageComponent {
     consent: [false, Validators.requiredTrue]
   });
 
+  /**
+   * Handles form submission.
+   * Behavior:
+   * - If invalid: mark all controls as touched and set a generic error message.
+   * - If valid: clear error, set `isSubmitting`, simulate async API, then:
+   *   - clear `isSubmitting`
+   *   - set a success message
+   *   - reset the form (keeps `consent` unchecked).
+   *
+   * Integration guide:
+   * - Replace the `setTimeout` block with a real HTTP call (e.g., HttpClient).
+   * - On error, set `this.error.set('message')` and keep the form values.
+   */
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -46,7 +111,7 @@ export class ContactPageComponent {
     this.error.set(null);
     this.isSubmitting.set(true);
 
-    // 👉 Ici, tu brancheras ton appel API
+    // Hook your API call here (replace the simulated delay below).
     setTimeout(() => {
       this.isSubmitting.set(false);
       this.success.set('Votre message a bien été envoyé. Nous vous répondrons rapidement.');
@@ -54,9 +119,13 @@ export class ContactPageComponent {
     }, 700);
   }
 
+  /**
+   * Utility to check whether a control is both touched and invalid.
+   * @param name Control name in the form group.
+   * @returns true if the control exists, has been touched, and is invalid.
+   */
   hasError(name: string): boolean {
     const c = this.form.get(name);
     return !!c && c.touched && c.invalid;
   }
 }
-

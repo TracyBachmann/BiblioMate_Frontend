@@ -1,13 +1,38 @@
+<!--
+  ==============================================================================
+  Home Page Template
+  ------------------------------------------------------------------------------
+  Purpose:
+  - Composes the home page from feature sections (hero, info, team) and
+    a "latest books" preview fed by `latestBooks` from the component.
+
+  Angular:
+  - `*ngIf="latestBooks.length; else loading"` renders the preview only when
+    data is available; otherwise shows a lightweight loading fallback.
+  - `<app-catalog-preview [books]="latestBooks">` receives the fetched books
+    (populated in `HomePageComponent.ngOnInit()`).
+
+  Notes:
+  - No functional changes; documentation comments only.
+  ==============================================================================
+-->
+
+<!-- Hero banner / primary callout -->
 <app-hero></app-hero>
+
+<!-- Library information / value proposition section -->
 <app-library-info-section></app-library-info-section>
+
+<!-- Team introduction / social proof -->
 <app-team-presentation></app-team-presentation>
 
 <section class="latest-books">
-
+  <!-- Render catalog preview once data has been loaded -->
   <ng-container *ngIf="latestBooks.length; else loading">
     <app-catalog-preview [books]="latestBooks"></app-catalog-preview>
   </ng-container>
 
+  <!-- Fallback shown until `latestBooks` is populated -->
   <ng-template #loading>
     <p>Chargement…</p>
   </ng-template>

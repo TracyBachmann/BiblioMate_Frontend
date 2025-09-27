@@ -1,6 +1,9 @@
-/* ===========================
-   HEADER – bar latérale fixe
-   =========================== */
+/* ============================================================
+   HEADER – fixed sidebar / top bar
+   - Fixed sidebar on desktop
+   - Responsive top bar on mobile/tablet
+   - Contains logo, navigation icons, and drawers
+   ============================================================ */
 
 .header {
   position: fixed;
@@ -14,6 +17,7 @@
   flex-direction: column;
   z-index: 1000;
 
+  /* Mobile / tablet: transform into top bar */
   @media (max-width: 1024px) {
     flex-direction: row;
     width: 100vw;
@@ -24,6 +28,9 @@
     justify-content: space-between;
   }
 
+  /* ========================
+     Top section: logo + menu button
+     ======================== */
   &__top {
     display: flex;
     flex-direction: column;
@@ -55,6 +62,7 @@
     }
   }
 
+  /* Menu toggle button */
   &__menu-toggle {
     background: none;
     border: none;
@@ -75,7 +83,9 @@
     }
   }
 
-  /* ===== Icônes de nav (loupe, contact, user) ===== */
+  /* ========================
+     Navigation icons (search, contact, user)
+     ======================== */
   &__nav {
     display: flex;
     flex-direction: column;
@@ -101,9 +111,8 @@
       justify-content: center;
       width: 70px;
       height: 70px;
-      border-top: 1px solid black;
 
-      /* reset du “fond gris” natif des <button> */
+      /* reset native <button> styles */
       background: transparent;
       border: 0;
       appearance: none;
@@ -147,7 +156,9 @@
     }
   }
 
-  /* ===== Tiroir MENU ===== */
+  /* ========================
+     Drawer menu (side panel)
+     ======================== */
   &__drawer {
     position: absolute;
     background-color: #fbbc05;
@@ -159,6 +170,7 @@
     transition: transform 0.3s ease, opacity 0.3s ease;
     border-right: 3px solid #000;
 
+    /* Visible state */
     &.is-visible { opacity: 1; transform: scale(1); pointer-events: auto; }
 
     @media (max-width: 1024px) {
@@ -213,7 +225,12 @@
           border-radius: 4px;
           text-decoration: underline;
         }
-        &.active, &[aria-current='page'] { font-weight: 900; text-decoration: underline; }
+
+        &.active,
+        &[aria-current='page'] {
+          font-weight: 900;
+          text-decoration: underline;
+        }
       }
 
       hr { border: 1px solid rgba(255,255,255,.3); margin: 1rem 0; }
@@ -221,24 +238,28 @@
   }
 }
 
-/* Accessibilité focus */
+/* ========================
+   Accessibility utilities
+   ======================== */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0;
   white-space: nowrap; clip: rect(0 0 0 0); clip-path: inset(100%); overflow: hidden;
 }
-button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offset: 3px; }
+button:focus-visible,
+a:focus-visible { outline: 2px solid #fbbc05; outline-offset: 3px; }
 .header__menu-toggle:focus { outline: none; }
 
-/* ===========================
-   TIROIR RECHERCHE (plus vertical, moins horizontal)
-   =========================== */
+/* ============================================================
+   SEARCH DRAWER
+   - Slide-in search panel with search bar and advanced filters
+   ============================================================ */
 
 .header__search {
   position: absolute;
   background: #fff;
   z-index: 1100;
 
-  /* espace haut pour la croix */
+  /* Space for close button at the top */
   padding: 64px 0 28px;
 
   opacity: 0;
@@ -247,11 +268,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
   transition: transform .25s ease, opacity .25s ease;
   border-right: 3px solid #000;
 
-  /* typo catalogue */
+  /* Typography consistency */
   &, input, select, button {
     font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   }
 
+  /* Visible state */
   &.is-visible { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
 
   @media (max-width: 1024px) {
@@ -260,13 +282,12 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
   }
   @media (min-width: 1025px) {
     top: 0; left: 70px;
-    /* un peu plus étroit sur desktop */
     width: clamp(580px, 50vw, 720px);
     height: 100vh;
     overflow-y: auto;
   }
 
-  /* Contenant */
+  /* Container utilities */
   .page-gutter {
     padding-inline: clamp(16px, 5vw, 40px);
     max-width: 820px;
@@ -274,9 +295,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
   }
   .hero-inner { display: grid; gap: clamp(14px, 2.2vw, 22px); }
 
-  /* ===== Barre de recherche ===== */
+  /* ========================
+     Search bar styling
+     ======================== */
   .searchbar-pill {
-    /* alignée à gauche pour “raccourcir” visuellement */
     margin: 0 0 clamp(18px, 2.8vh, 28px);
     max-width: 600px;
 
@@ -288,17 +310,18 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
     background: #ffffff;
     border: 2px solid #04446B;
     border-radius: 999px;
-    padding: 10px 14px; /* +haute */
+    padding: 10px 14px;
 
     input[type="search"] {
       width: 100%;
-      padding: .8rem 1rem;   /* +haute => occupe plus de vertical */
+      padding: .8rem 1rem;
       font-size: 16px;
       background: transparent;
       border: none;
       border-radius: 10px;
       color: #111827;
       min-width: 0;
+
       &::placeholder { color: #6b7280; font-weight: 300; }
       &:focus { outline: none; box-shadow: 0 0 0 2px rgba(4,68,107,.2); }
     }
@@ -307,7 +330,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
       width: 42px; height: 42px;
       display: grid; place-items: center;
       border: none; background: transparent; border-radius: 50%;
-      cursor: pointer; transition: background .2s ease, transform .04s ease;
+      cursor: pointer;
+      transition: background .2s ease, transform .04s ease;
+
       &:hover { background: rgba(4,68,107,.08); }
       &:active { transform: translateY(1px); }
     }
@@ -315,27 +340,72 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
     .adv-toggle {
       display: inline-grid; grid-auto-flow: column; align-items: center; gap: 8px;
       font-size: 16px; color: #374151; user-select: none; cursor: pointer;
+
       input { display: none; }
-      i { width: 44px; height: 26px; border-radius: 99px; position: relative; display: inline-block; background: #e5e7eb; transition: background .2s ease;
-        &::after { content: ""; position: absolute; inset: 4px auto 4px 4px; width: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .2s ease; }
+
+      i {
+        width: 44px; height: 26px; border-radius: 99px;
+        position: relative; display: inline-block;
+        background: #e5e7eb;
+        transition: background .2s ease;
+
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 4px auto 4px 4px;
+          width: 18px;
+          border-radius: 50%;
+          background: #fff;
+          box-shadow: 0 1px 2px rgba(0,0,0,.2);
+          transition: transform .2s ease;
+        }
       }
-      input:checked + i { background: #cfe0ff; &::after { transform: translateX(18px); background: #0e5aa6; } }
+
+      input:checked + i {
+        background: #cfe0ff;
+        &::after {
+          transform: translateX(18px);
+          background: #0e5aa6;
+        }
+      }
     }
   }
 
-  /* ===== Boutons (catalogue) ===== */
+  /* ========================
+     Action buttons
+     ======================== */
   .styled-button {
-    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-    appearance: none; border-radius: 10px; border: 2px solid transparent;
-    background: #0e5aa6; color: #fff; font-weight: 400; font-size: 16px;
-    padding: .95rem 1.35rem; /* un peu plus grands */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    appearance: none;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background: #0e5aa6;
+    color: #fff;
+    font-weight: 400;
+    font-size: 16px;
+    padding: .95rem 1.35rem;
     cursor: pointer;
     transition: background .2s ease, transform .05s ease, border-color .2s ease;
-    &:hover { background: #0a4a8a; } &:active { transform: translateY(1px); }
+
+    &:hover { background: #0a4a8a; }
+    &:active { transform: translateY(1px); }
     &:disabled { opacity: .6; cursor: not-allowed; }
-    &.secondary { background: transparent; color: #0e5aa6; border-color: #0e5aa6; &:hover { background: rgba(14,90,166,.08); } }
+
+    &.secondary {
+      background: transparent;
+      color: #0e5aa6;
+      border-color: #0e5aa6;
+
+      &:hover { background: rgba(14,90,166,.08); }
+    }
   }
 
+  /* ========================
+     Filters form
+     ======================== */
   .filters {
     margin-top: clamp(18px, 3vh, 32px);
 
@@ -343,17 +413,17 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       column-gap: 16px;
-      row-gap: clamp(16px, 2.4vh, 24px);   /* GAP VERTICAL ↑ */
+      row-gap: clamp(16px, 2.4vh, 24px);
       align-items: stretch;
 
-      /* Champs texte & select */
+      /* Inputs and selects */
       input,
       select {
         grid-column: span 6;
         width: 100%;
-        height: 48px;                   /* hauteur uniforme */
+        height: 48px;
         box-sizing: border-box;
-        padding: 0 1rem;                /* contenu centré verticalement */
+        padding: 0 1rem;
         background: #fff;
         border: 2px solid #04446B;
         border-radius: 10px;
@@ -361,23 +431,15 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
         color: #111827;
         min-width: 0;
 
-        &::placeholder {
-          color: #6b7280;
-          font-weight: 300;
-        }
-
-        &:focus {
-          outline: none;
-          box-shadow: 0 0 0 2px rgba(4, 68, 107, .2);
-        }
+        &::placeholder { color: #6b7280; font-weight: 300; }
+        &:focus { outline: none; box-shadow: 0 0 0 2px rgba(4, 68, 107, .2); }
       }
 
-      /* Style spécifique pour le select */
+      /* Custom select styling */
       select {
-        appearance: none; /* supprime le rendu natif */
-        padding-right: 2rem; /* espace pour la flèche */
-        background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2304446B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>")
-        no-repeat right 12px center;
+        appearance: none;
+        padding-right: 2rem;
+        background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2304446B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 12px center;
         background-size: 16px auto;
       }
 
@@ -387,13 +449,13 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
         color: #6b7280;
       }
 
-      /* case à cocher sur une demi-ligne */
+      /* Inline checkbox (half-row) */
       label.inline {
         grid-column: span 6;
         display: flex;
         align-items: center;
         gap: 10px;
-        height: 48px;                   /* même hauteur */
+        height: 48px;
         background: #fff;
         color: #111827;
         border-radius: 10px;
@@ -405,7 +467,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
         }
       }
 
-      /* Mobile : 1 colonne */
+      /* Mobile: single column */
       @media (max-width: 640px) {
         input,
         select,
@@ -425,44 +487,36 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
       @media (max-width: 640px) {
         justify-content: stretch;
 
-        .styled-button {
-          flex: 1 1 auto;
-        }
+        .styled-button { flex: 1 1 auto; }
       }
     }
   }
 
+  /* Close button inside search drawer */
+  .header__search__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    cursor: pointer;
+    z-index: 5;
 
-.header__search__close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+    img { width: 22px; height: 22px; }
 
-  width: 44px;
-  height: 44px;
-
-  display: grid;
-  place-items: center;
-
-  background: transparent;   // plus de rond
-  border: none;              // plus de contour
-  border-radius: 0;          // plus de cercle
-
-  padding: 0;
-  cursor: pointer;
-  z-index: 5;
-
-  img {
-    width: 22px;
-    height: 22px;
-  }
-
-  &:hover {
-    opacity: 0.7; // petit feedback au survol
+    &:hover { opacity: 0.7; }
   }
 }
-}
 
+/* ========================
+   Search hint text (below search bar)
+   ======================== */
 .search-hint {
   margin-top: 12px;
   font-size: 14px;
@@ -470,7 +524,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 6px; /* espace entre l’icône et le texte */
+  gap: 6px;
 
   .icon-alert {
     width: 16px;
@@ -484,5 +538,3 @@ button:focus-visible, a:focus-visible { outline: 2px solid #fbbc05; outline-offs
     font-weight: 400;
   }
 }
-
-

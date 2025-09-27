@@ -4,7 +4,13 @@
   width: 100%;
 }
 
-/* Tuile haute */
+/* ============================================================
+   Nav Card Component Styles
+   - Defines a vertical card with image and footer text section
+   - Includes hover effects, focus states, and disabled state
+   ============================================================ */
+
+/* ===== Card container ===== */
 .nav-card {
   flex-direction: column;
   min-height: 700px;
@@ -17,11 +23,28 @@
   transition: transform .12s ease, box-shadow .12s ease;
 }
 
-.nav-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.10); }
-.nav-card:focus-visible { outline: 2px solid #04446B; outline-offset: 3px; }
-.nav-card.disabled { pointer-events: none; opacity: .6; }
+/* Hover: subtle lift and stronger shadow */
+.nav-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+}
 
-/* IMAGE grande et bien cadrée */
+/* Focus state: accessibility outline */
+.nav-card:focus-visible {
+  outline: 2px solid #04446B;
+  outline-offset: 3px;
+}
+
+/* Disabled state: non-interactive and visually dimmed */
+.nav-card.disabled {
+  pointer-events: none;
+  opacity: .6;
+}
+
+/* ===== Image section ===== 
+   - Ensures full-width image with aspect control
+   - Adds border and scale effect on hover
+*/
 .image-wrap {
   width: 100%;
   overflow: hidden;
@@ -36,16 +59,19 @@
   border: 2px solid #8ECAE6;
   border-top: 3px solid #8ECAE6;
 }
-.nav-card:hover .image-wrap img { transform: scale(1.03); }
+.nav-card:hover .image-wrap img {
+  transform: scale(1.03);
+}
 
-/* FOOTER texte : fond bleu clair, couleur #04446B
-   - centré verticalement
-   - aligné à gauche (pas centré horizontalement) */
+/* ===== Footer section =====
+   - Blue background with left-aligned text
+   - Vertical centering inside container
+*/
 .card-footer {
   display: flex;
   flex-direction: column;
-  justify-content: center;     /* centre verticalement */
-  align-items: flex-start;     /* aligne à gauche */
+  justify-content: center;     /* vertical alignment */
+  align-items: flex-start;     /* left-aligned */
   text-align: left;
   padding: 18px 16px;
   background: #8ECAE6;
@@ -55,27 +81,32 @@
 
 .texts { width: 100%; }
 
-/* Titres/texte : tailles demandées, couleur #04446B */
+/* ===== Text styles =====
+   - Title: larger, bold
+   - Subtitle: smaller, regular
+*/
 .title {
   display: block;
   margin: 0 0 6px 0;
   font-family: 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   font-weight: 700;
-  font-size: 34px;             /* demandé */
+  font-size: 34px;             /* requested */
   line-height: 1.1;
-  color: #04446B;              /* demandé */
+  color: #04446B;              /* requested */
 }
 .subtitle {
   display: block;
   margin: 0;
   font-family: 'Inria Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   font-weight: 400;
-  font-size: 16px;             /* demandé */
+  font-size: 16px;             /* requested */
   line-height: 1.35;
-  color: #04446B;              /* demandé */
+  color: #04446B;              /* requested */
 }
 
-/* Mobile */
+/* ===== Responsive adjustments =====
+   - Reduce card height and text size on mobile
+*/
 @media (max-width: 640px) {
   .nav-card { min-height: 600px; }
   .image-wrap { height: 420px; }

@@ -1,12 +1,44 @@
+<!--
+  ==============================================================================
+  About Page Template
+  ------------------------------------------------------------------------------
+  Purpose:
+  - Renders the "About" page with a hero cover, a mission section (text + image),
+    KPI stats, and a team presentation section.
+
+  Structure:
+  - <header.cover>: visual banner with background image and overlaid title/lede.
+  - <section.mission.section-block>: two-column layout (text and media).
+  - <section.kpis>: responsive grid of KPI cards.
+  - Final section: secondary title and team component.
+
+  Accessibility:
+  - The cover image is decorative (`alt=""`) to avoid redundant announcements.
+  - The mission figure uses a descriptive `alt` for meaningful content.
+  - Ensure color contrast for text over the cover image (handled via overlay in CSS).
+
+  Angular:
+  - `app-section-title` displays section headings via `title` input binding.
+  - `routerLink` provides client-side navigation for the "S’inscrire" link.
+  - `ngSrc` (NgOptimizedImage) hints image optimization and preloading.
+
+  Notes:
+  - Comments only; no functional or structural changes made to the template.
+  ==============================================================================
+-->
+
 <div class="about-page">
   <header class="cover">
+    <!-- Decorative hero image; background-only, thus empty alt attribute. -->
     <img ngSrc="assets/images/hero-background.png" width="1920" height="350" alt="" class="cover__bg" />
+    <!-- Overlay container centered over the cover image with title and lede. -->
     <div class="cover__inner page-gutter">
       <app-section-title [title]="'À propos'"></app-section-title>
       <p class="lede">Notre mission : faciliter l’accès au savoir pour tous.</p>
     </div>
   </header>
 
+  <!-- Mission section: text block with CTAs + illustrative image -->
   <section class="page-gutter mission section-block">
     <div class="text">
       <h3>Notre établissement</h3>
@@ -16,15 +48,19 @@
         nous accompagnons <strong>tous les publics</strong>.
       </p>
       <div class="cta-row">
+        <!-- Primary CTA leading to the catalog -->
         <app-cta-button text="Découvrir le catalogue" color="yellow" icon="book"></app-cta-button>
+        <!-- Secondary CTA navigating to the registration route -->
         <a routerLink="/inscription" class="link">S’inscrire</a>
       </div>
     </div>
     <figure class="media">
+      <!-- Meaningful image: provide descriptive alt text -->
       <img ngSrc="assets/images/books-background.png" width="960" height="600" alt="Étagères de livres" />
     </figure>
   </section>
 
+  <!-- KPI section: compact cards in a responsive grid -->
   <section class="page-gutter kpis">
     <div class="kpi"><strong>45k+</strong><span>ouvrages</span></div>
     <div class="kpi"><strong>1200+</strong><span>adhérents</span></div>
@@ -32,6 +68,7 @@
     <div class="kpi"><strong>98%</strong><span>de satisfaction</span></div>
   </section>
 
+  <!-- Team presentation: title + embedded team component -->
   <section class="page-gutter">
     <app-section-title [title]="'L’équipe'"></app-section-title>
     <app-team-presentation></app-team-presentation>

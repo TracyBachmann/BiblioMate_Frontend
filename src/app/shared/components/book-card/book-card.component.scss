@@ -1,4 +1,10 @@
-/* app-book-card.component.scss */
+/* ============================================================
+   Book Card Component Styles
+   - Defines base layout, typography, and responsive behavior
+   - Supports two variants: default (card) and compact (list view)
+   - Includes styles for images, content, status, links, buttons
+   ============================================================ */
+
 :host {
   display: flex;
   flex-direction: column;
@@ -6,6 +12,7 @@
 }
 
 .book-card {
+  /* Base container for the book card */
   display: flex;
   flex-direction: column;
   background: #fff;
@@ -17,7 +24,9 @@
   flex: 1;
   position: relative;
 
-  /* Bandeau titre (version "carte") */
+  /* ========================
+     Header: colored banner with book title
+     ======================== */
   &__header {
     background: #93BFDA;
     height: 48px;
@@ -27,6 +36,7 @@
     margin-bottom: 1rem;
   }
 
+  /* Title inside header */
   &__title {
     font-family: 'League Gothic', sans-serif;
     font-size: 32px;
@@ -39,6 +49,7 @@
     text-overflow: ellipsis;
   }
 
+  /* Image wrapper with fixed aspect ratio */
   &__image {
     aspect-ratio: 16 / 10;
     overflow: hidden;
@@ -51,6 +62,7 @@
     }
   }
 
+  /* Main content section */
   &__content {
     padding: 1rem .5rem 1rem;
     display: flex;
@@ -59,6 +71,7 @@
     flex: 1;
   }
 
+  /* Book description with multiline ellipsis */
   &__description {
     font-size: 24px;
     line-height: 1.4;
@@ -69,10 +82,11 @@
     -webkit-line-clamp: 3;
     overflow: hidden;
 
-    min-height: calc(1.4em * 3);
-    max-height: calc(1.4em * 3);
+    min-height: calc(1em * 3);
+    max-height: calc(1em * 3);
   }
 
+  /* Status text */
   &__status {
     margin: 0;
     font-size: 24px;
@@ -80,6 +94,7 @@
     color: #1f2937;
   }
 
+  /* Link to details page */
   &__link {
     margin-top: auto;
     font-size: 24px;
@@ -89,9 +104,12 @@
     &:hover { text-decoration: underline; }
   }
 
-  /* ===== Vue compacte (LISTE) : version dense et lisible ===== */
+  /* ============================================================
+     Compact view (list style)
+     - Applied when .is-compact modifier is set
+     - More condensed, simplified visuals
+     ============================================================ */
   &.is-compact {
-    /* Pas de background/border ici car géré par le parent app-book-card */
     background: transparent;
     border: none;
 
@@ -127,8 +145,8 @@
       font-size: 16px;
       line-height: 1.4;
       -webkit-line-clamp: 2;
-      min-height: calc(1.4em * 2);
-      max-height: calc(1.4em * 2);
+      min-height: calc(1em * 2);
+      max-height: calc(1em * 2);
       color: #4b5563;
       font-weight: 400;
     }
@@ -155,7 +173,10 @@
   }
 }
 
-/* Adaptations mobiles */
+/* ============================================================
+   Responsive adjustments for small screens (≤ 640px)
+   - Reduce font sizes and spacing
+   ============================================================ */
 @media (max-width: 640px) {
   .book-card__header { height: 44px; }
   .book-card__title  { font-size: 28px; }
@@ -168,26 +189,67 @@
   }
 }
 
-.book-card__reservation {
-  font-size: 14px;
-  color: #374151;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-top: .5rem;
-}
-
-button.styled-button.secondary {
-  margin-top: .75rem;
-  font-size: 14px;
-  align-self: start;
-}
-
+/* Reservation and loan information 
+   - Styled consistently with description text */
+.book-card__reservation,
 .book-card__loan {
-  font-size: 14px;
-  color: #374151;
+  font-size: 24px;
+  line-height: 1.4;
+  color: #1f2937;
+  font-family: inherit;
+  font-weight: 400;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   margin-top: .5rem;
+}
+
+/* ============================================================
+   Generic styled buttons
+   - Primary, secondary, and danger variants
+   - Reusable across the application
+   ============================================================ */
+.styled-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  appearance: none;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: #0e5aa6;
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 16px;
+  padding: .85rem 1.25rem;
+  cursor: pointer;
+  transition: background .2s ease, transform .05s ease, border-color .2s ease;
+
+  &:hover { background: #0a4a8a; }
+  &:active { transform: translateY(1px); }
+  &:disabled { opacity: .6; cursor: not-allowed; }
+
+  /* Secondary variant (outlined) */
+  &.secondary {
+    background: transparent;
+    color: #0e5aa6;
+    border-color: #0e5aa6;
+    &:hover { background: rgba(14, 90, 166, .08); }
+  }
+}
+
+/* Catalog management actions
+   - Horizontal layout for edit/delete buttons */
+.book-card__manage {
+  display: flex;
+  gap: .5rem;
+  margin-top: .5rem;
+}
+
+/* Danger button variant (red) */
+.styled-button.danger {
+  background: #b91c1c;
+}
+.styled-button.danger:hover {
+  background: #991b1b;
 }

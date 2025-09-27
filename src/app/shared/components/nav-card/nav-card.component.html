@@ -1,12 +1,29 @@
+<!-- ============================================================
+     Nav Card Component Template
+     - Displays a clickable navigation card with image and text
+     - Supports disabled state (removes navigation and adds aria-disabled)
+     - Accessible with aria-label (fallback: title)
+   ============================================================ -->
+
 <a class="nav-card"
    [class.disabled]="disabled"
    [attr.aria-disabled]="disabled"
    [routerLink]="!disabled ? link : null"
    [attr.aria-label]="ariaLabel || title">
+
+  <!-- ========================
+       Image section
+       - Displays the provided image
+       - Decorative (alt is empty for accessibility)
+       ======================== -->
   <div class="image-wrap">
     <img [ngSrc]="image" width="640" height="360" alt="" />
   </div>
 
+  <!-- ========================
+       Footer section
+       - Contains title and optional subtitle
+       ======================== -->
   <div class="card-footer">
     <div class="texts">
       <span class="title">{{ title }}</span>

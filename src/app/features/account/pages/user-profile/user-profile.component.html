@@ -1,58 +1,125 @@
 <div class="user-profile-page page-gutter">
-  <header class="hero">
-    <h1>
-      Bonjour <span>{{ firstName }} {{ lastName }}</span>, voici vos informations personnelles
-    </h1>
-  </header>
+  <form
+    *ngIf="profileForm"
+    [formGroup]="profileForm"
+    (ngSubmit)="submit()"
+    class="profile-form"
+  >
+    <!-- ============================
+         Hero section
+         Displays greeting message with user's display name
+         ============================ -->
+    <header class="hero">
+      <h1>
+        Bonjour <span>{{ displayName() }}</span>,
+        voici vos informations personnelles
+      </h1>
+    </header>
 
-  <form [formGroup]="profileForm" (ngSubmit)="submit()" class="profile-form">
-    <div class="avatar-block">
-      <img
-        [ngSrc]="avatarUrl || 'assets/images/icon-user-circle.svg'"
-        width="120"
-        height="120"
-        alt="Avatar utilisateur"
-        class="avatar"
-      />
+    <!-- ============================
+         Alert messages
+         Success or error feedback after form submission
+         ============================ -->
+    <div *ngIf="successMessage" class="alert success">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert error">
+      {{ errorMessage }}
     </div>
 
-    <div class="form-grid">
-      <div class="form-field">
-        <input type="text" formControlName="lastName" placeholder="Nom" />
+    <!-- ============================
+         Block 1: Avatar + core identity info
+         Includes avatar image, last name, first name, and email
+         ============================ -->
+    <div class="profile-block">
+      <div class="avatar-block">
+        <img
+          [ngSrc]="avatarUrl || 'assets/images/icon-user-circle.svg'"
+          width="140"
+          height="140"
+          alt="Avatar utilisateur"
+          class="avatar"
+        />
       </div>
-      <div class="form-field">
-        <input type="text" formControlName="firstName" placeholder="Prénom" />
+      <div class="form-grid single">
+        <div class="form-field">
+          <input type="text" formControlName="lastName" placeholder="Nom" />
+        </div>
+        <div class="form-field">
+          <input type="text" formControlName="firstName" placeholder="Prénom" />
+        </div>
+        <div class="form-field full">
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="Adresse de messagerie"
+          />
+        </div>
       </div>
-      <div class="form-field full">
-        <input type="email" formControlName="email" placeholder="Adresse de messagerie" />
-      </div>
+    </div>
+
+    <!-- ============================
+         Block 2: Additional details
+         Includes phone, birthdate, addresses, password and options
+         ============================ -->
+    <div class="form-grid double">
+      <!-- Row 1 -->
       <div class="form-field">
         <input type="tel" formControlName="phone" placeholder="Téléphone" />
       </div>
       <div class="form-field">
-        <input type="date" formControlName="dateOfBirth" placeholder="Date de naissance" />
+        <input
+          type="date"
+          formControlName="dateOfBirth"
+          placeholder="Date de naissance"
+        />
       </div>
-      <div class="form-field full">
+
+      <!-- Row 2 -->
+      <div class="form-field">
         <input type="text" formControlName="address1" placeholder="Adresse 1" />
       </div>
-      <div class="form-field full">
-        <input type="text" formControlName="address2" placeholder="Adresse 2 (facultatif)" />
+      <div class="form-field">
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="Mot de passe"
+        />
+      </div>
+
+      <!-- Row 3 -->
+      <div class="form-field">
+        <input
+          type="text"
+          formControlName="address2"
+          placeholder="Adresse 2 (facultatif)"
+        />
       </div>
       <div class="form-field">
-        <input type="password" formControlName="password" placeholder="Mot de passe" />
-      </div>
-      <div class="form-field full">
         <select formControlName="options" multiple>
-          <option *ngFor="let opt of availableOptions" [value]="opt">{{ opt }}</option>
+          <option *ngFor="let opt of availableOptions" [value]="opt">
+            {{ opt }}
+          </option>
         </select>
       </div>
     </div>
 
+    <!-- ============================
+         Actions
+         Submit updates or deactivate profile
+         ============================ -->
     <div class="action-row">
-      <button type="submit" class="styled-button">Modifier mes informations personnelles</button>
-      <button type="button" class="styled-button secondary" (click)="deactivate()">
+      <button type="submit" class="styled-button">
+        Modifier mes informations personnelles
+      </button>
+      <button
+        type="button"
+        class="styled-button secondary"
+        (click)="deactivate()"
+      >
         Désactiver mon profil
       </button>
     </div>
   </form>
 </div>
+

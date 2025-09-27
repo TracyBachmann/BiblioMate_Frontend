@@ -1,34 +1,32 @@
 <div class="book-creation-page page-gutter section-block">
+  <div class="title-row">
+    <!-- Page title component -->
+    <app-section-title [title]="pageTitle"></app-section-title>
+    <!-- Back link to the catalog management page -->
+    <a routerLink="/catalogue/management" class="back-link">← Retourner sur le catalogue</a>
+  </div>
 
-  <!-- Section title -->
-  <app-section-title [title]="'Ajout d’un livre au catalogue'"></app-section-title>
-  <a routerLink="/catalogue/management" class="back-link">← Retourner sur le catalogue</a>
-
+  <!-- Main book creation/editing form -->
   <form class="book-form" (ngSubmit)="onSubmit()" #f="ngForm">
-
-    <!-- Titre + couverture + description -->
+    <!-- Title + cover upload + description -->
     <div class="form-grid cover-row">
-      <!-- Titre -->
+      <!-- Book title -->
       <div class="form-field title-col">
         <label for="title">Titre du livre</label>
         <input id="title" type="text" name="title" [(ngModel)]="model.title" required />
       </div>
 
-      <!-- Couverture -->
+      <!-- Cover image uploader -->
       <div class="form-field cover-col">
         <label for="cover">Affiche de couverture</label>
         <div class="cover-dropzone" (click)="fileInput.click()">
-          <input
-            #fileInput
-            type="file"
-            id="cover"
-            (change)="onCoverSelected($event)"
-            accept="image/*"
-            hidden />
+          <input #fileInput type="file" id="cover" accept="image/*" hidden />
+          <!-- Placeholder before file selection -->
           <ng-container *ngIf="!coverPreview">
             <p>Cliquez pour choisir un fichier ou glissez-le ici</p>
             <small>PNG / JPG • &lt; 5 Mo</small>
           </ng-container>
+          <!-- Preview when an image is selected -->
           <ng-container *ngIf="coverPreview as url">
             <img [src]="url" alt="Prévisualisation" />
             <button type="button" class="tiny" (click)="coverPreview=null; model.coverFile=null">Retirer</button>
@@ -36,101 +34,231 @@
         </div>
       </div>
 
-      <!-- Description -->
+      <!-- Book description -->
       <div class="form-field description-col">
         <label for="description">Description</label>
         <textarea id="description" name="description" [(ngModel)]="model.description" rows="10"></textarea>
       </div>
     </div>
 
-    <!-- Auteur / Éditeur -->
+    <!-- Author / Publisher with autocomplete -->
     <div class="form-grid">
-      <div class="form-field">
+      <!-- Author autocomplete field -->
+      <div class="form-field auto-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
         <label for="author">Auteur</label>
-        <input id="author" type="text" name="author" [(ngModel)]="model.author" />
+        <input id="author" type="text" name="author"
+               [(ngModel)]="model.author"
+               (focus)="openAuthor=true; onAuthorInput()"
+               (input)="onAuthorInput()"
+               (keydown)="onAuthorKey($event)" />
+        <!-- Suggestions dropdown -->
+        <ul class="auto-menu" *ngIf="openAuthor && authorSuggestions.length">
+          <li *ngFor="let a of authorSuggestions; let i = index"
+              [class.is-active]="i === activeAuthorIndex"
+              (mouseenter)="activeAuthorIndex = i"
+              (mousedown)="applyAuthor(a); $event.preventDefault()">{{ a }}</li>
+        </ul>
       </div>
 
-      <div class="form-field">
+      <!-- Publisher autocomplete field -->
+      <div class="form-field auto-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
         <label for="publisher">Éditeur</label>
-        <input id="publisher" type="text" name="publisher" [(ngModel)]="model.publisher" />
+        <input id="publisher" type="text" name="publisher"
+               [(ngModel)]="model.publisher"
+               (focus)="openPublisher=true; onPublisherInput()"
+               (input)="onPublisherInput()"
+               (keydown)="onPublisherKey($event)" />
+        <!-- Suggestions dropdown -->
+        <ul class="auto-menu" *ngIf="openPublisher && publisherSuggestions.length">
+          <li *ngFor="let p of publisherSuggestions; let i = index"
+              [class.is-active]="i === activePublisherIndex"
+              (mouseenter)="activePublisherIndex = i"
+              (mousedown)="applyPublisher(p); $event.preventDefault()">{{ p }}</li>
+        </ul>
       </div>
     </div>
 
-    <!-- ISBN / Date -->
+    <!-- ISBN and publication date -->
     <div class="form-grid">
       <div class="form-field">
         <label for="isbn">ISBN</label>
         <input id="isbn" type="text" name="isbn" [(ngModel)]="model.isbn" />
       </div>
-
       <div class="form-field">
         <label for="publicationDate">Date de publication</label>
         <input id="publicationDate" type="date" name="publicationDate" [(ngModel)]="model.publicationDate" />
       </div>
     </div>
 
-    <!-- Genres / Tags -->
+    <!-- Genres and tags selection with autocomplete & chips -->
     <div class="form-grid">
-      <div class="form-field">
-        <label for="genres">Genres</label>
-        <select id="genres" multiple name="genres" [(ngModel)]="model.genres">
-          <option *ngFor="let g of availableGenres" [value]="g">{{ g }}</option>
-        </select>
-      </div>
-
-      <div class="form-field">
-        <label for="tags">Tags</label>
-        <input
-          id="tags"
-          type="text"
-          name="tags"
-          [(ngModel)]="tagsInput"
-          (keyup.enter)="addTag()"
-          placeholder="Appuyez sur Entrée pour ajouter un tag" />
-        <div class="tag-list">
-          <span *ngFor="let t of model.tags" class="tag">
-            {{ t }}
-            <button type="button" (click)="removeTag(t)">×</button>
-          </span>
+      <!-- Genre selector with chip tokens -->
+      <div class="form-field genre-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
+        <label for="genreInput">Genres</label>
+        <div class="genre-select" [class.is-open]="openGenres" (click)="toggleGenres(true)">
+          <div class="chips">
+            <!-- Selected genre chips -->
+            <span *ngFor="let g of model.genres" class="chip">
+              {{ g }} <button type="button" class="chip-remove" (click)="removeGenre(g); $event.stopPropagation()">×</button>
+            </span>
+            <!-- Input for filtering/creating genres -->
+            <input id="genreInput" #genreInputRef type="text" autocomplete="off"
+                   [placeholder]="model.genres.length ? '' : 'Rechercher ou sélectionner…'"
+                   [(ngModel)]="genreQuery" name="genreQuery"
+                   (focus)="toggleGenres(true)" (input)="filterGenres()" (keydown)="onGenreInputKey($event)" />
+          </div>
+          <button type="button" class="caret" aria-label="Ouvrir" (click)="toggleGenres(!openGenres)"></button>
         </div>
+        <!-- Dropdown list of genres -->
+        <ul class="genre-menu" *ngIf="openGenres">
+          <li class="loading" *ngIf="genresLoading">Chargement…</li>
+          <li class="create" *ngIf="!genresLoading && canCreateGenre()"
+              (mousedown)="createGenreFromQuery(); $event.preventDefault()">+ Créer « {{ genreQuery.trim() }} »</li>
+          <ng-container *ngIf="!genresLoading">
+            <li *ngFor="let g of filteredGenres; let i = index"
+                [class.is-active]="i === activeGenreIndex"
+                (mouseenter)="activeGenreIndex = i"
+                (mousedown)="toggleGenreToken(g); $event.preventDefault()">
+              <span class="checkbox" [class.checked]="isGenreSelected(g)"></span>
+              <span class="label">{{ g }}</span>
+            </li>
+            <li class="empty" *ngIf="filteredGenres.length === 0 && !canCreateGenre()">Aucun résultat</li>
+          </ng-container>
+        </ul>
+      </div>
+
+      <!-- Tag selector with chip tokens -->
+      <div class="form-field tag-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
+        <label for="tagInput">Tags</label>
+        <div class="tag-select" [class.is-open]="openTags" (click)="toggleTags(true)">
+          <div class="chips">
+            <!-- Selected tag chips -->
+            <span *ngFor="let t of model.tags" class="chip">
+              {{ t }} <button type="button" class="chip-remove" (click)="removeTag(t); $event.stopPropagation()">×</button>
+            </span>
+            <!-- Input for filtering/creating tags -->
+            <input id="tagInput" #tagInputRef type="text" autocomplete="off"
+                   [placeholder]="model.tags.length ? '' : 'Rechercher ou sélectionner…'"
+                   [(ngModel)]="tagQuery" name="tagQuery"
+                   (focus)="toggleTags(true)" (input)="filterTags()" (keydown)="onTagInputKey($event)" />
+          </div>
+          <button type="button" class="caret" aria-label="Ouvrir" (click)="toggleTags(!openTags)"></button>
+        </div>
+        <!-- Dropdown list of tags -->
+        <ul class="tag-menu" *ngIf="openTags">
+          <li class="loading" *ngIf="tagsLoading">Chargement…</li>
+          <li class="create" *ngIf="!tagsLoading && canCreateTag()"
+              (mousedown)="createTagFromQuery(); $event.preventDefault()">+ Créer « {{ tagQuery.trim() }} »</li>
+          <ng-container *ngIf="!tagsLoading">
+            <li *ngFor="let t of filteredTags; let i = index"
+                [class.is-active]="i === activeTagIndex"
+                (mouseenter)="activeTagIndex = i"
+                (mousedown)="toggleTagToken(t); $event.preventDefault()">
+              <span class="checkbox" [class.checked]="isTagSelected(t)"></span>
+              <span class="label">{{ t }}</span>
+            </li>
+            <li class="empty" *ngIf="filteredTags.length === 0 && !canCreateTag()">Aucun résultat</li>
+          </ng-container>
+        </ul>
       </div>
     </div>
 
-    <!-- Localisation -->
+    <!-- Location (floor, aisle, rayon, level) + stock -->
     <div class="form-grid">
-      <div class="form-field">
-        <label for="etage">Étage</label>
-        <select id="etage" name="etage" [(ngModel)]="model.etage">
-          <option *ngFor="let et of etages" [value]="et">{{ et }}</option>
-        </select>
+      <!-- Floor selection -->
+      <div class="form-field genre-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
+        <label for="floor">Étage</label>
+        <div class="genre-select" [class.is-open]="openFloors" (click)="toggleFloors(true)">
+          <div class="chips">
+            <input id="floor" type="text" autocomplete="off"
+                   [placeholder]="!model.floor ? 'Rechercher ou sélectionner…' : ''"
+                   [(ngModel)]="floorQuery" name="floorQuery"
+                   (focus)="toggleFloors(true)" (input)="filterFloors()" (keydown)="onFloorInputKey($event)" />
+          </div>
+          <button type="button" class="caret" aria-label="Ouvrir" (click)="toggleFloors(!openFloors)"></button>
+        </div>
+        <!-- Floor suggestions -->
+        <ul class="auto-menu" *ngIf="openFloors">
+          <li *ngFor="let f of filteredFloors; let i = index"
+              [class.is-active]="i === activeFloorIndex"
+              (mouseenter)="activeFloorIndex = i"
+              (mousedown)="applyFloor(f); $event.preventDefault()">{{ f }}</li>
+        </ul>
       </div>
 
-      <div class="form-field">
-        <label for="allee">Allée</label>
-        <select id="allee" name="allee" [(ngModel)]="model.allee" (change)="updateRayons()">
-          <option *ngFor="let a of allees" [value]="a">{{ a }}</option>
-        </select>
+      <!-- Aisle selection -->
+      <div class="form-field genre-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
+        <label for="aisle">Allée</label>
+        <div class="genre-select" [class.is-open]="openAisles" (click)="toggleAisles(true)">
+          <div class="chips">
+            <input id="aisle" type="text" autocomplete="off"
+                   [placeholder]="!model.aisle ? 'Rechercher ou sélectionner…' : ''"
+                   [(ngModel)]="aisleQuery" name="aisleQuery"
+                   (focus)="toggleAisles(true)" (input)="filterAisles()" (keydown)="onAisleInputKey($event)" />
+          </div>
+          <button type="button" class="caret" aria-label="Ouvrir" (click)="toggleAisles(!openAisles)"></button>
+        </div>
+        <!-- Aisle suggestions -->
+        <ul class="auto-menu" *ngIf="openAisles">
+          <li *ngFor="let a of filteredAisles; let i = index"
+              [class.is-active]="i === activeAisleIndex"
+              (mouseenter)="activeAisleIndex = i"
+              (mousedown)="applyAisle(a); $event.preventDefault()">{{ a }}</li>
+        </ul>
       </div>
 
-      <div class="form-field">
+      <!-- Rayon selection -->
+      <div class="form-field genre-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
         <label for="rayon">Rayon</label>
-        <select id="rayon" name="rayon" [(ngModel)]="model.rayon" (change)="updateEtageres()">
-          <option *ngFor="let r of rayons" [value]="r">{{ r }}</option>
-        </select>
+        <div class="genre-select" [class.is-open]="openRayons" (click)="toggleRayons(true)">
+          <div class="chips">
+            <input id="rayon" type="text" autocomplete="off"
+                   [placeholder]="!model.rayon ? 'Rechercher ou sélectionner…' : ''"
+                   [(ngModel)]="rayonQuery" name="rayonQuery"
+                   (focus)="toggleRayons(true)" (input)="filterRayons()" (keydown)="onRayonInputKey($event)" />
+          </div>
+          <button type="button" class="caret" aria-label="Ouvrir" (click)="toggleRayons(!openRayons)"></button>
+        </div>
+        <!-- Rayon suggestions -->
+        <ul class="auto-menu" *ngIf="openRayons">
+          <li *ngFor="let r of filteredRayons; let i = index"
+              [class.is-active]="i === activeRayonIndex"
+              (mouseenter)="activeRayonIndex = i"
+              (mousedown)="applyRayon(r); $event.preventDefault()">{{ r }}</li>
+        </ul>
       </div>
 
+      <!-- Level (shelf) selection -->
+      <div class="form-field genre-field" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
+        <label for="level">Étagère</label>
+        <div class="genre-select" [class.is-open]="openLevels" (click)="toggleLevels(true)">
+          <div class="chips">
+            <input id="level" type="text" autocomplete="off"
+                   [placeholder]="!model.etagere ? 'Rechercher ou sélectionner…' : ''"
+                   [(ngModel)]="levelQuery" name="levelQuery"
+                   (focus)="toggleLevels(true)" (input)="filterLevels()" (keydown)="onLevelInputKey($event)" />
+          </div>
+          <button type="button" class="caret" aria-label="Ouvrir" (click)="toggleLevels(!openLevels)"></button>
+        </div>
+        <!-- Level suggestions -->
+        <ul class="auto-menu" *ngIf="openLevels">
+          <li *ngFor="let l of filteredLevels; let i = index"
+              [class.is-active]="i === activeLevelIndex"
+              (mouseenter)="activeLevelIndex = i"
+              (mousedown)="applyLevel(l); $event.preventDefault()">{{ l }}</li>
+        </ul>
+      </div>
+
+      <!-- Stock quantity -->
       <div class="form-field">
-        <label for="etagere">Étagère</label>
-        <select id="etagere" name="etagere" [(ngModel)]="model.etagere">
-          <option *ngFor="let e of etageres" [value]="e">{{ e }}</option>
-        </select>
+        <label for="stock">Stock (quantité)</label>
+        <input id="stock" type="number" min="0" name="stock" [(ngModel)]="model.stockQuantity" />
       </div>
     </div>
 
-    <!-- Bouton submit -->
+    <!-- Submit button -->
     <div class="form-actions">
-      <button type="submit" class="styled-button">Ajouter le livre</button>
+      <button type="submit" class="styled-button">{{ submitLabel }}</button>
     </div>
   </form>
 </div>
-

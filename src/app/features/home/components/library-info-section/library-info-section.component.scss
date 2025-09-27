@@ -6,24 +6,26 @@
   z-index: 10;
   padding-bottom: 40px;
 
+  /* === Background image === */
   &__background {
     position: absolute;
-    inset: 0;
+    inset: 0;                        // Fill the entire container
     width: 100%;
-    height: calc(100% + 80px);
+    height: calc(100% + 80px);       // Slightly taller than container (visual overflow)
     max-height: 600px;
-    object-fit: cover;
+    object-fit: cover;               // Keep aspect ratio, cover whole area
     object-position: center;
-    z-index: 1; // Changé de -1 à 1
+    z-index: 1;                      // On top of base background (not behind all)
   }
 
+  /* === Content container (centered vertically) === */
   &__content {
     position: absolute;
     top: 50%;
     left: 15rem;
     right: 15rem;
-    transform: translateY(-50%);
-    z-index: 2;
+    transform: translateY(-50%);     // Perfect vertical centering
+    z-index: 2;                      // Above the background
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -34,25 +36,29 @@
     }
   }
 
+  /* === Header row: title + CTA button === */
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     min-height: 98px;
 
+    /* On small screens: stack elements instead of inline */
     @media (max-width: 750px) {
-      display: contents;
+      display: contents;  // let children flow naturally
     }
   }
 
+  /* Force title order on mobile */
   app-section-title {
     @media (max-width: 750px) {
       order: 1;
     }
   }
 
+  /* === Text box under the header === */
   &__text-box {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);  // translucent white background
     color: #000;
     line-height: 1.6;
     order: 2;
@@ -71,11 +77,12 @@
     }
   }
 
+  /* CTA button styling inside this block */
   app-cta-button {
     order: 3;
 
     @media (max-width: 750px) {
-      align-self: flex-start;
+      align-self: flex-start;  // left aligned on small screens
       margin-top: 1rem;
     }
   }

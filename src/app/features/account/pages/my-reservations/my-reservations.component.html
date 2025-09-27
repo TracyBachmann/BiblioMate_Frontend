@@ -1,24 +1,28 @@
-<div class="reservations-page">
+<div class="reservations-page catalog-page">
 
-  <!-- HERO -->
-  <header class="reservations-hero">
+  <!-- ===============================
+       HERO section (background + title)
+       =============================== -->
+  <header class="catalog-hero">
     <img
-      ngSrc="assets/images/reservations-background.png"
+      ngSrc="assets/images/catalog-background.png"
       width="1920" height="350" alt="Mes réservations"
       class="hero-bg" fetchpriority="high" />
 
     <div class="page-gutter hero-inner">
+      <!-- Section title -->
       <app-section-title class="hero-title" [title]="'Mes réservations'"></app-section-title>
 
+      <!-- Search bar with advanced toggle -->
       <div class="searchbar-pill">
         <input
           type="search"
           placeholder="Rechercher dans mes réservations..."
           [ngModel]="query()"
-          (ngModelChange)="query.set($event)"
-          (keyup.enter)="search()" />
+          (ngModelChange)="onQueryChange($event)"
+          (keyup.enter)="applyFiltersNow()" />
 
-        <button type="button" class="icon-btn" aria-label="Rechercher" (click)="search()">
+        <button type="button" class="icon-btn" aria-label="Rechercher" (click)="applyFiltersNow()">
           <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
         </button>
 
@@ -31,20 +35,93 @@
     </div>
   </header>
 
-  <!-- LISTE DES RÉSERVATIONS -->
-  <section class="section-block page-gutter">
+  <!-- ===============================
+       FILTERS (advanced mode only)
+       =============================== -->
+  <form *ngIf="advanced()" class="filters page-gutter reservations-filters" (ngSubmit)="applyFiltersNow()">
+    <div class="grid">
+      <!-- Sort by field -->
+      <div class="field">
+        <label for="sortBy">Tri</label>
+        <select id="sortBy" [ngModel]="filters().sortBy" (ngModelChange)="onFilterChange('sortBy', $event)">
+          <option value="expirationDate">Expiration</option>
+          <option value="reservationDate">Date de réservation</option>
+          <option value="title">Titre</option>
+        </select>
+      </div>
+
+      <!-- Sort direction -->
+      <div class="field">
+        <label for="sortDir">Ordre</label>
+        <select id="sortDir" [ngModel]="filters().sortDir" (ngModelChange)="onFilterChange('sortDir', $event)">
+          <option value="asc">Ascendant</option>
+          <option value="desc">Descendant</option>
+        </select>
+      </div>
+
+      <!-- Date ranges -->
+      <div class="field">
+        <label>Réservé entre (Du)</label>
+        <input type="date" [ngModel]="filters().resFrom" (ngModelChange)="onFilterChange('resFrom', $event)" />
+      </div>
+
+      <div class="field">
+        <label>Réservé entre (Au)</label>
+        <input type="date" [ngModel]="filters().resTo" (ngModelChange)="onFilterChange('resTo', $event)" />
+      </div>
+
+      <div class="field">
+        <label>Expiration entre (Du)</label>
+        <input type="date" [ngModel]="filters().expFrom" (ngModelChange)="onFilterChange('expFrom', $event)" />
+      </div>
+
+      <div class="field">
+        <label>Expiration entre (Au)</label>
+        <input type="date" [ngModel]="filters().expTo" (ngModelChange)="onFilterChange('expTo', $event)" />
+      </div>
+
+      <!-- Available-only checkbox -->
+      <div class="field checkbox-field">
+        <label class="checkbox-label" for="availableOnly">
+          <input type="checkbox" id="availableOnly"
+                 [ngModel]="filters().availableOnly"
+                 (ngModelChange)="onFilterChange('availableOnly', $event)" />
+          <span>Seulement disponibles</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="action-row">
+      <button type="button" class="styled-button secondary" (click)="resetFilters()">Réinitialiser</button>
+      <button type="submit" class="styled-button">Appliquer</button>
+    </div>
+  </form>
+
+  <!-- ===============================
+       LIST section
+       - Displays reservation cards
+       - Includes empty state
+       =============================== -->
+  <section class="section-block page-gutter" aria-live="polite">
     <div class="meta">
       <span>Total : {{ reservations().length }}</span>
     </div>
 
+    <!-- Empty state -->
     <ng-template [ngIf]="reservations().length === 0" [ngIfElse]="listTpl">
       <div class="empty-state">
         <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
         <h3>Aucune réservation en cours</h3>
         <p>Vos livres réservés apparaîtront ici.</p>
+        <div class="actions">
+          <button type="button" class="styled-button secondary" (click)="resetFilters()">Réinitialiser</button>
+          <button type="button" class="styled-button" (click)="advanced.set(false)">Masquer les filtres</button>
+        </div>
       </div>
     </ng-template>
 
+    <!-- List of reservation cards -->
     <ng-template #listTpl>
       <div class="cards-grid">
         <app-book-card
@@ -57,7 +134,8 @@
           [cancellable]="true"
           [cancelLabel]="'Annuler ma réservation'"
           [reservationId]="r.id"
-          [cancelFn]="cancel">
+          [cancelFn]="cancel"
+          [bookId]="r.bookId"> <!-- BookId passed for navigation -->
         </app-book-card>
       </div>
     </ng-template>

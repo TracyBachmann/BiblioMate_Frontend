@@ -1,18 +1,62 @@
+<!--
+  ==============================================================================
+  FAQ Page Template
+  ------------------------------------------------------------------------------
+  Purpose:
+  - Renders the FAQ page with an expandable/collapsible accordion of Q&A items.
+
+  Structure:
+  - Header "cover" with a page title and short lede.
+  - Main section containing a list-based accordion.
+
+  Accessibility:
+  - Each toggle is a <button> with `aria-expanded` reflecting the open state.
+  - The content panel uses `aria-hidden` to mirror visibility.
+  - The list has an explicit `role="list"`; each item is a <li>.
+
+  Angular:
+  - Iterates over `faqs()` (Angular Signal) with `*ngFor`.
+  - `toggle(i)` switches the `open` state at index `i`.
+  - `[class.open]` adds a CSS hook for styling the expanded state.
+  - No logic changes in this template; comments only.
+  ==============================================================================
+-->
+
 <div class="faq-page">
   <header class="cover">
     <div class="page-gutter">
+      <!-- Page title component; receives the localized title via Input binding -->
       <app-section-title [title]="'FAQ'"></app-section-title>
+      <!-- Short descriptive subtitle under the page heading -->
       <p class="lede">Les réponses aux questions les plus fréquentes.</p>
     </div>
   </header>
 
   <section class="page-gutter">
+    <!-- Accordion container; uses semantic list markup for grouped items -->
     <ul class="accordion" role="list">
+      <!--
+        Repeat over the reactive FAQ array.
+        - `i` is the loop index, used by `toggle(i)`.
+        - `[class.open]="f.open"` drives visual state (CSS) for expanded items.
+      -->
       <li *ngFor="let f of faqs(); let i = index" class="item" [class.open]="f.open">
+        <!--
+          Toggle control:
+          - Click handler flips `open` for the targeted item.
+          - `aria-expanded` exposes the current state to assistive tech.
+          - The icon is decorative; `aria-hidden="true"` prevents double announcement.
+        -->
         <button class="head" (click)="toggle(i)" [attr.aria-expanded]="f.open ? 'true' : 'false'">
           <span>{{ f.q }}</span>
           <i aria-hidden="true">▾</i>
         </button>
+
+        <!--
+          Collapsible panel:
+          - Contains the answer text.
+          - `aria-hidden` mirrors the visibility; CSS handles show/hide.
+        -->
         <div class="panel" [attr.aria-hidden]="f.open ? 'false' : 'true'">
           <p>{{ f.a }}</p>
         </div>

@@ -1,22 +1,26 @@
 .hero {
+  /* === GLOBAL CONTAINER === */
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* full viewport height */
   overflow: hidden;
   font-family: 'Lato', sans-serif;
   font-size: 24px;
   font-weight: 400;
 
+  /* Desktop (big screens, sidebar adjustment) */
   @media (min-width: 1025px) {
-    width: calc(100vw - 70px);
+    width: calc(100vw - 70px); /* account for sidebar width */
     margin-top: 0;
   }
 
+  /* Tablets and below: offset for header height */
   @media (max-width: 1024px) {
     margin-top: 70px;
     height: calc(100vh - 70px);
   }
 
+  /* === BACKGROUND IMAGE === */
   &__background {
     position: absolute;
     inset: 0;
@@ -24,9 +28,10 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-    z-index: -1;
+    z-index: -1; /* stays behind content */
   }
 
+  /* Shared positioning for logo, text, CTA */
   &__logo,
   &__text-box,
   &__cta {
@@ -35,10 +40,11 @@
     z-index: 2;
   }
 
+  /* === LOGO BLOCK === */
   &__logo {
     top: 4rem;
     width: 480px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white */
     padding: 1.5rem 2rem;
     text-align: center;
 
@@ -48,10 +54,12 @@
       height: auto;
     }
 
+    /* Hide logo on tablets/mobile */
     @media (max-width: 1024px) {
       display: none;
     }
 
+    /* Shrink logo if screen is short */
     @media (max-height: 800px) and (min-width: 1025px) {
       top: 2rem;
       width: 400px;
@@ -59,15 +67,17 @@
     }
   }
 
+  /* === INTRO TEXT BOX === */
   &__text-box {
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%); /* vertical centering */
     width: 700px;
     background-color: rgba(255, 255, 255, 0.8);
     padding: 2rem 2.5rem;
     line-height: 1.7;
     color: #000;
 
+    /* Tablet styles */
     @media (max-width: 1024px) {
       left: 2rem;
       width: calc(100% - 4rem);
@@ -75,19 +85,20 @@
       font-size: 20px;
     }
 
+    /* Mobile: smaller font and move up */
     @media (max-width: 600px) {
       font-size: 18px;
       top: 30%;
       transform: translateY(-50%);
     }
 
+    /* Short screens: shrink further */
     @media (max-height: 800px) and (min-width: 1025px) {
       width: 600px;
       padding: 1.5rem 2rem;
       font-size: 22px;
       line-height: 1.5;
     }
-
     @media (max-height: 700px) and (min-width: 1025px) {
       width: 550px;
       padding: 1.2rem 1.8rem;
@@ -96,16 +107,18 @@
     }
   }
 
+  /* === CTA (Login dropdown) === */
   &__cta {
     bottom: 4rem;
     left: 15rem;
     display: flex;
     height: 100px;
-    background-color: #fbbc05;
+    background-color: #fbbc05; /* yellow */
     color: #ffffff;
     border: 2px solid #fff;
     align-items: center;
 
+    /* --- CTA Text block --- */
     &-text {
       padding: 0 2rem;
       display: flex;
@@ -124,14 +137,10 @@
         padding: 0 1rem;
         font-size: 20px;
         border-bottom: none;
-        position: relative;
-
-        &::after {
-          display: none;
-        }
       }
     }
 
+    /* --- CTA Options (links) --- */
     &-option {
       display: flex;
       align-items: center;
@@ -148,13 +157,10 @@
         text-decoration: underline;
       }
 
-      &.with-divider {
-        border-left: 2px solid #fff;
-      }
-
+      /* Divider styles */
+      &.with-divider { border-left: 2px solid #fff; }
       &.partial-divider {
         position: relative;
-
         &::after {
           content: '';
           position: absolute;
@@ -166,58 +172,33 @@
         }
       }
 
+      /* Tablet adjustments */
       @media (max-width: 1024px) and (min-width: 601px) {
         border-left: none;
         font-size: 18px;
         padding: 0 1.5rem;
-
-        &.with-divider {
-          border-left: 2px solid #fff;
-        }
-
-        &.partial-divider::after {
-          content: '';
-          position: absolute;
-          right: 0;
-          top: 30%;
-          height: 40%;
-          width: 1px;
-          background-color: #fff;
-        }
+        &.with-divider { border-left: 2px solid #fff; }
       }
 
+      /* Mobile: stacked layout */
       @media (max-width: 600px) {
         width: 100%;
-        border-left: none;
-        border-bottom: none;
         padding: 1rem 0;
         justify-content: center;
-        position: relative;
-
-        &:not(:last-of-type) {
-          &::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 1px;
-            background-color: #fff;
-          }
-        }
-
-        &.partial-divider::after {
-          display: none;
-        }
-
-        &.with-divider {
-          border-left: none;
-          border-bottom: none;
+        &:not(:last-of-type)::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60%;
+          height: 1px;
+          background-color: #fff;
         }
       }
     }
 
+    /* --- Chevron toggle button --- */
     &-chevron {
       width: 100px;
       height: 100%;
@@ -242,51 +223,42 @@
           transition: transform 0.3s ease;
         }
 
-        &.rotated img {
-          transform: rotate(180deg);
-        }
+        &.rotated img { transform: rotate(180deg); }
 
+        /* Mobile: rotate chevron sideways */
         @media (max-width: 600px) {
-          img {
-            transform: rotate(90deg);
-          }
-
-          &.rotated img {
-            transform: rotate(270deg);
-          }
+          img { transform: rotate(90deg); }
+          &.rotated img { transform: rotate(270deg); }
         }
       }
 
+      /* Mobile sizing */
       @media (max-width: 600px) {
         width: 100%;
         height: 60px;
         border-left: none;
         border-top: 2px solid #fff;
-
-        a img {
-          width: 24px;
-          height: 24px;
-        }
+        a img { width: 24px; height: 24px; }
       }
     }
 
-    &.is-open {
-      border-top: 2px solid #fff;
-    }
+    /* When dropdown is open */
+    &.is-open { border-top: 2px solid #fff; }
 
+    /* Tablet width adjustments */
     @media (max-width: 1024px) and (min-width: 601px) {
       left: 2rem;
-      width: auto;
       min-width: 400px;
       max-width: calc(100% - 4rem);
     }
 
+    /* Mobile stacked dropdown */
     @media (max-width: 600px) {
       left: 2rem;
       width: calc(100% - 4rem);
       flex-direction: column;
-      height: auto;
       bottom: 1rem;
+      height: auto;
 
       &::after {
         content: '';
@@ -296,56 +268,24 @@
         width: 100%;
         height: 2px;
         background-color: #fff;
-        z-index: 1;
       }
     }
 
+    /* Shorter desktop screens: shrink CTA */
     @media (max-height: 750px) and (min-width: 1025px) {
       bottom: 2rem;
       height: 80px;
-
-      &-text {
-        font-size: 22px;
-        padding: 0 1.5rem;
-      }
-
-      &-option {
-        font-size: 18px;
-        padding: 0 1.5rem;
-      }
-
-      &-chevron {
-        width: 80px;
-
-        a img {
-          width: 24px;
-          height: 24px;
-        }
-      }
+      &-text { font-size: 22px; }
+      &-option { font-size: 18px; }
+      &-chevron { width: 80px; }
     }
 
     @media (max-height: 700px) and (min-width: 1025px) {
       bottom: 1.5rem;
       height: 70px;
-
-      &-text {
-        font-size: 20px;
-        padding: 0 1.2rem;
-      }
-
-      &-option {
-        font-size: 16px;
-        padding: 0 1.2rem;
-      }
-
-      &-chevron {
-        width: 70px;
-
-        a img {
-          width: 20px;
-          height: 20px;
-        }
-      }
+      &-text { font-size: 20px; }
+      &-option { font-size: 16px; }
+      &-chevron { width: 70px; }
     }
   }
 }

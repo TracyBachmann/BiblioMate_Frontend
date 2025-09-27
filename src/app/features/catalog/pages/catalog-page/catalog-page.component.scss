@@ -1,13 +1,16 @@
-/* catalog-page.component.scss */
+/* ===========================
+   Global catalog page styles
+   =========================== */
 .catalog-page {
-  color: #1f2937;
+  color: #1f2937; // Default text color
 
   .page-gutter {
-    padding-inline: clamp(16px, 5vw, 40px);
-    max-width: 1400px;
+    padding-inline: clamp(16px, 5vw, 40px); // Responsive horizontal padding
+    max-width: 1400px; // Centered content container
     margin-inline: auto;
   }
 
+  /* Generic styled button */
   .styled-button {
     display: inline-flex;
     align-items: center;
@@ -23,31 +26,37 @@
     padding: .85rem 1.25rem;
     cursor: pointer;
     transition: background .2s ease, transform .05s ease, border-color .2s ease;
+
     &:hover { background: #0a4a8a; }
     &:active { transform: translateY(1px); }
     &:disabled { opacity: .6; cursor: not-allowed; }
+
     &.secondary {
       background: transparent;
       color: #0e5aa6;
       border-color: #0e5aa6;
+
       &:hover { background: rgba(14, 90, 166, .08); }
     }
   }
 }
 
-/* HERO */
+/* ===========================
+   HERO section (header area)
+   =========================== */
 .catalog-hero {
   position: relative;
-  isolation: isolate;
+  isolation: isolate; // Ensure background/overlay layers don't leak outside
 
   .hero-bg {
     width: 100%;
-    height: clamp(180px, 36vw, 300px);
+    height: clamp(180px, 36vw, 300px); // Responsive hero height
     object-fit: cover;
     display: block;
-    filter: saturate(.9);
+    filter: saturate(.9); // Slightly muted image
   }
 
+  /* Overlay gradient for readability */
   &::after {
     content: "";
     position: absolute;
@@ -57,6 +66,7 @@
     z-index: 0;
   }
 
+  /* Hero inner content (title + search bar) */
   .hero-inner {
     position: absolute;
     inset-inline: 0;
@@ -69,10 +79,11 @@
 
     .hero-title {
       color: #fff;
-      text-shadow: 0 2px 10px rgba(0,0,0,.25);
+      text-shadow: 0 2px 10px rgba(0,0,0,.25); // Add readability
     }
   }
 
+  /* Search bar pill design */
   .searchbar-pill {
     padding-inline: clamp(16px, 5vw, 40px);
     max-width: 600px;
@@ -86,6 +97,7 @@
     padding: 8px 12px;
     box-shadow: 0 10px 28px rgba(0,0,0,.12);
 
+    /* Search input field */
     input[type="search"] {
       width: 100%;
       padding: .65rem .9rem;
@@ -96,10 +108,12 @@
       border-radius: 10px;
       color: #111827;
       min-width: 0;
+
       &::placeholder { color: #6b7280; font-weight: 300; }
       &:focus { outline: none; box-shadow: 0 0 0 2px rgba(4,68,107,.2); }
     }
 
+    /* Icon button (magnifier) */
     .icon-btn {
       width: 40px; height: 40px;
       display: grid; place-items: center;
@@ -107,11 +121,13 @@
       border-radius: 50%;
       cursor: pointer;
       transition: background .2s ease, transform .04s ease;
+
       &:hover { background: rgba(4,68,107,.08); }
       &:active { transform: translateY(1px); }
       img { display: block; }
     }
 
+    /* Advanced search toggle switch */
     .adv-toggle {
       display: inline-grid;
       grid-auto-flow: column;
@@ -123,18 +139,23 @@
       user-select: none;
       cursor: pointer;
 
-      input { display: none; }
+      input { display: none; } // Hide real checkbox
+
       i {
         width: 40px; height: 24px; border-radius: 99px;
         position: relative; display: inline-block;
         background: #e5e7eb; transition: background .2s ease;
+
         &::after {
-          content: ""; position: absolute; inset: 3px auto 3px 3px;
+          content: "";
+          position: absolute; inset: 3px auto 3px 3px;
           width: 18px; border-radius: 50%;
           background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2);
           transition: transform .2s ease;
         }
       }
+
+      /* Active state when checkbox is checked */
       input:checked + i {
         background: #cfe0ff;
         &::after { transform: translateX(16px); background: #0e5aa6; }
@@ -142,16 +163,21 @@
     }
   }
 
+  /* Responsive tweaks */
   @media (max-width: 768px) {
     .searchbar-pill {
       grid-template-columns: 1fr auto;
       .adv-toggle { order: 2; grid-column: 1 / -1; justify-self: start; }
     }
   }
-  @media (max-width: 480px) { .searchbar-pill { padding: 8px 10px; } }
+  @media (max-width: 480px) {
+    .searchbar-pill { padding: 8px 10px; }
+  }
 }
 
-/* FILTRES */
+/* ===========================
+   FILTERS section
+   =========================== */
 .filters {
   margin-top: clamp(14px, 2.2vw, 24px);
 
@@ -160,6 +186,7 @@
     grid-template-columns: repeat(12, 1fr);
     gap: 12px;
 
+    /* Inputs and selects */
     input, select {
       grid-column: span 4;
       width: 100%;
@@ -171,13 +198,16 @@
       font-weight: 400;
       color: #111827;
       min-width: 0;
+
       &::placeholder { color: #6b7280; font-weight: 300; }
       &:focus { outline: none; box-shadow: 0 0 0 2px rgba(4,68,107,.2); }
     }
 
+    /* Empty-state styling for date/genre */
     select.is-empty,
     input[type="date"].is-empty { font-weight: 300; color: #6b7280; }
 
+    /* Fix placeholder look for empty date input */
     input[type="date"].is-empty::-webkit-datetime-edit-fields-wrapper,
     input[type="date"].is-empty::-webkit-datetime-edit-text,
     input[type="date"].is-empty::-webkit-datetime-edit-month-field,
@@ -186,6 +216,7 @@
       font-weight: 300; color: #6b7280;
     }
 
+    /* Checkbox row */
     label.inline {
       grid-column: span 6;
       display: flex; align-items: center; gap: 10px;
@@ -194,10 +225,12 @@
       border-radius: 10px;
       font-size: 16px;
       font-weight: 400;
+
       input[type="checkbox"] { width: 18px; height: 18px; }
     }
   }
 
+  /* Filter form action buttons */
   .action-row {
     display: flex;
     justify-content: flex-end;
@@ -205,28 +238,36 @@
     flex-wrap: wrap;
     gap: 10px;
 
+    /* Buttons inside empty state */
     .empty-state .actions {
       display: flex;
-      gap: 10px;        /* espace horizontal entre les boutons */
-      justify-content: center; /* ou flex-start si tu veux les aligner à gauche */
-      flex-wrap: wrap;  /* permet de passer à la ligne sur mobile */
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
   }
 }
 
-/* === SECTIONS : largeur commune === */
+/* ===========================
+   SHARED SECTION BLOCK LAYOUT
+   =========================== */
 .section-block {
   padding-inline: clamp(16px, 5vw, 40px);
   max-width: 1040px;
   margin-inline: auto;
   margin-top: clamp(24px, 4vw, 40px);
-  &.above-separator { margin-top: clamp(32px, 5vw, 56px); }
+
+  &.above-separator {
+    margin-top: clamp(32px, 5vw, 56px);
+  }
 }
 
-/* ======= NOUVEAUTÉS ======= */
+/* ===========================
+   NEW ARRIVALS (carousel)
+   =========================== */
 .nouveautes app-section-title { margin-bottom: clamp(28px, 5vw, 56px); }
 
-/* Empty state */
+/* Empty state styling */
 .nouveautes .callout-empty {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -237,42 +278,46 @@
   background: #f8fafc;
   border-radius: 12px;
   position: relative;
-  margin-top: 0;
+
   &::before {
     content: "";
     position: absolute; left: 0; top: 8px; bottom: 8px;
     width: 4px; border-radius: 4px; background: #0e5aa6;
   }
+
   .lead { grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 10px; }
   .lead img { width: 28px; height: 28px; display: block; }
   .lead strong { font-weight: 700; }
   span { grid-column: 1 / -1; color: #6b7280; font-size: 14px; margin-left: 38px; }
 }
 
-/* Carrousel scroll-snap + séparateurs entre colonnes */
-.nouveautes .carousel { position: relative; display: block; margin-top: 0; }
+/* Carousel container and scrolling behavior */
+.nouveautes .carousel { position: relative; display: block; }
 .nouveautes .carousel .viewport {
-  overflow-x: auto; overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
 }
 .nouveautes .carousel .track { display: flex; gap: clamp(28px, 3.5vw, 48px); }
 
+/* Each carousel column (book card slot) */
 .nouveautes .carousel .col {
   position: relative;
   flex: 0 0 calc((100% - 2*clamp(28px, 3.5vw, 48px)) / 3);
   max-width: calc((100% - 2*clamp(28px, 3.5vw, 48px)) / 3);
   scroll-snap-align: start;
 }
+
+/* Vertical separator between carousel items */
 .nouveautes .carousel .col + .col::before {
   content: "";
   position: absolute;
   left: calc(-0.5 * clamp(28px, 3.5vw, 48px));
-  top: 18px; bottom: 18px; width: 1px;
-  background: #e5e7eb; pointer-events: none;
+  top: 18px; bottom: 18px;
+  width: 1px; background: #e5e7eb;
 }
 
+/* Responsive carousel */
 @media (max-width: 1024px) {
   .nouveautes .carousel .col {
     flex-basis: calc((100% - clamp(28px, 3.5vw, 48px)) / 2);
@@ -284,20 +329,22 @@
   .nouveautes .carousel .col::before { display: none; }
 }
 
-/* Séparateur horizontal sous le viewport */
+/* Horizontal separator under carousel */
 .nouveautes .viewport-sep {
   margin-top: clamp(18px, 3vw, 26px);
   border: 0; height: 1px; background: #e5e7eb;
 }
 
-/* DIVERS */
+/* ===========================
+   GLOBAL RESETS / TYPOGRAPHY
+   =========================== */
 input, select, button { font: inherit; }
 img { max-width: 100%; height: auto; }
 hr { border: 0; height: 1px; background: #e5e7eb; }
 app-section-title { display: block; margin-bottom: 8px; }
 app-book-card { display: block; }
 
-/* Typo globale Inria Sans */
+/* Force Inria Sans across catalog page */
 .catalog-page,
 .catalog-page input,
 .catalog-page select,
@@ -305,7 +352,9 @@ app-book-card { display: block; }
   font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
-/* ======= RÉSULTATS ======= */
+/* ===========================
+   RESULTS section
+   =========================== */
 .section-block .meta {
   display: flex; align-items: center; justify-content: space-between;
   gap: 10px; color: #6b7280;
@@ -313,6 +362,7 @@ app-book-card { display: block; }
   margin-bottom: clamp(28px, 5vw, 56px);
 }
 
+/* View switcher (grid/list) */
 .view-switch {
   display: inline-flex;
   background: #eef2f7;
@@ -335,7 +385,7 @@ app-book-card { display: block; }
 .view-switch .switch-btn:hover { background: rgba(14,90,166,.08); }
 .view-switch .switch-btn.is-active { background: #0e5aa6; color: #fff; }
 
-/* Grille : gros gap + séparateurs entre éléments d'une même ligne */
+/* Cards grid layout */
 .cards-grid {
   position: relative;
   display: grid;
@@ -343,13 +393,10 @@ app-book-card { display: block; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* Chaque carte doit pouvoir positionner son séparateur */
-.cards-grid > app-book-card {
-  position: relative;
-}
+/* Book card container relative positioning (for separators) */
+.cards-grid > app-book-card { position: relative; }
 
-/* ===== FIX: Séparateurs en MODE 3 COLONNES =====
-   On dessine le trait depuis la carte de gauche (col 1 et col 2). */
+/* Vertical separators in 3-column layout */
 .cards-grid > app-book-card:nth-child(3n+1)::after,
 .cards-grid > app-book-card:nth-child(3n+2)::after {
   content: "";
@@ -359,44 +406,39 @@ app-book-card { display: block; }
   bottom: 22px;
   width: 1px;
   background: #e5e7eb;
-  pointer-events: none;
-  z-index: 1;
 }
 
-/* Mode LISTE : 1 colonne avec styles spéciaux */
+/* List view styles (1 column) */
 .cards-grid.is-list {
   grid-template-columns: 1fr !important;
-  gap: 16px !important
+  gap: 16px !important;
+  margin-bottom: clamp(24px, 5vw, 72px);
 }
 
-/* Suppression des séparateurs de grille en mode liste */
-.cards-grid.is-list > app-book-card::after {
-  display: none !important;
-}
+/* Remove separators in list view */
+.cards-grid.is-list > app-book-card::after { display: none !important; }
 
-/* Styles pour le conteneur app-book-card en mode liste */
+/* Card container styling in list view */
 .cards-grid.is-list > app-book-card {
   padding: 10px;
   border-radius: 8px;
-  overflow: hidden;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   transition: all .15s ease;
 }
 
-/* Fond alterné pour les éléments pairs */
+/* Alternate background for even rows */
 .cards-grid.is-list > app-book-card:nth-child(even) {
   background: #f8fafc;
 }
 
-/* États de survol et focus pour le conteneur */
+/* Hover and focus states */
 .cards-grid.is-list > app-book-card:hover {
   background: #e0f2fe;
   border-color: #bae6fd;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
 }
-
 .cards-grid.is-list > app-book-card:focus-within {
   outline: 2px solid #0ea5e9;
   outline-offset: 2px;
@@ -404,7 +446,7 @@ app-book-card { display: block; }
   border-color: #0ea5e9;
 }
 
-/* Le contenu de la carte doit être transparent en mode liste */
+/* Ensure inner card content stays transparent in list view */
 .cards-grid.is-list app-book-card .book-card {
   background: transparent !important;
   border: none !important;
@@ -412,59 +454,35 @@ app-book-card { display: block; }
   border-radius: 0 !important;
 }
 
-/* ===== 2 COLONNES (tablettes) ===== */
+/* Responsive adjustments */
 @media (max-width: 1024px) {
-  .cards-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  /* On neutralise d'abord tous les traits… */
+  .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cards-grid > app-book-card::after { display: none; }
 
-  /* … puis on trace entre col 1 et col 2 depuis la carte de gauche. */
+  /* Redraw separator between 2-column layout */
   .cards-grid > app-book-card:nth-child(2n+1)::after {
     display: block;
     content: "";
     position: absolute;
     right: calc(-0.5 * clamp(28px, 3.5vw, 48px));
-    top: 22px;
-    bottom: 22px;
-    width: 1px;
-    background: #e5e7eb;
-    pointer-events: none;
-    z-index: 1;
+    top: 22px; bottom: 22px;
+    width: 1px; background: #e5e7eb;
   }
 }
-
-/* ===== 1 COLONNE (mobile) ===== */
 @media (max-width: 640px) {
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* Suppression de tous les séparateurs sur mobile */
-  .cards-grid > app-book-card::after {
-    display: none !important;
-  }
+  .cards-grid { grid-template-columns: 1fr; }
+  .cards-grid > app-book-card::after { display: none !important; }
 }
 
+/* Spacing adjustments */
 .catalog-page > .section-block:last-of-type {
   padding-bottom: calc(clamp(10px, 2vw, 14px) + env(safe-area-inset-bottom, 0px));
 }
-
-/* 2) En vue LISTE, on ajoute un espace sous la grille pour éviter
-   que le dernier item colle au footer. */
-.cards-grid.is-list {
-  margin-bottom: clamp(24px, 5vw, 72px);
-}
-
-/* 3) Même traitement quand on affiche l'empty state. */
 .section-block .empty-state {
   margin-bottom: clamp(32px, 6vw, 96px);
 }
-
 .section-block .empty-state .actions {
   display: flex;
-  gap: 10px;          /* spacing between the two buttons */
+  gap: 10px;
   flex-wrap: wrap;
 }

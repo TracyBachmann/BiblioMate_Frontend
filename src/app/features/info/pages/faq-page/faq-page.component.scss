@@ -1,53 +1,113 @@
+/* =============================================================================
+   FAQ Page Stylesheet
+   -----------------------------------------------------------------------------
+   Purpose:
+   - Typography and layout rules for the FAQ page, including a cover/lede area
+     and an accessible accordion pattern.
+   - Adds card-like visuals to each FAQ item while keeping markup simple.
+
+   Conventions:
+   - Class-based selectors only; avoids global element resets.
+   - Responsive spacing uses clamp() where appropriate.
+   - Colors are hard-coded hex values; no CSS variables in this file.
+
+   Accessibility:
+   - Ensure the accordion toggle in HTML uses a <button> with aria-expanded
+     and aria-controls. The `.open` class can be synced with aria-expanded=true.
+   - Text colors provide sufficient contrast on white backgrounds.
+
+   Note:
+   - Comments added only; no changes to selectors, properties, or behavior.
+============================================================================= */
+
+/* =============================================================================
+   Page Root
+   - Base text color and font stack for the FAQ page scope.
+============================================================================= */
 .faq-page {
-  color: #1f2937;
-  font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: #1f2937; /* Dark gray for primary text */
+  font-family: 'Inria Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; /* Readable sans-serif stack */
 }
 
-/* conteneur */
+/* =============================================================================
+   Page Gutter
+   - Horizontal padding utility with centered, constrained width.
+============================================================================= */
+/* container */
 .page-gutter {
-  padding-inline: clamp(16px, 5vw, 40px);
-  max-width: 900px;
-  margin-inline: auto;
+  padding-inline: clamp(16px, 5vw, 40px); /* Fluid left/right padding */
+  max-width: 900px; /* Optimal line length for readability */
+  margin-inline: auto; /* Center the content block */
 }
 
-/* bandeau léger (sans image) */
-.cover { padding: clamp(18px, 3vw, 24px) 0 0; }
-.cover .lede { color: #6b7280; margin: 2px 0 0; }
+/* =============================================================================
+   Cover / Lede
+   - Lightweight intro band without imagery.
+============================================================================= */
+/* light banner (no image) */
+.cover {
+  padding: clamp(18px, 3vw, 24px) 0 0; /* Top padding scales with viewport; zero sides/bottom */
+}
+.cover .lede {
+  color: #6b7280; /* Muted gray for secondary intro text */
+  margin: 2px 0 0; /* Slight spacing from the title above */
+}
 
-/* accordéon */
+/* =============================================================================
+   Accordion
+   - List-based layout for expandable FAQ items.
+   - `.open` on `.item` controls visibility and icon rotation.
+============================================================================= */
+/* accordion */
 .accordion {
-  list-style: none;
-  padding: 0;
-  margin: 8px 0 24px;
-  display: grid;
-  gap: 10px;
+  list-style: none; /* Remove bullets from the list */
+  padding: 0; /* Reset default list padding */
+  margin: 8px 0 24px; /* Vertical spacing around the accordion */
+  display: grid; /* Grid layout to create consistent gaps */
+  gap: 10px; /* Space between items */
 }
+
+/* Individual FAQ card container */
 .accordion .item {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #ffffff;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb; /* Subtle outline */
+  border-radius: 12px; /* Soft corners for a modern look */
+  background: #ffffff; /* Card background */
+  overflow: hidden; /* Clip inner content and focus outlines if needed */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04); /* Low-elevation depth */
 }
+
+/* Clickable header row (should be a <button> in the markup) */
 .accordion .item .head {
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: 0;
-  padding: 14px 16px;
-  display: flex;
+  width: 100%; /* Full-width clickable area */
+  text-align: left; /* Align text to the left within the button */
+  background: transparent; /* Inherit card background */
+  border: 0; /* Remove default button borders */
+  padding: 14px 16px; /* Comfortable click/tap target */
+  display: flex; /* Space between label and icon */
   justify-content: space-between;
   align-items: center;
-  font-weight: 700;
-  cursor: pointer;
+  font-weight: 700; /* Emphasize question text */
+  cursor: pointer; /* Indicate interactivity */
 }
+
+/* Collapsible panel (answer text); hidden by default */
 .accordion .item .panel {
-  padding: 0 16px 14px;
-  color: #374151;
-  display: none;
+  padding: 0 16px 14px; /* Matches header horizontal padding; adds bottom space */
+  color: #374151; /* Slightly lighter than root text color for hierarchy */
+  display: none; /* Hidden until the parent `.item` is `.open` */
 }
+
+/* Icon within the header: animate rotation on expand/collapse */
 .accordion .item i {
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease; /* Smooth rotation */
 }
-.accordion .item.open .panel { display: block; }
-.accordion .item.open i { transform: rotate(180deg); }
+
+/* Expanded state: reveal panel content */
+.accordion .item.open .panel {
+  display: block;
+}
+
+/* Expanded state: rotate indicator icon (e.g., chevron) */
+.accordion .item.open i {
+  transform: rotate(180deg);
+}

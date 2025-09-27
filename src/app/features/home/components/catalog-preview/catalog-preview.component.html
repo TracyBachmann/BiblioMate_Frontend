@@ -1,8 +1,10 @@
 <section class="catalog-preview">
+  <!-- === Header with section title and CTA button === -->
   <div class="catalog-preview__header">
+    <!-- Section title component -->
     <app-section-title title="Catalogue"></app-section-title>
 
-    <!-- Bouton CTA vers le catalogue -->
+    <!-- Call-to-action button that links to the full catalog page -->
     <app-cta-button
       text="Consulter le catalogue"
       color="yellow"
@@ -11,14 +13,16 @@
     </app-cta-button>
   </div>
 
+  <!-- === Preview grid of books (limited selection) === -->
   <div class="catalog-preview__grid-wrapper">
     <div class="catalog-preview__grid">
+      <!-- Render a book card for each book in the preview list -->
       <app-book-card
         *ngFor="let b of books"
         [title]="b.title"
         [image]="b.coverUrl ?? null"
         [description]="b.description ?? ''"
-        [bookId]="b.id ?? b.bookId">  <!-- IMPORTANT : passer l’ID -->
+        [bookId]="b.id ?? b.bookId"> <!-- IMPORTANT: ensure book ID is passed -->
       </app-book-card>
     </div>
   </div>

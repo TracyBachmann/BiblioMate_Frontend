@@ -1,13 +1,23 @@
+/* ============================================================
+   Data Table Styles
+   - Provides layout, typography, and interaction styling
+   - Includes responsive horizontal scrolling on small screens
+   - Designed for flexible use with dynamic columns and actions
+   ============================================================ */
+
 .data-table-wrapper {
   width: 100%;
-  overflow-x: auto; // permet le scroll horizontal sur mobile/tablette
+  overflow-x: auto; // allows horizontal scroll on mobile/tablet
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px; // évite de tout compresser sur petit écran
+  min-width: 800px; // prevents table from compressing too much on small screens
 
+  /* ========================
+     Table header
+     ======================== */
   thead {
     background: #f3f4f6;
     border-bottom: 2px solid #e5e7eb;
@@ -18,13 +28,17 @@
       font-size: 15px;
       font-weight: 600;
       color: #374151;
-      white-space: nowrap;
+      white-space: nowrap; // keep header labels on one line
     }
   }
 
+  /* ========================
+     Table body rows
+     ======================== */
   tbody tr {
     border-bottom: 1px solid #e5e7eb;
 
+    /* Highlight row on hover */
     &:hover {
       background: #f9fafb;
     }
@@ -36,10 +50,14 @@
       vertical-align: middle;
     }
 
+    /* ========================
+       Actions cell (last column)
+       ======================== */
     .actions-cell {
       display: flex;
       gap: 8px;
 
+      /* Action button styles */
       .icon-btn {
         border: none;
         background: transparent;
@@ -48,13 +66,14 @@
         cursor: pointer;
 
         &:hover {
-          background: rgba(14, 90, 166, .1);
+          background: rgba(14, 90, 166, .1); // subtle hover feedback
         }
 
         img {
-          display: block;
+          display: block; // removes inline spacing around the icon
         }
       }
     }
   }
 }
+
