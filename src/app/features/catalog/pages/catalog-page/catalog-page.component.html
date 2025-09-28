@@ -17,19 +17,19 @@
       <div class="searchbar-pill">
         <input
           type="search"
-          placeholder="Tape your search..."
+          placeholder="Tapez votre recherche…"
           [ngModel]="query()"
           (ngModelChange)="query.set($event)"
           (keyup.enter)="searchWithFilters()" />
 
-        <button type="button" class="icon-btn" aria-label="Search"
+        <button type="button" class="icon-btn" aria-label="Rechercher"
                 (click)="searchWithFilters()">
           <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
         </button>
 
         <!-- Advanced search toggle -->
         <label class="adv-toggle">
-          <span>Advanced search</span>
+          <span>Recherche avancée</span>
           <input
             type="checkbox"
             [checked]="advanced()"
@@ -47,11 +47,11 @@
     <div class="grid">
       <!-- Each input updates a filter property -->
       <input [ngModel]="filters().isbn" (ngModelChange)="onFilterChange('isbn', $event)" name="isbn" placeholder="ISBN" />
-      <input [ngModel]="filters().author" (ngModelChange)="onFilterChange('author', $event)" name="author" placeholder="Author" />
+      <input [ngModel]="filters().author" (ngModelChange)="onFilterChange('author', $event)" name="author" placeholder="Auteur" />
       <input
         [ngModel]="filters().date"
         (ngModelChange)="onFilterChange('date', $event)"
-        name="date" type="date" placeholder="Publication date"
+        name="date" type="date" placeholder="Date de publication"
         [ngClass]="{ 'is-empty': !filters().date }" />
 
       <!-- Genre dropdown -->
@@ -64,21 +64,21 @@
         <option *ngFor="let g of genres()">{{ g }}</option>
       </select>
 
-      <input [ngModel]="filters().tags" (ngModelChange)="onFilterChange('tags', $event)" name="tags" placeholder="Tags (comma-separated)" />
-      <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Publisher" />
-      <input [ngModel]="filters().exclude" (ngModelChange)="onFilterChange('exclude', $event)" name="exclude" placeholder="Exclude terms..." />
+      <input [ngModel]="filters().tags" (ngModelChange)="onFilterChange('tags', $event)" name="tags" placeholder="Tags (séparés par des virgules)" />
+      <input [ngModel]="filters().publisher" (ngModelChange)="onFilterChange('publisher', $event)" name="publisher" placeholder="Éditeur" />
+      <input [ngModel]="filters().exclude" (ngModelChange)="onFilterChange('exclude', $event)" name="exclude" placeholder="Exclure des termes…" />
 
       <!-- Checkbox filter -->
       <label class="inline">
         <input type="checkbox" [ngModel]="filters().availableNow" (ngModelChange)="onFilterChange('availableNow', $event)" name="availableNow" />
-        Available immediately
+        Disponible immédiatement
       </label>
     </div>
 
     <!-- Form actions -->
     <div class="action-row">
-      <button type="button" class="styled-button secondary" (click)="resetAll()">Reset filters</button>
-      <button type="submit" class="styled-button">Search with filters</button>
+      <button type="button" class="styled-button secondary" (click)="resetAll()">Réinitialiser les filtres</button>
+      <button type="submit" class="styled-button">Rechercher avec filtres</button>
     </div>
   </form>
 
@@ -86,15 +86,15 @@
        NEW ARRIVALS SECTION
        ======================= -->
   <section class="section-block nouveautes above-separator page-gutter">
-    <app-section-title [title]="'New arrivals'"></app-section-title>
+    <app-section-title [title]="'Nouveautés'"></app-section-title>
 
     <!-- Empty state if no new books -->
     <div *ngIf="visibleNouveautes().length === 0; else carouselTpl" class="callout-empty">
       <div class="lead">
         <img ngSrc="assets/images/icon-empty.png" width="28" height="28" alt="" />
-        <strong>No new arrivals for now</strong>
+        <strong>Pas de nouveautés pour le moment</strong>
       </div>
-      <span>Come back later — this section is updated regularly.</span>
+      <span>Revenez plus tard — cette section est mise à jour régulièrement.</span>
     </div>
 
     <!-- Carousel with books -->
@@ -132,10 +132,10 @@
   <section class="section-block page-gutter" aria-live="polite">
     <div class="meta">
       <!-- Number of results -->
-      <span>Displayed results ({{ results().length }})</span>
+      <span>Résultats affichés ({{ results().length }})</span>
 
       <!-- View mode switcher -->
-      <div class="view-switch" role="tablist" aria-label="Change view mode">
+      <div class="view-switch" role="tablist" aria-label="Changer le mode d’affichage">
         <button
           type="button"
           class="switch-btn"
@@ -143,7 +143,7 @@
           [class.is-active]="viewMode() === 'grid'"
           [attr.aria-selected]="viewMode() === 'grid'"
           (click)="viewMode.set('grid')">
-          Grid view
+          Grille
         </button>
         <button
           type="button"
@@ -152,7 +152,7 @@
           [class.is-active]="viewMode() === 'list'"
           [attr.aria-selected]="viewMode() === 'list'"
           (click)="viewMode.set('list')">
-          List
+          Liste
         </button>
       </div>
     </div>
@@ -161,11 +161,11 @@
     <ng-template [ngIf]="results().length === 0" [ngIfElse]="resultsList">
       <div class="empty-state">
         <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
-        <h3>No results</h3>
-        <p>Try another keyword or adjust your filters.</p>
+        <h3>Aucun résultat</h3>
+        <p>Essayez un autre mot-clé ou ajustez vos filtres.</p>
         <div class="actions">
-          <button type="button" class="styled-button secondary" (click)="resetAll()">Reset</button>
-          <button type="button" class="styled-button" (click)="advanced.set(false)">Hide filters</button>
+          <button type="button" class="styled-button secondary" (click)="resetAll()">Réinitialiser</button>
+          <button type="button" class="styled-button" (click)="advanced.set(false)">Masquer les filtres</button>
         </div>
       </div>
     </ng-template>
