@@ -1,92 +1,129 @@
-# BiblioMate – Frontend
+# BiblioMate – Frontend (Angular)
 
-BiblioMate est une application web de gestion de bibliothèque destinée aux utilisateurs, bibliothécaires et administrateurs. Ce dépôt contient le **frontend** de l’application, développé avec **Angular** et **Tailwind CSS**, et destiné à interagir avec l’API REST du backend .NET Core.
+Ce dépôt contient le **frontend** de BiblioMate, réalisé avec **Angular 19**. L’application consomme l’API REST du backend .NET et offre une interface moderne pour membres, bibliothécaires et administrateurs.
 
----
 
-## 🎯 Objectifs
+## ✨ Fonctionnalités (visibles côté UI)
 
-Offrir une interface intuitive, responsive et moderne permettant :
+- Parcours catalogue : recherche par titre/auteur/genre, détail livre.
+- Espace membre : réservations et emprunts (via API).
+- Back‑office (rôles élevés) : gestion des livres & inventaire.
+- Intégration Swagger (tests d’API) côté backend ; ce front s’y connecte.
 
-- la consultation et la recherche d’ouvrages
-- l’emprunt et la réservation de livres pour les membres
-- la gestion du stock et des utilisateurs pour les bibliothécaires et administrateurs
-- un système de notifications intelligentes et de recommandations personnalisées
 
----
+## 🧰 Pile technique
 
-## ⚙️ Technologies utilisées
+- **Angular 19**, **TypeScript**
+- **Router**, **Forms**
+- **RxJS**
+- **SCSS** (pas de framework CSS imposé)
+- (Optionnel) **Tailwind** si activé dans le projet
+- **Build** : Angular CLI
+- **CI/CD** : GitHub Actions (build image Docker de prod)
+- **Runtime** : NGINX (image finale)
 
-| Technologie         | Rôle                                      |
-|---------------------|-------------------------------------------|
-| Angular             | Framework principal côté client           |
-| Tailwind CSS        | Framework CSS utilitaire                  |
-| TypeScript          | Langage principal                         |
-| RxJS                | Programmation réactive                    |
-| JWT (via API)       | Authentification sécurisée                |
-| SignalR             | Notifications temps réel                  |
-| Angular Router      | Routage des vues                          |
-| FormBuilder / Forms | Gestion des formulaires utilisateurs      |
-| Azure DevOps        | CI/CD & déploiement                       |
 
----
-
-## 📁 Arborescence (extrait)
+## 🗂️ Organisation (extrait)
 
 ```
 src/
 ├── app/
-│   ├── core/             # Services, guards, interceptors
-│   ├── shared/           # Composants et modules réutilisables
-│   ├── features/         # Modules fonctionnels : catalogue, profil, admin
-│   └── app-routing.module.ts
-├── assets/               # Logos, polices, images
-├── environments/         # Environnements dev/prod
+│   ├── core/       # services transverses, guards, interceptors
+│   ├── shared/     # composants/pipes/directives réutilisables
+│   └── features/   # domaines fonctionnels (catalogue, profil, admin, ...)
+├── assets/
+├── environments/   # variables d'env Angular (dev/prod)
+└── styles.scss
 ```
 
----
+> La configuration d’API est centralisée dans les environnements (`environment.*`), par ex. :
+```ts
+export const environment = {
+  production: false,
+  apiBase: '/api'
+};
+```
 
-## 🚀 Lancement du projet
 
-### Pré-requis
+## ▶️ Démarrage local
 
+### Prérequis
 - Node.js ≥ 18
-- Angular CLI ≥ 16
-- Accès à l’API backend (voir dépôt associé)
+- Angular CLI
 
 ### Installation
-
 ```bash
 npm install
 ```
 
-### Lancement en développement
-
+### Lancement dev
 ```bash
-ng serve
+npm start         # alias: ng serve
+```
+Front : `http://localhost:4200`
+
+> Assurez‑vous que l’API backend est disponible (ex. `http://localhost:5001/swagger`).
+
+
+## 🐳 Build & déploiement (Docker)
+
+**Dockerfile (build Angular puis NGINX)**
+```dockerfile
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --no-audit --no-fund
+COPY . .
+RUN npm run build -- --configuration production
+
+FROM nginx:alpine AS runtime
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "daemon off;"]
 ```
 
-L’application sera accessible sur `http://localhost:4200/`
+**nginx.conf (proxy vers l’API)**
+```nginx
+location /api/ {
+  proxy_pass http://backend:5000/;
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection keep-alive;
+  proxy_set_header Host $host;
+}
+```
 
----
+**Extrait workflow GitHub Actions**
+```yaml
+- uses: docker/setup-buildx-action@v3
+- uses: docker/login-action@v3
+- uses: docker/build-push-action@v6
+  with:
+    file: ./Dockerfile
+    push: true
+```
 
-## 🔐 Authentification & rôles
 
-| Rôle           | Accès                                                      |
-|----------------|------------------------------------------------------------|
-| Visiteur       | Consultation du catalogue uniquement                       |
-| Membre         | Emprunts, réservations, espace personnel                   |
-| Bibliothécaire | Gestion des livres, emprunts, réservations                 |
-| Administrateur | Gestion des utilisateurs, statistiques, configuration      |
+## 🔐 Rôles & accès (côté UX)
 
----
+| Rôle           | Capacités principales                               |
+|----------------|------------------------------------------------------|
+| Visiteur       | Consultation du catalogue                           |
+| Membre         | Réservations, vue de mes emprunts                   |
+| Bibliothécaire | CRUD livres/stock, retours, gestion des réservations|
+| Administrateur | Gestion des utilisateurs, supervision               |
 
-## 📦 Déploiement (Azure)
+> L’authentification (JWT) et l’autorisation sont gérées par le backend.
 
-La CI/CD est gérée via **Azure DevOps**. Le frontend est automatiquement déployé via des pipelines après chaque push sur la branche `main`.
 
----
+## 🔗 Points utiles
 
-## 📄 Licence
+- Backend Swagger : `http://localhost:5001/swagger`
+- Base URL front (docker) : `http://localhost:8080` (selon compose)
+- Base URL front (dev) : `http://localhost:4200`
 
-Projet réalisé dans le cadre du **TP CDA**. Licence académique.
+
+## 📝 Licence
+
+Projet académique. Voir le dépôt pour les mentions complémentaires.
