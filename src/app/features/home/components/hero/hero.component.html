@@ -1,15 +1,35 @@
 <!-- ================= HERO SECTION ================= -->
 <section class="hero" role="region" aria-label="Library introduction">
   <!-- Background image -->
-  <img
-    ngSrc="assets/images/hero-background.png"
+  <picture class="hero__background">
+    <source
+      type="image/avif"
+      srcset="
+      assets/images/hero-background-640.avif   640w,
+      assets/images/hero-background-1280.avif 1280w,
+      assets/images/hero-background-1920.avif 1920w
+    "
+      sizes="100vw"
+    />
+    <source
+      type="image/webp"
+      srcset="
+      assets/images/hero-background-640.webp   640w,
+      assets/images/hero-background-1280.webp 1280w,
+      assets/images/hero-background-1920.webp 1920w
+    "
+      sizes="100vw"
+    />
+    <img
+      ngSrc="assets/images/hero-background-1280.webp"
     width="1920"
     height="1080"
     alt="Bibliothèque de Montferrand"
-    class="hero__background"
-    priority
+    loading="eager"
     fetchpriority="high"
-  />
+    decoding="async"
+    />
+  </picture>
 
   <!-- Library logo -->
   <div class="hero__logo">
@@ -22,7 +42,7 @@
   </div>
 
   <!-- Introductory text box -->
-  <div class="hero__text-box">
+  <div class="hero__text-box">s
     <p class="hero__text">
       Bienvenue à la Bibliothèque Montferrand, un lieu dédié à la culture, à la connaissance et au partage.
       Située au cœur de la ville, notre bibliothèque offre un cadre unique pour lire, apprendre et explorer.
@@ -32,11 +52,13 @@
 
   <!-- CTA dropdown (login options) -->
   <!-- Only displayed if the user is NOT authenticated -->
+  <!-- CTA dropdown (login options) -->
+  <!-- Only displayed if the user is NOT authenticated -->
   <div class="hero__cta" [class.is-open]="isCtaOpen" *ngIf="!(auth.isAuthenticated$ | async)">
     <div class="hero__cta-text">Se connecter en tant que</div>
 
-    <!-- Dropdown options (only visible when open) -->
-    <ng-container *ngIf="isCtaOpen">
+    <!-- Options visibles uniquement quand le menu est ouvert -->
+    <div class="hero__cta-options" *ngIf="isCtaOpen" id="heroCtaOptions">
       <!-- Public user option -->
       <a
         routerLink="/connexion"
@@ -49,18 +71,27 @@
       <a routerLink="/connexion" class="hero__cta-option">
         Bibliothécaire
       </a>
-    </ng-container>
+    </div>
 
-    <!-- Chevron toggle button -->
+    <!-- Chevron toggle button (remplace le <a href="javascript:void(0)">) -->
     <div class="hero__cta-chevron">
-      <a href="javascript:void(0)" (click)="toggleCta()" [class.rotated]="isCtaOpen">
+      <button
+        type="button"
+        class="hero__cta-chevron-btn"
+        (click)="toggleCta()"
+        [class.rotated]="isCtaOpen"
+        [attr.aria-expanded]="isCtaOpen"
+        aria-controls="heroCtaOptions"
+        aria-label="Afficher ou masquer les options de connexion"
+      >
         <img
           ngSrc="assets/images/icon-chevron.svg"
           width="30"
           height="30"
-          alt="Open/close"
+          alt=""
+          aria-hidden="true"
         />
-      </a>
+      </button>
     </div>
   </div>
 </section>
