@@ -39,7 +39,11 @@
                 { "type": "anyComponentStyle", "maximumWarning": "64kb", "maximumError": "128kb" }
               ],
               "outputHashing": "all",
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": false
+              },
               "extractLicenses": true
             },
             "development": {
@@ -53,7 +57,11 @@
                 { "type": "anyComponentStyle", "maximumWarning": "64kb", "maximumError": "128kb" }
               ],
               "outputHashing": "all",
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": false
+              },
               "extractLicenses": true
             }
           },
