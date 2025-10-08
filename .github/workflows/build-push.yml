@@ -1,13 +1,17 @@
-name: Frontend - Build & Push
+name: Frontend — Build & Push & Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 env:
-  REGISTRY_NS: tracybachmann   # <-- mets ton namespace Docker Hub si différent
+  REGISTRY_NS: tracybachmann
   TAG: latest
+
+concurrency:
+  group: prod-deploy-frontend
+  cancel-in-progress: false
 
 jobs:
   build-push-frontend:
@@ -28,9 +32,39 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile      # <-- si ton Dockerfile est ailleurs, adapte ce chemin
+          file: ./Dockerfile
           platforms: linux/amd64
           push: true
           tags: |
             ${{ env.REGISTRY_NS }}/backend-frontend:${{ env.TAG }}
             ${{ env.REGISTRY_NS }}/backend-frontend:${{ github.sha }}
+
+  deploy:
+    name: Deploy frontend to VM
+    needs: build-push-frontend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Start SSH agent with private key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Relax SSH host checking
+        run: |
+          mkdir -p ~/.ssh
+          printf "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
+
+      - name: Pull & restart frontend service
+        env:
+          DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<'EOF'
+          set -euo pipefail
+          cd /opt/bibliomate
+          docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN"
+          docker compose --env-file .env -f deploy/docker-compose.prod.yml pull frontend
+          docker compose --env-file .env -f deploy/docker-compose.prod.yml up -d frontend
+          docker compose -f deploy/docker-compose.prod.yml ps
+          EOF
