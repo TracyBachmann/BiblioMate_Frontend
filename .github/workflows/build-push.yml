@@ -28,13 +28,16 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund
+        run: |
+          # Nettoyage du cache en cas de problème
+          npm cache clean --force || true
+          npm ci --no-audit --no-fund
 
       - name: Lint
         run: npm run lint || echo "⚠️ Pas de lint configuré, on continue..."
 
       - name: Build Angular
-        run: npm run build -- --configuration production
+        run: npm run build
 
       - name: Run tests
         run: npm test -- --watch=false --browsers=ChromeHeadless || echo "⚠️ Pas de tests configurés, on continue..."
@@ -71,10 +74,13 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
+          no-cache: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
 
   deploy:
     name: Deploy frontend to VM
