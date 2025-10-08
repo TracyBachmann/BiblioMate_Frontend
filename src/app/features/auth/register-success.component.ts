@@ -11,7 +11,7 @@ import { environment } from '../../../environment';
   template: `
     <div class="login-wrapper">
       <div class="login-page">
-        <img ngSrc="assets/images/hero-background.png" width="1920" height="1080"
+        <img loading="lazy" ngSrc="assets/images/hero-background.webp" width="1920" height="1080"
              alt="Bibliothèque de Montferrand" class="login-background" fetchpriority="high"/>
 
         <section class="login-form">

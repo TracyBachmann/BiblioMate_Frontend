@@ -4,8 +4,8 @@
        HERO : Background image + Title + Search bar
        ======================= -->
   <header class="catalog-hero">
-    <img
-      ngSrc="assets/images/catalog-background.png"
+    <img loading="lazy"
+      ngSrc="assets/images/catalog-background.webp"
       width="1920" height="350" alt="Catalogue"
       class="hero-bg" fetchpriority="high" />
 
@@ -24,7 +24,7 @@
 
         <button type="button" class="icon-btn" aria-label="Rechercher"
                 (click)="searchWithFilters()">
-          <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
+          <img loading="lazy" ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
         </button>
 
         <!-- Advanced search toggle -->
@@ -91,7 +91,7 @@
     <!-- Empty state if no new books -->
     <div *ngIf="visibleNouveautes().length === 0; else carouselTpl" class="callout-empty">
       <div class="lead">
-        <img ngSrc="assets/images/icon-empty.png" width="28" height="28" alt="" />
+        <img loading="lazy" ngSrc="assets/images/icon-empty.webp" width="28" height="28" alt="" />
         <strong>Pas de nouveautés pour le moment</strong>
       </div>
       <span>Revenez plus tard — cette section est mise à jour régulièrement.</span>
@@ -160,7 +160,7 @@
     <!-- Empty state -->
     <ng-template [ngIf]="results().length === 0" [ngIfElse]="resultsList">
       <div class="empty-state">
-        <img ngSrc="assets/images/icon-empty.png" width="56" height="56" alt="" />
+        <img loading="lazy" ngSrc="assets/images/icon-empty.webp" width="56" height="56" alt="" />
         <h3>Aucun résultat</h3>
         <p>Essayez un autre mot-clé ou ajustez vos filtres.</p>
         <div class="actions">

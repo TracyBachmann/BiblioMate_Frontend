@@ -28,7 +28,7 @@
           </ng-container>
           <!-- Preview when an image is selected -->
           <ng-container *ngIf="coverPreview as url">
-            <img [src]="url" alt="Prévisualisation" />
+            <img loading="lazy" [src]="url" alt="Prévisualisation" />
             <button type="button" class="tiny" (click)="coverPreview=null; model.coverFile=null">Retirer</button>
           </ng-container>
         </div>

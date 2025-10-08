@@ -38,7 +38,7 @@
 <div class="contact-page">
   <header class="cover">
     <!-- Decorative hero image; `fetchpriority="high"` hints early load. -->
-    <img ngSrc="assets/images/contact.jpg" width="1920" height="350" alt="" class="cover__bg" fetchpriority="high" />
+    <img loading="lazy" ngSrc="assets/images/contact.webp" width="1920" height="350" alt="" class="cover__bg" fetchpriority="high" />
     <!-- Overlay container with page title and lede, positioned over the image. -->
     <div class="cover__inner page-gutter">
       <app-section-title [title]="'Contact'"></app-section-title>
@@ -53,10 +53,10 @@
       <h3>Coordonnées</h3>
       <!-- Contact coordinates as a simple list; icons are informative decor. -->
       <ul class="coords">
-        <li><img ngSrc="assets/images/icon-pin.png" width="20" height="20" alt=""> 12 rue des Érables, 63100 Montferrand</li>
-        <li><img ngSrc="assets/images/icon-mail.png" width="20" height="20" alt=""> contact&#64;bibliomate.fr</li>
-        <li><img ngSrc="assets/images/icon-phone.png" width="20" height="20" alt=""> 04 00 00 00 00</li>
-        <li><img ngSrc="assets/images/icon-clock.png" width="20" height="20" alt=""> Mar–Sam : 9h–18h</li>
+        <li><img loading="lazy" ngSrc="assets/images/icon-pin.webp" width="20" height="20" alt=""> 12 rue des Érables, 63100 Montferrand</li>
+        <li><img loading="lazy" ngSrc="assets/images/icon-mail.webp" width="20" height="20" alt=""> contact&#64;bibliomate.fr</li>
+        <li><img loading="lazy" ngSrc="assets/images/icon-phone.webp" width="20" height="20" alt=""> 04 00 00 00 00</li>
+        <li><img loading="lazy" ngSrc="assets/images/icon-clock.webp" width="20" height="20" alt=""> Mar–Sam : 9h–18h</li>
       </ul>
 
       <!-- Inline CTAs for quick actions; actual behavior is encapsulated in the component. -->
@@ -67,7 +67,7 @@
 
       <!-- Map illustration with accessible label; replace placeholder with a live map if needed. -->
       <figure class="map" role="img" aria-label="Plan d'accès — Bibliothèque Montferrand">
-        <img ngSrc="assets/images/map-placeholder.jpg" width="840" height="420" alt="">
+        <img loading="lazy" ngSrc="assets/images/map-placeholder.webp" width="840" height="420" alt="">
         <figcaption>Plan d’accès (illustration)</figcaption>
       </figure>
     </div>

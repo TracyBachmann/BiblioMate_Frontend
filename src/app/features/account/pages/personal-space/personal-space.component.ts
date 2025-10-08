@@ -62,19 +62,19 @@ export class PersonalSpaceComponent {
       {
         title: 'Profil',
         subtitle: 'Modifier vos informations personnelles',
-        image: 'assets/images/profile.png',
+        image: 'assets/images/profile.webp',
         link: ['/espace/profil'],
       },
       {
         title: 'Emprunts',
         subtitle: 'Consulter l’historique et les prêts en cours',
-        image: 'assets/images/loans.png',
+        image: 'assets/images/loans.webp',
         link: ['/espace/mes-emprunts'],
       },
       {
         title: 'Réservations',
         subtitle: 'Suivre et gérer vos demandes de livres',
-        image: 'assets/images/reservations.png',
+        image: 'assets/images/reservations.webp',
         link: ['/espace/mes-reservations'],
       },
     ];
@@ -84,19 +84,19 @@ export class PersonalSpaceComponent {
       {
         title: 'Gestion des livres',
         subtitle: 'Cataloguer les titres et gérer le stock',
-        image: 'assets/images/manage-books.jpg',
+        image: 'assets/images/manage-books.webp',
         link: ['/catalogue/gestion'],
       },
       {
         title: 'Suivi des prêts',
         subtitle: 'Prêts, retours, prolongations et réservations',
-        image: 'assets/images/manage-requests.jpg',
+        image: 'assets/images/manage-requests.webp',
         link: ['/gestion/reservations'],
       },
       {
         title: 'Notifications',
         subtitle: 'Envoyer des messages et des relances',
-        image: 'assets/images/notifications.jpg',
+        image: 'assets/images/notifications.webp',
         link: ['/gestion/notifications'],
       }
     ];
@@ -106,7 +106,7 @@ export class PersonalSpaceComponent {
       {
         title: 'Utilisateurs',
         subtitle: 'Comptes, rôles et permissions',
-        image: 'assets/images/users.jpg',
+        image: 'assets/images/users.webp',
         link: ['/admin/utilisateurs'],
       },
     ];

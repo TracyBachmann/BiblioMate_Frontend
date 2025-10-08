@@ -35,7 +35,7 @@
           class="icon-btn"
           [attr.aria-label]="action.label"
         (click)="action.handler(row)">
-        <img
+        <img loading="lazy"
           [src]="action.icon"
           [alt]="action.label"
           width="18"

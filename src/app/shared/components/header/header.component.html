@@ -20,12 +20,12 @@
       (click)="toggleMenu()"
       aria-label="Ouvrir le menu latéral"
       [attr.aria-expanded]="isMenuOpen">
-      <img ngSrc="assets/images/icon-menu.svg" alt="Menu" width="60" height="60" />
+      <img loading="lazy" ngSrc="assets/images/icon-menu.svg" alt="Menu" width="60" height="60" />
     </button>
 
     <!-- Logo linking to homepage -->
     <a routerLink="/">
-      <img
+      <img loading="lazy"
         class="header__logo"
         ngSrc="assets/images/logo.svg"
         alt="Logo BiblioMate"
@@ -46,19 +46,19 @@
       class="header__nav-item search"
       aria-label="Recherche"
       (click)="toggleSearch()">
-      <img ngSrc="assets/images/icon-search.svg" alt="Recherche" width="60" height="60" />
+      <img loading="lazy" ngSrc="assets/images/icon-search.svg" alt="Recherche" width="60" height="60" />
     </button>
 
     <!-- Contact icon -->
     <a class="header__nav-item contact" routerLink="/contact" aria-label="Contact">
-      <img ngSrc="assets/images/icon-contact.svg" alt="Contact" width="60" height="60" />
+      <img loading="lazy" ngSrc="assets/images/icon-contact.svg" alt="Contact" width="60" height="60" />
     </a>
 
     <!-- Account icon: destination depends on authentication state -->
     <a class="header__nav-item user"
        [routerLink]="(auth.isAuthenticated$ | async) ? '/espace' : '/connexion'"
        aria-label="Mon compte">
-      <img ngSrc="assets/images/icon-user.svg" alt="Mon compte" width="60" height="60" />
+      <img loading="lazy" ngSrc="assets/images/icon-user.svg" alt="Mon compte" width="60" height="60" />
     </a>
   </nav>
 
@@ -77,7 +77,7 @@
 
     <!-- Close button -->
     <button class="header__drawer__close" (click)="closeMenu()" aria-label="Fermer le menu">
-      <img ngSrc="assets/images/icon-fermer.svg" alt="Fermer" height="39" width="39" />
+      <img loading="lazy" ngSrc="assets/images/icon-fermer.svg" alt="Fermer" height="39" width="39" />
     </button>
 
     <nav>
@@ -187,7 +187,7 @@
 
     <!-- Close button -->
     <button class="header__search__close" (click)="closeSearch()" aria-label="Fermer la recherche">
-      <img ngSrc="assets/images/icon-fermer.svg" alt="" height="39" width="39" />
+      <img loading="lazy" ngSrc="assets/images/icon-fermer.svg" alt="" height="39" width="39" />
     </button>
 
     <!-- Search bar with advanced toggle -->
@@ -202,7 +202,7 @@
           (keyup.enter)="applyNow()" />
 
         <button type="button" class="icon-btn" aria-label="Rechercher" (click)="applyNow()">
-          <img ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
+          <img loading="lazy" ngSrc="assets/images/icon-search.svg" width="24" height="24" alt="" />
         </button>
 
         <label class="adv-toggle">
@@ -217,7 +217,7 @@
 
     <!-- Hint text -->
     <p class="search-hint page-gutter">
-      <img ngSrc="assets/images/alerte.svg" alt="" class="icon-alert"  height="39" width="39"/>
+      <img loading="lazy" ngSrc="assets/images/alerte.svg" alt="" class="icon-alert"  height="39" width="39"/>
       Vos recherches s’ouvriront dans le <a routerLink="/catalogue">catalogue.</a>
     </p>
 

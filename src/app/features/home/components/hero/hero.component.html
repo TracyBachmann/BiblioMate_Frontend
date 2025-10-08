@@ -1,7 +1,7 @@
 <!-- ================= HERO SECTION ================= -->
 <section class="hero" role="region" aria-label="Library introduction">
   <!-- Background image -->
-  <img
+  <img loading="lazy"
     ngSrc="assets/images/hero-background.webp"
     width="1920"
     height="1080"
@@ -13,7 +13,7 @@
 
   <!-- Library logo -->
   <div class="hero__logo">
-    <img
+    <img loading="lazy"
       ngSrc="assets/images/logo.svg"
       width="250"
       height="250"
@@ -61,7 +61,7 @@
         [attr.aria-expanded]="isCtaOpen"
         aria-controls="heroCtaOptions"
         aria-label="Afficher ou masquer les options de connexion">
-        <img ngSrc="assets/images/icon-chevron.svg" width="30" height="30" alt="" aria-hidden="true" />
+        <img loading="lazy" ngSrc="assets/images/icon-chevron.svg" width="30" height="30" alt="" aria-hidden="true" />
       </button>
     </div>
   </div>

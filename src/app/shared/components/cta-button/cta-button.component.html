@@ -12,7 +12,7 @@ type="button"
 [routerLink]="routerLink">
   
 <!-- Optional icon displayed before text -->
-<img
+<img loading="lazy"
   *ngIf="icon"
   [ngSrc]="'assets/images/icon-' + icon + '.svg'"
 width="20"

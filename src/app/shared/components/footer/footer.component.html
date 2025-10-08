@@ -15,7 +15,7 @@
       <div class="footer__logo-wrapper">
         <!-- Link back to homepage -->
         <a href="/" class="footer__logo-link" aria-label="Retour à l'accueil">
-          <img
+          <img loading="lazy"
             ngSrc="assets/images/logo.svg"
             class="footer__logo"
             width="110"
@@ -82,7 +82,7 @@
                 [href]="social.href"
                 [attr.aria-label]="social.label"
                 role="link">
-                <img
+                <img loading="lazy"
                   *ngIf="isSocialLink(social)"
                   [ngSrc]="social.icon"
                   alt=""

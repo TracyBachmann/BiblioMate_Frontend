@@ -32,7 +32,7 @@
               <img [ngSrc]="coverUrl()!" [alt]="title()" width="600" height="375" loading="lazy" />
             </ng-container>
             <ng-template #placeholder>
-              <img ngSrc="assets/images/placeholder.png" [alt]="title()" width="600" height="375" loading="lazy" />
+              <img ngSrc="assets/images/placeholder.webp" [alt]="title()" width="600" height="375" loading="lazy" />
             </ng-template>
           </figure>
         </div>
@@ -140,7 +140,7 @@
 
     <!-- ===== Not found case ===== -->
     <div class="empty" *ngIf="notFound()">
-      <img ngSrc="assets/images/empty.svg" alt="" width="64" height="64" />
+      <img loading="lazy" ngSrc="assets/images/empty.svg" alt="" width="64" height="64" />
       <p>Oups… ce livre n’existe pas (ou plus).</p>
       <a class="styled-button" routerLink="/catalogue">
         <span class="icon i-arrow-left" aria-hidden="true"></span>
@@ -161,17 +161,17 @@
       <!-- Sharing options -->
       <ul class="share-grid">
         <li><a class="share-btn x"        [href]="shareHref('x')"        target="_blank" rel="noopener">
-          <img ngSrc="/assets/images/twitter.svg" width="26" height="26" alt="" /><span>X / Twitter</span></a></li>
+          <img loading="lazy" ngSrc="/assets/images/twitter.svg" width="26" height="26" alt="" /><span>X / Twitter</span></a></li>
         <li><a class="share-btn facebook" [href]="shareHref('facebook')" target="_blank" rel="noopener">
-          <img ngSrc="/assets/images/facebook.svg" width="26" height="26" alt="" /><span>Facebook</span></a></li>
+          <img loading="lazy" ngSrc="/assets/images/facebook.svg" width="26" height="26" alt="" /><span>Facebook</span></a></li>
         <li><a class="share-btn linkedin" [href]="shareHref('linkedin')" target="_blank" rel="noopener">
-          <img ngSrc="/assets/images/linkedin.svg" width="26" height="26" alt="" /><span>LinkedIn</span></a></li>
+          <img loading="lazy" ngSrc="/assets/images/linkedin.svg" width="26" height="26" alt="" /><span>LinkedIn</span></a></li>
         <li><a class="share-btn whatsapp" [href]="shareHref('whatsapp')" target="_blank" rel="noopener">
-          <img ngSrc="/assets/images/whatsapp.svg" width="26" height="26" alt="" /><span>WhatsApp</span></a></li>
+          <img loading="lazy" ngSrc="/assets/images/whatsapp.svg" width="26" height="26" alt="" /><span>WhatsApp</span></a></li>
         <li><a class="share-btn email"    [href]="shareHref('email')">
-          <img ngSrc="/assets/images/icon-mail.svg" width="26" height="26" alt="" /><span>E-mail</span></a></li>
+          <img loading="lazy" ngSrc="/assets/images/icon-mail.svg" width="26" height="26" alt="" /><span>E-mail</span></a></li>
         <li><button type="button" class="share-btn copy" (click)="copyLink()">
-          <img ngSrc="/assets/images/share.svg" width="26" height="26" alt="" /><span>Copier le lien</span></button></li>
+          <img loading="lazy" ngSrc="/assets/images/share.svg" width="26" height="26" alt="" /><span>Copier le lien</span></button></li>
       </ul>
     </div>
   </div>
