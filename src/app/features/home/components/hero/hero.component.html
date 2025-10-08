@@ -53,14 +53,16 @@
 
     <!-- Chevron toggle button -->
     <div class="hero__cta-chevron">
-      <a href="javascript:void(0)" (click)="toggleCta()" [class.rotated]="isCtaOpen">
-        <img
-          ngSrc="assets/images/icon-chevron.svg"
-          width="30"
-          height="30"
-          alt="Open/close"
-        />
-      </a>
+      <button
+        type="button"
+        class="hero__cta-chevron-btn"
+        (click)="toggleCta()"
+        [class.rotated]="isCtaOpen"
+        [attr.aria-expanded]="isCtaOpen"
+        aria-controls="heroCtaOptions"
+        aria-label="Afficher ou masquer les options de connexion">
+        <img ngSrc="assets/images/icon-chevron.svg" width="30" height="30" alt="" aria-hidden="true" />
+      </button>
     </div>
   </div>
 </section>
