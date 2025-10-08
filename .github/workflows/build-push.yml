@@ -29,7 +29,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Nettoyage du cache en cas de problème
           npm cache clean --force || true
           npm ci --no-audit --no-fund
 
@@ -74,13 +73,10 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          no-cache: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            BUILDKIT_INLINE_CACHE=1
 
   deploy:
     name: Deploy frontend to VM
@@ -112,11 +108,11 @@ jobs:
             echo "🔄 Redémarrage frontend..."
             docker compose --env-file .env -f deploy/docker-compose.prod.yml up -d frontend
 
-            echo "⏳ Attente démarrage (10s)..."
-            sleep 10
+            echo "⏳ Attente démarrage (15s)..."
+            sleep 15
 
             echo "🏥 Health check..."
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/ || echo "000")
+            HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" https://bibliomate.fr/ || echo "000")
 
             if [ "$HTTP_CODE" = "200" ]; then
               echo "✅ Déploiement réussi ! Frontend opérationnel."
