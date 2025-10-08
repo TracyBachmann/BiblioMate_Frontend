@@ -5,16 +5,13 @@ WORKDIR /app
 # Copie des fichiers de dépendances
 COPY package.json package-lock.json ./
 
-# Installation avec gestion d'erreur robuste
-RUN npm cache clean --force || true && \
-    npm ci --no-audit --no-fund --prefer-offline || \
-    (echo "npm ci failed, trying with --legacy-peer-deps" && \
-     npm install --no-audit --no-fund --legacy-peer-deps)
+# Installation robuste avec fallback
+RUN npm ci --no-audit --no-fund || npm install --no-audit --no-fund --legacy-peer-deps
 
 # Copie du code source
 COPY . .
 
-# Build de production (Angular utilise la config "production" par défaut)
+# Build de production
 RUN npm run build
 
 # ---------- RUNTIME NGINX ----------
@@ -23,7 +20,7 @@ FROM nginx:alpine AS runtime
 # Copie de la configuration Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copie des fichiers buildés Angular (outputPath défini dans angular.json)
+# Copie des fichiers buildés Angular
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
 # Expose le port 80
