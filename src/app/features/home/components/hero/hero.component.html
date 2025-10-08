@@ -1,7 +1,7 @@
 <!-- ================= HERO SECTION ================= -->
 <section class="hero" role="region" aria-label="Library introduction">
   <!-- Background image -->
-  <img loading="lazy"
+  <img
     ngSrc="assets/images/hero-background.webp"
     width="1920"
     height="1080"
@@ -9,15 +9,17 @@
     class="hero__background"
     priority
     fetchpriority="high"
+    sizes="100vw"
   />
 
   <!-- Library logo -->
   <div class="hero__logo">
-    <img loading="lazy"
+    <img
       ngSrc="assets/images/logo.svg"
       width="250"
       height="250"
-      alt="Library logo"
+      alt="Logo Bibliothèque de Montferrand"
+      loading="eager"
     />
   </div>
 
@@ -36,7 +38,7 @@
     <div class="hero__cta-text">Se connecter en tant que</div>
 
     <!-- Dropdown options (only visible when open) -->
-    <ng-container *ngIf="isCtaOpen">
+    <ng-container id="heroCtaOptions" *ngIf="isCtaOpen">
       <!-- Public user option -->
       <a
         routerLink="/connexion"
