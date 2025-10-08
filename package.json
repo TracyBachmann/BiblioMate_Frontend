@@ -6,9 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "optimize-images": "node scripts/optimize-images.js",
-    "replace-images": "node scripts/replace-image-refs.js"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
