@@ -1,13 +1,13 @@
 <section class="library-info-section">
   <!-- Background image: full section width -->
-  <img
+  <img loading="lazy"
     ngSrc="assets/images/books-background.webp"
     width="1920"
     height="1080"
     alt="Arrière-plan d'étagères de livres"
     class="library-info-section__background"
-    loading="lazy"
-    sizes="100vw"
+    priority
+    fetchpriority="high"
   />
 
   <div class="library-info-section__content">

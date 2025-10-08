@@ -27,8 +27,7 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              "src/robots.txt"
+              }
             ],
             "styles": ["src/styles.scss"],
             "scripts": []
@@ -85,8 +84,7 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              { "glob": "**/*", "input": "public" },
-              "src/robots.txt"
+              { "glob": "**/*", "input": "public" }
             ],
             "styles": ["src/styles.scss"],
             "scripts": []
