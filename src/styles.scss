@@ -1,3 +1,49 @@
+/* ============================================================
+   FONTS LOCALES (remplace Google Fonts CDN)
+   - Élimine les requêtes externes vers fonts.googleapis.com
+   - Réduit le temps de blocage du rendu de ~750ms
+   ============================================================ */
+
+/* Inria Sans Regular */
+@font-face {
+  font-family: 'Inria Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/inria-sans-v15-latin-regular.woff2') format('woff2');
+}
+
+/* Inria Sans Bold */
+@font-face {
+  font-family: 'Inria Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/assets/fonts/inria-sans-v15-latin-700.woff2') format('woff2');
+}
+
+/* Lato Regular */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/lato-v25-latin-regular.woff2') format('woff2');
+}
+
+/* League Gothic Regular */
+@font-face {
+  font-family: 'League Gothic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/league-gothic-v13-latin-regular.woff2') format('woff2');
+}
+
+/* ============================================================
+   CSS GLOBAL - Reset & Layout
+   ============================================================ */
+
 html, body {
   height: 100%;
   margin: 0;
