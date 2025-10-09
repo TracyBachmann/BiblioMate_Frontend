@@ -25,6 +25,7 @@
 
   /* Fixed height and constrained width */
   height: 98px;
+  min-height: 48px;           /* AJOUTÉ: zone tactile minimale WCAG (bien que ce soit un titre, pas un bouton) */
   width: 275px;
   max-width: 500px;
 
@@ -38,12 +39,14 @@
   /* Medium screens: reduce height and font size */
   @media (max-width: 750px) {
     height: 80px;
+    min-height: 48px;         /* AJOUTÉ: maintenir hauteur minimale */
     font-size: 28px;
   }
 
   /* Small screens: further reduce height and font size */
   @media (max-width: 480px) {
     height: 70px;
+    min-height: 48px;         /* AJOUTÉ: maintenir hauteur minimale */
     font-size: 24px;
   }
 }

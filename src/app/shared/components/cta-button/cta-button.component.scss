@@ -19,6 +19,7 @@
   color: #fff;
   box-sizing: border-box;
   height: 98px;
+  min-height: 48px;           /* AJOUTÉ: zone tactile minimale WCAG */
   width: 275px;
   max-width: 500px;
   transition: background-color 0.3s ease, text-decoration 0.3s ease;
@@ -32,7 +33,7 @@
 
   /* ===== Yellow variant ===== */
   &.yellow {
-    background-color: #fbbc05;
+    background-color: #f5b800; /* CORRIGÉ: #fbbc05 → #f5b800 pour meilleur contraste texte blanc */
 
     &:hover {
       background-color: #e2a903;
@@ -60,6 +61,7 @@
   /* Medium screens (tablets and small laptops) */
   @media (max-width: 750px) {
     height: 80px;
+    min-height: 48px;         /* AJOUTÉ: maintenir zone tactile minimale */
     font-size: 18px;
 
     img {
@@ -71,6 +73,7 @@
   /* Small screens (mobile) */
   @media (max-width: 480px) {
     height: 70px;
+    min-height: 48px;         /* AJOUTÉ: maintenir zone tactile minimale */
     font-size: 16px;
     gap: 0.3rem;
 
@@ -80,4 +83,3 @@
     }
   }
 }
-

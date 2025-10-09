@@ -30,6 +30,7 @@
   &__header {
     background: #93BFDA;
     height: 48px;
+    min-height: 48px;         /* AJOUTÉ: zone tactile minimale WCAG */
     padding: 0 .75rem;
     display: flex;
     align-items: center;
@@ -101,6 +102,10 @@
     font-weight: 400;
     color: #FFB703;
     text-decoration: none;
+    display: inline-block;    /* AJOUTÉ: pour appliquer min-height */
+    min-height: 48px;         /* AJOUTÉ: zone tactile minimale WCAG */
+    line-height: 48px;        /* AJOUTÉ: centrage vertical du texte */
+
     &:hover { text-decoration: underline; }
   }
 
@@ -120,6 +125,7 @@
     .book-card__header {
       background: transparent;
       height: auto;
+      min-height: 48px;       /* AJOUTÉ: maintenir hauteur minimale */
       padding: 0;
       margin: 0 0 8px;
       display: block;
@@ -161,7 +167,8 @@
     .book-card__link {
       margin-top: 4px;
       font-size: 16px;
-      line-height: 1.2;
+      line-height: 48px;      /* AJOUTÉ: maintenir centrage vertical */
+      min-height: 48px;       /* AJOUTÉ: maintenir zone tactile */
       font-weight: 500;
       color: #FFB703;
 
@@ -178,7 +185,10 @@
    - Reduce font sizes and spacing
    ============================================================ */
 @media (max-width: 640px) {
-  .book-card__header { height: 44px; }
+  .book-card__header {
+    height: 48px;             /* CORRIGÉ: 44px → 48px pour zone tactile minimale */
+    min-height: 48px;
+  }
   .book-card__title  { font-size: 28px; }
 
   .book-card.is-compact {
@@ -189,7 +199,7 @@
   }
 }
 
-/* Reservation and loan information 
+/* Reservation and loan information
    - Styled consistently with description text */
 .book-card__reservation,
 .book-card__loan {
@@ -222,6 +232,7 @@
   font-weight: 400;
   font-size: 16px;
   padding: .85rem 1.25rem;
+  min-height: 48px;           /* AJOUTÉ: zone tactile minimale WCAG */
   cursor: pointer;
   transition: background .2s ease, transform .05s ease, border-color .2s ease;
 
