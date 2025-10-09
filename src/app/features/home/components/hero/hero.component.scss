@@ -44,7 +44,7 @@
   &__logo {
     top: 4rem;
     width: 480px;
-    background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white */
+    background-color: rgba(255, 255, 255, 0.95); /* CORRIGÉ: opacité 0.8 → 0.95 pour meilleur contraste */
     padding: 1.5rem 2rem;
     text-align: center;
 
@@ -72,7 +72,7 @@
     top: 50%;
     transform: translateY(-50%); /* vertical centering */
     width: 700px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.95); /* CORRIGÉ: opacité 0.8 → 0.95 pour meilleur contraste */
     padding: 2rem 2.5rem;
     line-height: 1.7;
     color: #000;
@@ -113,7 +113,7 @@
     left: 15rem;
     display: flex;
     height: 100px;
-    background-color: #fbbc05; /* yellow */
+    background-color: #f5b800; /* CORRIGÉ: #fbbc05 → #f5b800 pour meilleur contraste texte blanc */
     color: #ffffff;
     border: 2px solid #fff;
     align-items: center;
@@ -145,6 +145,7 @@
       display: flex;
       align-items: center;
       height: 100%;
+      min-height: 48px; /* AJOUTÉ: taille tactile minimale conforme WCAG */
       font-size: 20px;
       text-decoration: none;
       color: #fff;
@@ -183,7 +184,8 @@
       /* Mobile: stacked layout */
       @media (max-width: 600px) {
         width: 100%;
-        padding: 1rem 0;
+        padding: 1.5rem 0; /* CORRIGÉ: 1rem → 1.5rem pour zone tactile 60px */
+        min-height: 60px; /* AJOUTÉ: zone tactile confortable sur mobile */
         justify-content: center;
         &:not(:last-of-type)::after {
           content: '';
@@ -203,7 +205,7 @@
       width: 100px;
       height: 100%;
       display: flex; align-items: center; justify-content: center;
-      border-left: 2px solid #fff; background-color: #fbbc05; flex-shrink: 0;
+      border-left: 2px solid #fff; background-color: #f5b800; flex-shrink: 0; /* CORRIGÉ: couleur assortie au CTA */
 
       .hero__cta-chevron-btn {
         background: none; border: 0; padding: 0; line-height: 0;
