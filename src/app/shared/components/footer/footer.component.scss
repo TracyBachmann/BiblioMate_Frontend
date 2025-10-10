@@ -4,6 +4,7 @@
    - Includes logo/text, navigation links, and social icons
    - Accordion-style collapsible behavior for mobile
    - Adjustments for tablet and desktop layouts
+   - CORRIGÉ: icônes sociales agrandies pour accessibilité
    ============================================================ */
 
 .footer {
@@ -256,6 +257,7 @@
     color: white;
     cursor: pointer;
     gap: 0.5rem;
+    min-height: 44px;           /* AJOUTÉ: zone tactile confortable */
 
     @media (min-width: 768px) and (max-width: 1024px) {
       padding: 0.2rem 0;
@@ -267,7 +269,8 @@
     }
 
     &:focus {
-      outline: none;
+      outline: 2px solid #fbbc05;
+      outline-offset: 3px;
     }
   }
 
@@ -304,6 +307,9 @@
       font-size: 14px;
       color: #fbbc05;
       text-decoration: none;
+      min-height: 44px;         /* AJOUTÉ: zone tactile confortable */
+      display: inline-flex;
+      align-items: center;
 
       &:hover {
         text-decoration: underline;
@@ -326,6 +332,7 @@
 
   /* ========================
      Social links section
+     - CORRIGÉ: icônes agrandies à 48x48px
      ======================== */
   &__socials {
     .footer__accordion-content {
@@ -335,7 +342,7 @@
     .footer__social-grid {
       display: grid;
       grid-template-columns: repeat(3, auto);
-      gap: 0.8rem;
+      gap: 1rem;                /* CORRIGÉ: augmenté de 0.8rem à 1rem */
       align-items: center;
       justify-content: center;
 
@@ -343,9 +350,17 @@
         justify-content: center;
       }
 
-      a img {
-        width: 34px;
-        height: 34px;
+      a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;        /* AJOUTÉ: zone tactile minimale */
+        min-height: 48px;
+
+        img {
+          width: 48px;          /* CORRIGÉ: 34px → 48px */
+          height: 48px;
+        }
       }
     }
   }
@@ -373,11 +388,11 @@
     }
 
     &__socials .footer__social-grid {
-      gap: 0.6rem;
+      gap: 1rem;               /* CORRIGÉ: harmonisé */
 
       a img {
-        width: 28px;
-        height: 28px;
+        width: 48px;           /* CORRIGÉ: 28px → 48px pour mobile aussi */
+        height: 48px;
       }
     }
   }
@@ -398,4 +413,3 @@ a:focus {
     font-weight: bold;
   }
 }
-

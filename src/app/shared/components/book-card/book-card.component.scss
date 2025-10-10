@@ -30,7 +30,7 @@
   &__header {
     background: #93BFDA;
     height: 48px;
-    min-height: 48px;         /* AJOUTÉ: zone tactile minimale WCAG */
+    min-height: 48px;
     padding: 0 .75rem;
     display: flex;
     align-items: center;
@@ -95,18 +95,21 @@
     color: #1f2937;
   }
 
-  /* Link to details page */
+  /* Link to details page - CORRIGÉ: couleur pour meilleur contraste */
   &__link {
     margin-top: auto;
     font-size: 24px;
     font-weight: 400;
-    color: #FFB703;
+    color: #C88600;           /* CORRIGÉ: #FFB703 → #C88600 pour contraste 3.5:1 */
     text-decoration: none;
-    display: inline-block;    /* AJOUTÉ: pour appliquer min-height */
-    min-height: 48px;         /* AJOUTÉ: zone tactile minimale WCAG */
-    line-height: 48px;        /* AJOUTÉ: centrage vertical du texte */
+    display: inline-block;
+    min-height: 48px;
+    line-height: 48px;
 
-    &:hover { text-decoration: underline; }
+    &:hover {
+      text-decoration: underline;
+      color: #B07600;         /* AJOUTÉ: couleur hover encore plus foncée */
+    }
   }
 
   /* ============================================================
@@ -125,7 +128,7 @@
     .book-card__header {
       background: transparent;
       height: auto;
-      min-height: 48px;       /* AJOUTÉ: maintenir hauteur minimale */
+      min-height: 48px;
       padding: 0;
       margin: 0 0 8px;
       display: block;
@@ -167,13 +170,13 @@
     .book-card__link {
       margin-top: 4px;
       font-size: 16px;
-      line-height: 48px;      /* AJOUTÉ: maintenir centrage vertical */
-      min-height: 48px;       /* AJOUTÉ: maintenir zone tactile */
+      line-height: 48px;
+      min-height: 48px;
       font-weight: 500;
-      color: #FFB703;
+      color: #C88600;         /* CORRIGÉ: harmonisé avec la version normale */
 
       &:hover {
-        color: #e6a503;
+        color: #B07600;       /* CORRIGÉ: harmonisé avec la version normale */
         text-decoration: underline;
       }
     }
@@ -186,7 +189,7 @@
    ============================================================ */
 @media (max-width: 640px) {
   .book-card__header {
-    height: 48px;             /* CORRIGÉ: 44px → 48px pour zone tactile minimale */
+    height: 48px;
     min-height: 48px;
   }
   .book-card__title  { font-size: 28px; }
@@ -232,7 +235,7 @@
   font-weight: 400;
   font-size: 16px;
   padding: .85rem 1.25rem;
-  min-height: 48px;           /* AJOUTÉ: zone tactile minimale WCAG */
+  min-height: 48px;
   cursor: pointer;
   transition: background .2s ease, transform .05s ease, border-color .2s ease;
 
