@@ -5,6 +5,7 @@
      - Provides navigation link and management actions
      - Includes conditional rendering for compact mode
    ========================================================= -->
+
 <div class="book-card" [class.is-compact]="compact">
   <!-- ========================
        Header: Book Title
@@ -17,15 +18,14 @@
        Book Image
        - Hidden if compact mode is enabled
        - Displays placeholder if no image is provided
-       - CORRIGÉ: dimensions harmonisées pour aspect-ratio 16:10
        ======================== -->
   <div class="book-card__image" *ngIf="!compact">
     <ng-container *ngIf="image; else placeholder">
-      <img ngSrc="{{ image }}" [alt]="title" width="800" height="500" loading="lazy" />
+      <img ngSrc="{{ image }}" [alt]="title" width="400" height="300" loading="lazy" />
     </ng-container>
     <!-- Placeholder shown when no image is available -->
     <ng-template #placeholder>
-      <img ngSrc="assets/images/placeholder.webp" [alt]="title" width="800" height="500" loading="lazy" />
+      <img ngSrc="assets/images/placeholder.webp" [alt]="title" width="1200" height="800" loading="lazy" />
     </ng-template>
   </div>
 
@@ -48,19 +48,19 @@
 
     <!-- Loan details (shown if at least one date is provided) -->
     <div *ngIf="loanDate || returnDate" class="book-card__loan">
-      <p *ngIf="loanDate">Date d'emprunt : {{ loanDate }}</p>
+      <p *ngIf="loanDate">Date d’emprunt : {{ loanDate }}</p>
       <p *ngIf="returnDate">Date de retour : {{ returnDate }}</p>
     </div>
 
     <!-- Navigation link to book details
          - Uses routerLink if command is available
          - Falls back to disabled span otherwise -->
-
-    class="book-card__link"
-    *ngIf="routerLinkCmd as cmd; else disabledLink"
-    [routerLink]="cmd"
-    [attr.aria-label]="'Voir le détail de ' + title">
-    Voir le détail
+    <a
+      class="book-card__link"
+      *ngIf="routerLinkCmd as cmd; else disabledLink"
+      [routerLink]="cmd"
+      [attr.aria-label]="'Voir le détail de ' + title">
+      Voir le détail
     </a>
     <ng-template #disabledLink>
       <span class="book-card__link is-disabled" aria-disabled="true" title="Identifiant manquant">
@@ -74,10 +74,10 @@
          - Provides edit and delete buttons
          ======================== -->
     <div class="book-card__manage" *ngIf="manage">
-      <button type="button" class="styled-button secondary" (click)="onEditClick()" aria-label="Modifier ce livre">
+      <button type="button" class="styled-button secondary" (click)="onEditClick()">
         Modifier
       </button>
-      <button type="button" class="styled-button danger" (click)="onDeleteClick()" aria-label="Supprimer ce livre">
+      <button type="button" class="styled-button danger" (click)="onDeleteClick()">
         Supprimer
       </button>
     </div>
@@ -95,3 +95,6 @@
     </button>
   </div>
 </div>
+
+
+

@@ -3,10 +3,11 @@
      - Provides site footer with logo, text, navigation links, and social icons
      - Supports collapsible sections (accordion style) for mobile accessibility
      - Uses ARIA roles and attributes for screen-reader support
-     - CORRIGÉ: icônes sociales agrandies à 48x48px pour accessibilité
    ============================================================ -->
+
 <footer class="footer" role="contentinfo">
   <div class="footer__content">
+
     <!-- ========================
          Logo and text block
          ======================== -->
@@ -15,11 +16,11 @@
         <!-- Link back to homepage -->
         <a href="/" class="footer__logo-link" aria-label="Retour à l'accueil">
           <img loading="lazy"
-               ngSrc="assets/images/logo.svg"
-               class="footer__logo"
-               width="110"
-               height="110"
-               alt="Logo BiblioMate"
+            ngSrc="assets/images/logo.svg"
+            class="footer__logo"
+            width="110"
+            height="110"
+            alt="Logo BiblioMate"
           />
         </a>
         <p class="footer__text">
@@ -36,6 +37,7 @@
          ======================== -->
     <ng-container *ngFor="let section of footerSections">
       <div class="footer__block" [ngClass]="section.class">
+
         <!-- Section title with accordion toggle (accessible on mobile) -->
         <div class="footer__section-title" role="heading" [attr.aria-level]="2">
           <span>{{ section.title }}</span>
@@ -61,32 +63,31 @@
                Standard navigation links
                ======================== -->
           <ng-container *ngIf="section.id !== 'socials'">
-
-            *ngFor="let link of section.links"
-            [href]="link.href"
-            class="footer__link">
-            {{ link.label }}
+            <a
+              *ngFor="let link of section.links"
+              [href]="link.href"
+              class="footer__link">
+              {{ link.label }}
             </a>
           </ng-container>
 
           <!-- ========================
                Social links section
                - Displays icons in a grid
-               - CORRIGÉ: icônes 48x48px pour zones tactiles conformes WCAG
                ======================== -->
           <ng-container *ngIf="section.id === 'socials'">
             <div class="footer__social-grid">
-
-              *ngFor="let social of section.links"
-              [href]="social.href"
-              [attr.aria-label]="social.label"
-              role="link">
-              <img loading="lazy"
-                   *ngIf="isSocialLink(social)"
-                   [ngSrc]="social.icon"
-                   alt=""
-                   width="48"
-                   height="48" />
+              <a
+                *ngFor="let social of section.links"
+                [href]="social.href"
+                [attr.aria-label]="social.label"
+                role="link">
+                <img loading="lazy"
+                  *ngIf="isSocialLink(social)"
+                  [ngSrc]="social.icon"
+                  alt=""
+                  width="40"
+                  height="40" />
               </a>
             </div>
           </ng-container>
@@ -95,3 +96,4 @@
     </ng-container>
   </div>
 </footer>
+
