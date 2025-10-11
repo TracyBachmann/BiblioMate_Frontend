@@ -16,7 +16,7 @@ type SortBy = 'expirationDate' | 'reservationDate' | 'title';
 type SortDir = 'asc' | 'desc';
 
 /** Filters applied to reservations list */
-type Filters = {
+interface Filters {
   sortBy: SortBy;
   sortDir: SortDir;
   availableOnly: boolean;
@@ -24,10 +24,10 @@ type Filters = {
   resTo: string;
   expFrom: string;
   expTo: string;
-};
+}
 
 /** ViewModel for reservations used in template */
-type ReservationVM = {
+interface ReservationVM {
   id: string | number;
   bookId: number;
   title: string;
@@ -38,7 +38,7 @@ type ReservationVM = {
   resAt: number | null;     // timestamp (start of day)
   expAt: number | null;     // timestamp (start of day)
   available: boolean;
-};
+}
 
 /**
  * MyReservationsComponent
@@ -116,19 +116,19 @@ export class MyReservationsComponent implements OnInit {
    */
   private enrichMissingBookMeta(list: ReservationVM[]) {
     const needs = list.filter(r => !(r.description && r.description.trim()) || !r.coverUrl);
-    if (!needs.length) return;
+    if (!needs.length) {return;}
 
     const requests: Record<number, ReturnType<BookService['getById']>> = {};
     for (const r of needs) {
       // avoid duplicate requests for same bookId
-      if (!requests[r.bookId]) requests[r.bookId] = this.books.getById(r.bookId);
+      if (!requests[r.bookId]) {requests[r.bookId] = this.books.getById(r.bookId);}
     }
 
     forkJoin(requests).subscribe((bookMap: Record<string, Book | any>) => {
       this.allReservations.update(current =>
         current.map(r => {
           const b: any = bookMap[String(r.bookId)];
-          if (!b) return r;
+          if (!b) {return r;}
           const desc = r.description && r.description.trim()
             ? r.description
             : (b.description ?? b.desc ?? '');
@@ -184,17 +184,17 @@ export class MyReservationsComponent implements OnInit {
     const expStart = this.dateInputToStartMs(f.expFrom);
     const expEnd   = this.dateInputToEndMs(f.expTo);
 
-    let out = src.filter(r => {
+    const out = src.filter(r => {
       if (q) {
         const t = this.normalize(r.title);
         const d = this.normalize(r.description);
-        if (!t.includes(q) && !d.includes(q)) return false;
+        if (!t.includes(q) && !d.includes(q)) {return false;}
       }
-      if (f.availableOnly && !r.available) return false;
-      if (resStart != null && (r.resAt == null || r.resAt < resStart)) return false;
-      if (resEnd   != null && (r.resAt == null || r.resAt > resEnd))   return false;
-      if (expStart != null && (r.expAt == null || r.expAt < expStart)) return false;
-      if (expEnd   != null && (r.expAt == null || r.expAt > expEnd))   return false;
+      if (f.availableOnly && !r.available) {return false;}
+      if (resStart != null && (r.resAt == null || r.resAt < resStart)) {return false;}
+      if (resEnd   != null && (r.resAt == null || r.resAt > resEnd))   {return false;}
+      if (expStart != null && (r.expAt == null || r.expAt < expStart)) {return false;}
+      if (expEnd   != null && (r.expAt == null || r.expAt > expEnd))   {return false;}
       return true;
     });
 
@@ -252,7 +252,7 @@ export class MyReservationsComponent implements OnInit {
 
   /** Format date-like value to dd/MM/yyyy (fr-FR locale) */
   private formatDate(v: any): string {
-    if (!v) return '';
+    if (!v) {return '';}
     const d = v instanceof Date ? v : new Date(v);
     return isNaN(d.getTime()) ? String(v) : d.toLocaleDateString('fr-FR');
   }
@@ -265,10 +265,10 @@ export class MyReservationsComponent implements OnInit {
 
   /** Convert ISO/date to timestamp at start of day */
   private toStartMs(v: any): number | null {
-    if (!v) return null;
+    if (!v) {return null;}
     try {
       const d = new Date(v);
-      if (isNaN(d.getTime())) return null;
+      if (isNaN(d.getTime())) {return null;}
       d.setHours(0, 0, 0, 0);
       return d.getTime();
     } catch { return null; }
@@ -276,13 +276,13 @@ export class MyReservationsComponent implements OnInit {
 
   /** Convert input[type=date] value to start-of-day timestamp */
   private dateInputToStartMs(s: string): number | null {
-    if (!s) return null;
+    if (!s) {return null;}
     return this.toStartMs(s);
   }
 
   /** Convert input[type=date] value to end-of-day timestamp */
   private dateInputToEndMs(s: string): number | null {
-    if (!s) return null;
+    if (!s) {return null;}
     const start = this.toStartMs(s);
     return start == null ? null : start + 24 * 60 * 60 * 1000 - 1;
   }

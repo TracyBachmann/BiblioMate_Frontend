@@ -43,7 +43,7 @@ export class ReservationsService {
   getForCurrentUser(): Observable<ReservationRead[]> {
     const token = this.pickToken();
     const userId = this.extractUserId(token);
-    if (!token || !userId) return of([]);
+    if (!token || !userId) {return of([]);}
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const url = `${this.base}/api/reservations/user/${userId}`;
     return this.http.get<ReservationRead[]>(url, { headers }).pipe(
@@ -55,7 +55,7 @@ export class ReservationsService {
   hasForCurrentUser(bookId: number): Observable<boolean> {
     const token = this.pickToken();
     const userId = this.extractUserId(token);
-    if (!token || !userId) return of(false);
+    if (!token || !userId) {return of(false);}
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const url = `${this.base}/api/reservations/user/${userId}`;
     return this.http.get<ReservationRead[]>(url, { headers }).pipe(
@@ -94,11 +94,11 @@ export class ReservationsService {
 
   /** Extract the current user ID robustly from JWT claims */
   private extractUserId(token: string | null): number | null {
-    if (!token) return null;
+    if (!token) {return null;}
     try {
       const part = token.split('.')[1] || '';
       let norm = part.replace(/-/g, '+').replace(/_/g, '/');
-      while (norm.length % 4) norm += '=';
+      while (norm.length % 4) {norm += '=';}
       const json = decodeURIComponent(
         atob(norm).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
       );

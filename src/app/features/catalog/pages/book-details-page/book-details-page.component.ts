@@ -68,7 +68,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
 
   // Close share modal when pressing Escape
   @HostListener('document:keydown.escape')
-  onEsc(): void { if (this.shareOpen()) this.shareOpen.set(false); }
+  onEsc(): void { if (this.shareOpen()) {this.shareOpen.set(false);} }
 
   // ===== Data loading =====
   private fetch(id: number): void {
@@ -94,7 +94,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     const b: any = this.book();
     if (!b || !this.auth.isAuthenticated()) { this.hasReserved.set(false); return; }
     const bookId = Number(b?.bookId ?? b?.id);
-    if (!Number.isFinite(bookId)) return;
+    if (!Number.isFinite(bookId)) {return;}
     this.reservations.hasForCurrentUser(bookId)
       .subscribe((v: boolean) => this.hasReserved.set(v));
   }
@@ -104,7 +104,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     const b: any = this.book();
     if (!b || !this.auth.isAuthenticated()) { this.hasActiveLoan.set(false); this.loanDue.set(null); return; }
     const bookId = Number(b?.bookId ?? b?.id);
-    if (!Number.isFinite(bookId)) return;
+    if (!Number.isFinite(bookId)) {return;}
 
     this.loans.hasActiveForCurrentUser?.(bookId).subscribe({
       next: r => {
@@ -121,8 +121,8 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   // ===== Helper methods =====
-  private safe(v: any): string { if (v == null) return '—'; const s = String(v); return s.trim() === '' ? '—' : s; }
-  private pick(...c: any[]) { for (const x of c){ if (x==null) continue; const s=typeof x==='string'?x.trim():String(x); if (s!=='') return s; } return undefined; }
+  private safe(v: any): string { if (v == null) {return '—';} const s = String(v); return s.trim() === '' ? '—' : s; }
+  private pick(...c: any[]) { for (const x of c){ if (x==null) {continue;} const s=typeof x==='string'?x.trim():String(x); if (s!=='') {return s;} } return undefined; }
   private nested(){ const b:any=this.book()??{}; const sl=b.shelfLevel??b.stock?.shelfLevel??null; const s=sl?.shelf??null; const z=s?.zone??null; return {shelfLevel:sl,shelf:s,zone:z}; }
 
   // Extract fields for template
@@ -144,9 +144,9 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   date(): string {
     const b:any=this.book();
     const raw=b?.publicationYear ?? b?.publishDate ?? b?.publicationDate ?? b?.datePublished ?? b?.releaseDate ?? b?.year;
-    if (!raw) return '—';
-    if (typeof raw==='number' && raw>0) return String(raw);
-    if (/^\d{4}$/.test(String(raw))) return String(raw);
+    if (!raw) {return '—';}
+    if (typeof raw==='number' && raw>0) {return String(raw);}
+    if (/^\d{4}$/.test(String(raw))) {return String(raw);}
     const d=new Date(raw); return Number.isNaN(d.getTime())? String(raw): d.toLocaleDateString();
   }
   genres(): string {
@@ -155,7 +155,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     return Array.isArray(g)? g.join(', '): (g || '—');
   }
   taglist(): string {
-    const b:any=this.book(); if (!b) return '—';
+    const b:any=this.book(); if (!b) {return '—';}
     const list:string[]=[
       ...(Array.isArray(b.tags)? b.tags: []),
       ...(Array.isArray(b.tagNames)? b.tagNames: []),
@@ -175,7 +175,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     const url=this.absoluteUrl(), title=this.title(), text=`${title}${this.author() ? ' — ' + this.author() : ''}`;
     if ((navigator as any).share) {
       try { await (navigator as any).share({ title, text, url }); this.shareOpen.set(false); return; }
-      catch (e:any){ if (e?.name!=='AbortError') console.warn('native share failed', e); }
+      catch (e:any){ if (e?.name!=='AbortError') {console.warn('native share failed', e);} }
     }
     this.shareOpen.set(true);
   }
@@ -201,9 +201,9 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   // ===== Error translation (backend → French) =====
   private translateMessage(input?: string | null): string {
     const msg = (input ?? '').toString().trim();
-    if (!msg) return '';
+    if (!msg) {return '';}
 
-    const table: Array<[RegExp, ((...m: string[]) => string) | string]> = [
+    const table: [RegExp, ((...m: string[]) => string) | string][] = [
       // Loans
       [/maximum\s+active\s+loans?\s*\((\d+)\)\s*reached/i, (_all, n) => `Nombre maximum d’emprunts actifs (${n}) atteint.`],
       [/existing\s+active\s+loan/i, 'Vous avez déjà un emprunt actif pour ce livre.'],
@@ -222,19 +222,19 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
 
     for (const [re, out] of table) {
       const m = msg.match(re);
-      if (m) return typeof out === 'string' ? out : out(...m);
+      if (m) {return typeof out === 'string' ? out : out(...m);}
     }
     return msg; // Fallback: return original message
   }
 
   private showToast(message: string, type: 'success'|'error'|'info' = 'success') {
     this.toast.set({ type, message });
-    setTimeout(() => { if (this.toast()?.message === message) this.toast.set(null); }, 4000);
+    setTimeout(() => { if (this.toast()?.message === message) {this.toast.set(null);} }, 4000);
   }
 
   // ===== Borrow a book =====
   borrow(): void {
-    if (this.borrowing() || this.hasActiveLoan()) return;
+    if (this.borrowing() || this.hasActiveLoan()) {return;}
     const b: any = this.book();
     const bookId = Number(b?.bookId ?? b?.id);
     if (!Number.isFinite(bookId)) { this.showToast('Livre introuvable.', 'error'); return; }
@@ -274,7 +274,7 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
 
   // ===== Reserve a book =====
   reserve(): void {
-    if (this.reserving() || this.hasReserved()) return;
+    if (this.reserving() || this.hasReserved()) {return;}
     const b: any = this.book();
     const bookId = Number(b?.bookId ?? b?.id);
     if (!Number.isFinite(bookId)) { this.showToast('Livre introuvable.', 'error'); return; }

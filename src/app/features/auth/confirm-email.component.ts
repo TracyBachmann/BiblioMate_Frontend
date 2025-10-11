@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -46,7 +46,7 @@ import { environment } from '../../../environment';
     @media (max-width:768px){.login-page{padding-top:100px;align-items:flex-start}.login-form{width:min(85vw,350px);padding:1.5rem;margin-top:1rem}}
   `]
 })
-export default class ConfirmEmailComponent {
+export default class ConfirmEmailComponent implements OnInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
 

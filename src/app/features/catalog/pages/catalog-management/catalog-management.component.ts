@@ -11,7 +11,7 @@ import { BookService, Book } from '../../../../core/services/book.service';
    ============================================================ */
 
 /** Advanced search filters available in the UI */
-type Filters = {
+interface Filters {
   isbn: string;
   author: string;
   genre: string;
@@ -20,16 +20,16 @@ type Filters = {
   tags: string;
   availableNow: boolean;
   exclude: string;
-};
+}
 
 /** Simplified book view model used for rendering cards */
-type BookVM = {
+interface BookVM {
   id: string;
   title: string;
   coverUrl: string;
   description: string;
   isAvailable: boolean;
-};
+}
 
 @Component({
   standalone: true,
@@ -144,20 +144,20 @@ export class CatalogManagementComponent implements OnInit {
   search(): void {
     const dto: any = {};
     const q = this.query().trim();
-    if (q) dto.title = q;
+    if (q) {dto.title = q;}
 
     const f = this.filters();
-    if (f.isbn.trim()) dto.isbn = f.isbn.trim();
-    if (f.author.trim()) dto.author = f.author.trim();
-    if (f.genre.trim()) dto.genre = f.genre.trim();
-    if (f.publisher.trim()) dto.publisher = f.publisher.trim();
+    if (f.isbn.trim()) {dto.isbn = f.isbn.trim();}
+    if (f.author.trim()) {dto.author = f.author.trim();}
+    if (f.genre.trim()) {dto.genre = f.genre.trim();}
+    if (f.publisher.trim()) {dto.publisher = f.publisher.trim();}
     if (f.date) {
       const y = new Date(f.date).getFullYear();
       dto.yearMin = y; dto.yearMax = y;
     }
-    if (f.availableNow) dto.isAvailable = true;
-    if (f.tags.trim()) dto.tagNames = f.tags.split(',').map(s => s.trim()).filter(Boolean);
-    if (f.exclude.trim()) dto.exclude = f.exclude.trim();
+    if (f.availableNow) {dto.isAvailable = true;}
+    if (f.tags.trim()) {dto.tagNames = f.tags.split(',').map(s => s.trim()).filter(Boolean);}
+    if (f.exclude.trim()) {dto.exclude = f.exclude.trim();}
 
     this.booksApi.search(dto).subscribe(items => {
       this.results.set(items.map(this.toVM));
@@ -172,7 +172,7 @@ export class CatalogManagementComponent implements OnInit {
   /** Handle CSV file import, map rows to BookVMs, and merge into results */
   onCSVSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
+    if (!input.files || input.files.length === 0) {return;}
 
     const file = input.files[0];
     const reader = new FileReader();
@@ -180,7 +180,7 @@ export class CatalogManagementComponent implements OnInit {
     reader.onload = () => {
       const text = reader.result as string;
       const rows = text.split(/\r?\n/).filter(r => r.trim().length > 0);
-      if (!rows.length) return;
+      if (!rows.length) {return;}
 
       // Parse header and map each row
       const header = rows[0].split(',').map(h => h.trim());
@@ -256,12 +256,12 @@ export class CatalogManagementComponent implements OnInit {
      ============================================================ */
   nextPage() {
     if (this.pageIndex() < this.totalPages().length - 1)
-      this.pageIndex.update(i => i + 1);
+      {this.pageIndex.update(i => i + 1);}
   }
 
   prevPage() {
     if (this.pageIndex() > 0)
-      this.pageIndex.update(i => i - 1);
+      {this.pageIndex.update(i => i - 1);}
   }
 
   goToPage(i: number) { this.pageIndex.set(i); }

@@ -9,10 +9,10 @@ import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../environment';
 
 /** Genre type for selectable preferences */
-type Genre = { id: number; name: string };
+interface Genre { id: number; name: string }
 
 /** Payload structure sent to the API when registering a user */
-type RegisterPayload = {
+interface RegisterPayload {
   firstName: string;
   lastName: string;
   email: string;
@@ -23,7 +23,7 @@ type RegisterPayload = {
   dateOfBirth?: string | null;
   profileImage?: string | null;       // API expects "ProfileImage"
   favoriteGenreIds?: number[];
-};
+}
 
 @Component({
   selector: 'app-register',
@@ -93,7 +93,7 @@ export class RegisterComponent implements OnInit {
   private passwordsMatch(group: AbstractControl): ValidationErrors | null {
     const p  = group.get('password')?.value;
     const cp = group.get('confirmPassword')?.value;
-    if (!p || !cp) return null;
+    if (!p || !cp) {return null;}
     return p === cp ? null : { passwordMismatch: true };
   }
 
@@ -106,12 +106,12 @@ export class RegisterComponent implements OnInit {
   /** Returns a human-readable error message for a given control */
   getErrorMessage(name: string): string {
     const c = this.registerForm.get(name);
-    if (!c) return '';
-    if (c.hasError('required')) return 'Ce champ est requis';
-    if (c.hasError('requiredTrue')) return 'Veuillez accepter les conditions';
-    if (c.hasError('email')) return 'Veuillez entrer une adresse email valide';
-    if (c.hasError('minlength')) return 'Taille trop courte';
-    if (c.hasError('maxlength')) return 'Taille trop longue';
+    if (!c) {return '';}
+    if (c.hasError('required')) {return 'Ce champ est requis';}
+    if (c.hasError('requiredTrue')) {return 'Veuillez accepter les conditions';}
+    if (c.hasError('email')) {return 'Veuillez entrer une adresse email valide';}
+    if (c.hasError('minlength')) {return 'Taille trop courte';}
+    if (c.hasError('maxlength')) {return 'Taille trop longue';}
     if (this.registerForm.hasError('passwordMismatch') && (name === 'password' || name === 'confirmPassword')) {
       return 'Les mots de passe ne correspondent pas';
     }
@@ -120,13 +120,13 @@ export class RegisterComponent implements OnInit {
 
   /** Move to the next step if current step is valid */
   next(): void {
-    if (this.currentStepValid()) this.step++;
-    else this.markCurrentStepTouched();
+    if (this.currentStepValid()) {this.step++;}
+    else {this.markCurrentStepTouched();}
   }
 
   /** Move back to the previous step */
   prev(): void {
-    if (this.step > 1) this.step--;
+    if (this.step > 1) {this.step--;}
   }
 
   /** Check if all controls in the current step are valid */
@@ -154,7 +154,7 @@ export class RegisterComponent implements OnInit {
   /** Handle file selection for profile image */
   onFileSelected(evt: Event): void {
     const file = (evt.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+    if (!file) {return;}
     this.selectedFile = file;
     const reader = new FileReader();
     reader.onload = () => this.previewUrl = reader.result as string;
@@ -218,7 +218,7 @@ export class RegisterComponent implements OnInit {
   /** Toggle a genre in the list of selected favorites */
   toggleGenre(id: number): void {
     const set = new Set(this.favoriteGenreIds.value ?? []);
-    if (set.has(id)) set.delete(id); else set.add(id);
+    if (set.has(id)) {set.delete(id);} else {set.add(id);}
     this.favoriteGenreIds.setValue([...set]);
   }
 }

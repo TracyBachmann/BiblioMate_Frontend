@@ -11,7 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
  * @param roles - Array of allowed roles ('User', 'Librarian', 'Admin')
  * @returns CanActivateFn function usable in route definitions
  */
-export function roleGuard(roles: Array<'User' | 'Librarian' | 'Admin'>): CanActivateFn {
+export function roleGuard(roles: ('User' | 'Librarian' | 'Admin')[]): CanActivateFn {
   return () => {
     const auth = inject(AuthService);
     const router = inject(Router);

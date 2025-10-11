@@ -41,7 +41,7 @@ export class AuthService {
   readonly displayName$ = combineLatest([this.firstName$, this.lastName$, this.token$]).pipe(
     map(([f, l, t]) => {
       const n = this.readName(t);
-      if (typeof n === 'string' && n.trim()) return n.trim();
+      if (typeof n === 'string' && n.trim()) {return n.trim();}
       const parts = [f ?? '', l ?? ''].map(s => s.trim()).filter(Boolean);
       return parts.length ? parts.join(' ') : null;
     })
@@ -53,7 +53,7 @@ export class AuthService {
     // Initialize token and schedule auto-logout if applicable
     const t = this.readToken();
     this._token$.next(t);
-    if (t) this.scheduleAutoLogout(t);
+    if (t) {this.scheduleAutoLogout(t);}
   }
 
   // -------- Synchronous state access --------
@@ -65,7 +65,7 @@ export class AuthService {
   isAuthenticated(): boolean {
     const t = this.readToken();
     const ok = !!t && !this.isTokenExpired(t);
-    if (ok !== !!this._token$.value) this._token$.next(t);
+    if (ok !== !!this._token$.value) {this._token$.next(t);}
     return ok;
   }
 
@@ -85,7 +85,7 @@ export class AuthService {
   getDisplayName(): string | null {
     const t = this.readToken();
     const direct = this.readName(t);
-    if (direct && direct.trim()) return direct.trim();
+    if (direct && direct.trim()) {return direct.trim();}
     const f = this.readFirstName(t), l = this.readLastName(t);
     const parts = [f ?? '', l ?? ''].map(s => s.trim()).filter(Boolean);
     return parts.length ? parts.join(' ') : null;
@@ -98,7 +98,7 @@ export class AuthService {
     const t = this.readToken();
     if (t !== this._token$.value) {
       this._token$.next(t);
-      if (t) this.scheduleAutoLogout(t);
+      if (t) {this.scheduleAutoLogout(t);}
     }
   }
 
@@ -114,10 +114,10 @@ export class AuthService {
 
     // Write token to storage (both keys for backward compatibility)
     if (remember) {
-      for (const k of this.TOKEN_KEYS) localStorage.setItem(k, token);
+      for (const k of this.TOKEN_KEYS) {localStorage.setItem(k, token);}
       localStorage.setItem(this.REMEMBER_KEY, '1');
     } else {
-      for (const k of this.TOKEN_KEYS) sessionStorage.setItem(k, token);
+      for (const k of this.TOKEN_KEYS) {sessionStorage.setItem(k, token);}
       localStorage.removeItem(this.REMEMBER_KEY);
     }
 
@@ -142,7 +142,7 @@ export class AuthService {
   scheduleAutoLogout(token: string) {
     clearTimeout(this.logoutTimer);
     const expMs = this.expiryFrom(token);
-    if (!expMs) return;
+    if (!expMs) {return;}
     const delay = Math.max(expMs - Date.now(), 0);
     if (delay === 0) {
       // Token already expired, keep observable updated
@@ -155,9 +155,9 @@ export class AuthService {
   /** Checks whether the token is expired */
   isTokenExpired(token?: string | null): boolean {
     const t = token ?? this.readToken();
-    if (!t) return true;
+    if (!t) {return true;}
     const expMs = this.expiryFrom(t);
-    if (!expMs) return false; // token has no exp claim → considered valid
+    if (!expMs) {return false;} // token has no exp claim → considered valid
     return Date.now() >= expMs;
   }
 
@@ -177,18 +177,18 @@ export class AuthService {
   private readToken(): string | null {
     for (const k of this.TOKEN_KEYS) {
       const s = sessionStorage.getItem(k);
-      if (s) return s;
+      if (s) {return s;}
     }
     for (const k of this.TOKEN_KEYS) {
       const l = localStorage.getItem(k);
-      if (l) return l;
+      if (l) {return l;}
     }
     return null;
   }
 
   /** Reads role claim from token */
   private readRole(token: string | null): UserRole {
-    if (!token) return null;
+    if (!token) {return null;}
     try {
       const p = this.decodeJwt(token);
       return (p['role']
@@ -199,7 +199,7 @@ export class AuthService {
 
   /** Reads display name claim from token */
   private readName(token: string | null): string | null {
-    if (!token) return null;
+    if (!token) {return null;}
     try {
       const p = this.decodeJwt(token);
       const v =
@@ -212,7 +212,7 @@ export class AuthService {
 
   /** Reads first name claim from token */
   private readFirstName(token: string | null): string | null {
-    if (!token) return null;
+    if (!token) {return null;}
     try {
       const p = this.decodeJwt(token);
       const v =
@@ -227,7 +227,7 @@ export class AuthService {
 
   /** Reads last name claim from token */
   private readLastName(token: string | null): string | null {
-    if (!token) return null;
+    if (!token) {return null;}
     try {
       const p = this.decodeJwt(token);
       const v =
@@ -245,7 +245,7 @@ export class AuthService {
   private decodeJwt(token: string): any {
     const part = token.split('.')[1] || '';
     let norm = part.replace(/-/g, '+').replace(/_/g, '/');
-    while (norm.length % 4) norm += '=';
+    while (norm.length % 4) {norm += '=';}
     const json = decodeURIComponent(
       atob(norm).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
     );

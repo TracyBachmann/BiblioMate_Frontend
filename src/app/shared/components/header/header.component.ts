@@ -14,7 +14,7 @@ import { BookService } from '../../../core/services/book.service';
  * Represents the state of advanced filters in the search drawer.
  * Matches the query params structure used in the catalog.
  */
-type Filters = {
+interface Filters {
   isbn: string;
   author: string;
   genre: string;
@@ -23,7 +23,7 @@ type Filters = {
   tags: string;        // "tag1, tag2"
   availableNow: boolean;
   exclude: string;
-};
+}
 
 @Component({
   selector: 'app-header',
@@ -75,7 +75,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     // Keep header state in sync with URL query params
     const sync = () => {
       let r = this.route;
-      while (r.firstChild) r = r.firstChild;
+      while (r.firstChild) {r = r.firstChild;}
       this.applyParams(r.snapshot.queryParamMap);
     };
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(sync);
@@ -102,14 +102,14 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    if (!this.isMenuOpen) this.menuToggleButton.nativeElement.focus();
+    if (!this.isMenuOpen) {this.menuToggleButton.nativeElement.focus();}
   }
 
   /** Keyboard accessibility: trap focus and close with Escape */
   handleKeyDown(event: KeyboardEvent) {
-    if (!this.isMenuOpen) return;
+    if (!this.isMenuOpen) {return;}
     const els = this.getFocusable('.header__drawer');
-    if (!els.length) return;
+    if (!els.length) {return;}
 
     const [first, last] = [els[0], els[els.length - 1]];
     const current = document.activeElement as HTMLElement;
@@ -129,7 +129,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   /** Utility: find all focusable elements inside a selector */
   private getFocusable(selector: string): HTMLElement[] {
     const root = document.querySelector(selector);
-    if (!root) return [];
+    if (!root) {return [];}
     return Array.from(root.querySelectorAll<HTMLElement>(
       'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])'
     )).filter(el => !el.hasAttribute('disabled') && el.tabIndex !== -1);
@@ -143,7 +143,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   /** Keyboard accessibility: close on Escape */
   handleSearchKeyDown(e: KeyboardEvent) {
-    if (!this.isSearchOpen) return;
+    if (!this.isSearchOpen) {return;}
     if (e.key === 'Escape') {
       e.preventDefault();
       this.closeSearch();
@@ -174,17 +174,17 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     const f = this.filters();
     const qp: Record<string, string> = {};
 
-    if (this.query().trim()) qp['q'] = this.query().trim();
-    if (this.advanced()) qp['adv'] = '1';
+    if (this.query().trim()) {qp['q'] = this.query().trim();}
+    if (this.advanced()) {qp['adv'] = '1';}
 
-    if (f.isbn.trim()) qp['isbn'] = f.isbn.trim();
-    if (f.author.trim()) qp['author'] = f.author.trim();
-    if (f.genre.trim()) qp['genre'] = f.genre.trim();
-    if (f.publisher.trim()) qp['publisher'] = f.publisher.trim();
-    if (f.date) qp['date'] = f.date;
-    if (f.tags.trim()) qp['tags'] = f.tags.trim();
-    if (f.availableNow) qp['available'] = '1';
-    if (f.exclude.trim()) qp['exclude'] = f.exclude.trim();
+    if (f.isbn.trim()) {qp['isbn'] = f.isbn.trim();}
+    if (f.author.trim()) {qp['author'] = f.author.trim();}
+    if (f.genre.trim()) {qp['genre'] = f.genre.trim();}
+    if (f.publisher.trim()) {qp['publisher'] = f.publisher.trim();}
+    if (f.date) {qp['date'] = f.date;}
+    if (f.tags.trim()) {qp['tags'] = f.tags.trim();}
+    if (f.availableNow) {qp['available'] = '1';}
+    if (f.exclude.trim()) {qp['exclude'] = f.exclude.trim();}
 
     return qp;
   }

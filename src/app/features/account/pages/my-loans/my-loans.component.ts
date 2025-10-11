@@ -10,7 +10,7 @@ import { LoansService, LoanRow } from '../../../../core/services/loan.service';
 type SortBy = 'dueDate' | 'loanDate' | 'title';
 type SortDir = 'asc' | 'desc';
 
-type Filters = {
+interface Filters {
   sortBy: SortBy;
   sortDir: SortDir;
   overdueOnly: boolean;
@@ -19,10 +19,10 @@ type Filters = {
   loanTo: string;
   dueFrom: string;
   dueTo: string;
-};
+}
 
 /** ViewModel used internally for display */
-type LoanVM = {
+interface LoanVM {
   id: number | string;           // LoanId from API
   bookId: number;                // Needed for routerLink navigation
   title: string;
@@ -33,7 +33,7 @@ type LoanVM = {
   loanAt: number | null;         // normalized timestamp (start of day)
   dueAt: number | null;          // normalized timestamp (start of day)
   overdue: boolean;
-};
+}
 
 @Component({
   standalone: true,
@@ -127,20 +127,20 @@ export class MyLoansComponent implements OnInit {
       : null;
 
     // Filtering pass
-    let out = src.filter(l => {
+    const out = src.filter(l => {
       if (q) {
         const t = this.normalize(l.title);
         const d = this.normalize(l.description);
-        if (!t.includes(q) && !d.includes(q)) return false;
+        if (!t.includes(q) && !d.includes(q)) {return false;}
       }
-      if (f.overdueOnly && !l.overdue) return false;
+      if (f.overdueOnly && !l.overdue) {return false;}
       if (soonLimit != null) {
-        if (l.dueAt == null || l.dueAt > soonLimit) return false;
+        if (l.dueAt == null || l.dueAt > soonLimit) {return false;}
       }
-      if (loanStart != null && (l.loanAt == null || l.loanAt < loanStart)) return false;
-      if (loanEnd   != null && (l.loanAt == null || l.loanAt > loanEnd))   return false;
-      if (dueStart  != null && (l.dueAt  == null || l.dueAt  < dueStart))  return false;
-      if (dueEnd    != null && (l.dueAt  == null || l.dueAt  > dueEnd))    return false;
+      if (loanStart != null && (l.loanAt == null || l.loanAt < loanStart)) {return false;}
+      if (loanEnd   != null && (l.loanAt == null || l.loanAt > loanEnd))   {return false;}
+      if (dueStart  != null && (l.dueAt  == null || l.dueAt  < dueStart))  {return false;}
+      if (dueEnd    != null && (l.dueAt  == null || l.dueAt  > dueEnd))    {return false;}
       return true;
     });
 
@@ -270,7 +270,7 @@ export class MyLoansComponent implements OnInit {
 
   // --- Helpers (date formatting, normalization, conversions) ---
   private formatDate(v: any): string {
-    if (!v) return '';
+    if (!v) {return '';}
     const d = v instanceof Date ? v : new Date(v);
     return isNaN(d.getTime()) ? String(v) : d.toLocaleDateString('fr-FR');
   }
@@ -292,25 +292,25 @@ export class MyLoansComponent implements OnInit {
     return ms + days * 24 * 60 * 60 * 1000;
   }
   private toStartMs(v: any): number | null {
-    if (!v) return null;
+    if (!v) {return null;}
     try {
       const s = String(v);
       const d = /^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(`${s}T00:00:00`) : new Date(s);
-      if (isNaN(d.getTime())) return null;
+      if (isNaN(d.getTime())) {return null;}
       d.setHours(0, 0, 0, 0);
       return d.getTime();
     } catch { return null; }
   }
   private dateInputToStartMs(s: string): number | null {
-    if (!s) return null; return this.toStartMs(s);
+    if (!s) {return null;} return this.toStartMs(s);
   }
   private dateInputToEndMs(s: string): number | null {
-    if (!s) return null;
+    if (!s) {return null;}
     const start = this.toStartMs(s);
     return start == null ? null : this.addDaysMs(start, 1) - 1;
   }
   private isOverdue(dueAt: number | null): boolean {
-    if (dueAt == null) return false;
+    if (dueAt == null) {return false;}
     return dueAt < this.startOfTodayMs();
   }
 }

@@ -8,7 +8,7 @@ import { SectionTitleComponent } from '../../../../shared/components/section-tit
 import { BookCardComponent } from '../../../../shared/components/book-card/book-card.component';
 
 /** Structure of advanced filters */
-type Filters = {
+interface Filters {
   isbn: string;
   author: string;
   genre: string;
@@ -17,16 +17,16 @@ type Filters = {
   tags: string;        // comma-separated string "tag1, tag2"
   availableNow: boolean;
   exclude: string;
-};
+}
 
 /** Lightweight ViewModel used in template & cards */
-type BookVM = {
+interface BookVM {
   id: string | number;
   title: string;
   coverUrl: string | null;
   description: string;
   isAvailable: boolean;
-};
+}
 
 @Component({
   standalone: true,
@@ -147,14 +147,14 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
   // ===== Carousel controls =====
   next(): void {
     const len = this.nouveautes().length;
-    if (len <= this.pageSize) return; // nothing to slide
+    if (len <= this.pageSize) {return;} // nothing to slide
     const nextStart = this.index() + this.pageSize;
     this.index.set(nextStart >= len ? 0 : nextStart);
   }
 
   prev(): void {
     const len = this.nouveautes().length;
-    if (len <= this.pageSize) return;
+    if (len <= this.pageSize) {return;}
     const prevStart = this.index() - this.pageSize;
     this.index.set(prevStart < 0 ? Math.max(0, len - this.pageSize) : prevStart);
   }
@@ -162,9 +162,9 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
   startAutoplay(): void {
     this.stopAutoplay();
     const len = this.nouveautes().length;
-    if (len <= this.pageSize) return;
+    if (len <= this.pageSize) {return;}
     this.autoplayId = setInterval(() => {
-      if (!this.autoplayPaused()) this.next();
+      if (!this.autoplayPaused()) {this.next();}
     }, this.autoplayDelay);
   }
 
@@ -199,7 +199,7 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
   // ===== Search logic =====
   /** Schedule a search with debounce */
   private scheduleSearch(): void {
-    if (this.searchDebounceId) clearTimeout(this.searchDebounceId);
+    if (this.searchDebounceId) {clearTimeout(this.searchDebounceId);}
     this.searchDebounceId = setTimeout(() => this.searchWithFilters(), this.searchDebounceMs);
   }
 
@@ -210,10 +210,10 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
 
     const dto: BookSearchDto = {};
     if (q) { dto.title = q; dto.description = q; }
-    if (f.isbn.trim()) dto.isbn = f.isbn.trim();
-    if (f.author.trim()) dto.author = f.author.trim();
-    if (f.genre.trim()) dto.genre = f.genre.trim();
-    if (f.publisher.trim()) dto.publisher = f.publisher.trim();
+    if (f.isbn.trim()) {dto.isbn = f.isbn.trim();}
+    if (f.author.trim()) {dto.author = f.author.trim();}
+    if (f.genre.trim()) {dto.genre = f.genre.trim();}
+    if (f.publisher.trim()) {dto.publisher = f.publisher.trim();}
 
     if (f.date) {
       const y = new Date(f.date).getFullYear();
@@ -221,9 +221,9 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
       dto.yearMax = y;
     }
 
-    if (f.availableNow) dto.isAvailable = true;
-    if (f.tags.trim()) dto.tagNames = f.tags.split(',').map(s => s.trim()).filter(Boolean);
-    if (f.exclude.trim()) dto.exclude = f.exclude.trim();
+    if (f.availableNow) {dto.isAvailable = true;}
+    if (f.tags.trim()) {dto.tagNames = f.tags.split(',').map(s => s.trim()).filter(Boolean);}
+    if (f.exclude.trim()) {dto.exclude = f.exclude.trim();}
 
     return dto;
   }

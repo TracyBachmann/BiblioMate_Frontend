@@ -9,13 +9,13 @@ import { BookCardComponent } from '../../../../shared/components/book-card/book-
  * Lightweight view-model interface for book-like data.
  * Used by this component to render a preview grid.
  */
-type BookLike = {
+interface BookLike {
   id?: string | number;       // some APIs use "id"
   bookId?: string | number;   // some APIs use "bookId"
   title: string;              // mandatory: book title
   coverUrl?: string | null;   // optional: cover image URL
   description?: string | null;// optional: short description
-};
+}
 
 @Component({
   selector: 'app-catalog-preview',

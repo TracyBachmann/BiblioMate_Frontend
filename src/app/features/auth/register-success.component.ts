@@ -70,7 +70,7 @@ export default class RegisterSuccessComponent {
 
   /** Resend confirmation email to the provided address */
   resend() {
-    if (!this.email) return;
+    if (!this.email) {return;}
 
     // Reset state before sending
     this.resending = true;

@@ -6,7 +6,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environment';
 
-type LoginResponse = { token: string };
+interface LoginResponse { token: string }
 
 @Component({
   selector: 'app-login',
@@ -116,8 +116,8 @@ export class LoginComponent implements OnInit {
   /** Utility: return a proper error message for a control */
   getErrorMessage(name: string): string {
     const c = this.loginForm.get(name);
-    if (c?.hasError('required')) return 'Ce champ est requis';
-    if (c?.hasError('email')) return 'Veuillez entrer une adresse email valide';
+    if (c?.hasError('required')) {return 'Ce champ est requis';}
+    if (c?.hasError('email')) {return 'Veuillez entrer une adresse email valide';}
     return '';
   }
 }

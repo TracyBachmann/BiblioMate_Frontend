@@ -52,7 +52,7 @@ export class LoansService {
     // Include userId if readable from token; otherwise backend uses JWT
     const maybeUserId = this.extractUserId(this.pickToken());
     const body: any = { bookId };
-    if (maybeUserId) body.userId = maybeUserId;
+    if (maybeUserId) {body.userId = maybeUserId;}
 
     return this.http.post<LoanCreateResponse>(url, body, { headers });
   }
@@ -98,7 +98,7 @@ export class LoansService {
 
   /** Robustly extract the user ID from different JWT claims */
   private extractUserId(token: string | null): number | null {
-    if (!token) return null;
+    if (!token) {return null;}
     try {
       const p = this.decodeJwt(token);
       const candidates = [

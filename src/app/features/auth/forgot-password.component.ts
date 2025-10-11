@@ -79,7 +79,7 @@ export default class ForgotPasswordComponent implements OnInit {
 
   /** Called when the user submits the form */
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {return;}
 
     this.loading = true;
     this.done = false;

@@ -89,7 +89,7 @@ export default class ResetPasswordComponent implements OnInit {
 
   /** Submit the form and call the API to reset the password */
   submit(): void {
-    if (this.state === 'error' || this.form.invalid || !this.token) return;
+    if (this.state === 'error' || this.form.invalid || !this.token) {return;}
     this.loading = true;
 
     this.http.post(`${environment.apiBase}/Auths/reset-password`, {

@@ -19,10 +19,10 @@ interface NavOption {
  * into normalized lowercase roles used by this component.
  */
 function mapRole(r: ServiceRole | null): UserRole {
-  if (!r) return 'user';
+  if (!r) {return 'user';}
   const norm = String(r).toLowerCase();
-  if (norm.includes('admin')) return 'admin';
-  if (norm.includes('librarian')) return 'librarian';
+  if (norm.includes('admin')) {return 'admin';}
+  if (norm.includes('librarian')) {return 'librarian';}
   return 'user';
 }
 

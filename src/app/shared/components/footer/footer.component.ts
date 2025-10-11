@@ -5,12 +5,12 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
  * Basic footer link.
  * Represents a simple navigation link with label and href.
  */
-type FooterLink = {
+interface FooterLink {
   /** Visible text for the link */
   label: string;
   /** Target URL for the link */
   href: string;
-};
+}
 
 /**
  * Social link with an icon.

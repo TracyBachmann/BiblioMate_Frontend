@@ -190,8 +190,8 @@ export class BookCreationComponent implements OnInit {
   }
   isGenreSelected(g: string): boolean { return this.model.genres.includes(g); }
   toggleGenreToken(g: string): void {
-    if (this.isGenreSelected(g)) this.model.genres = this.model.genres.filter(x => x !== g);
-    else this.model.genres.push(g);
+    if (this.isGenreSelected(g)) {this.model.genres = this.model.genres.filter(x => x !== g);}
+    else {this.model.genres.push(g);}
     this.genreQuery = '';
     this.filterGenres();
     this.toggleGenres(true);
@@ -199,12 +199,12 @@ export class BookCreationComponent implements OnInit {
   removeGenre(g: string) { this.model.genres = this.model.genres.filter(x => x !== g); }
   canCreateGenre(): boolean {
     const q = this.genreQuery.trim();
-    if (!q) return false;
+    if (!q) {return false;}
     return !this.availableGenres.some(g => this.norm(g) === this.norm(q));
   }
   createGenreFromQuery(): void {
     const name = this.genreQuery.trim();
-    if (!name) return;
+    if (!name) {return;}
     this.genresLoading = true;
     this.booksApi.ensureGenre(name).subscribe({
       next: (dto: any) => {
@@ -238,7 +238,7 @@ export class BookCreationComponent implements OnInit {
     const max = this.filteredGenres.length - 1;
     if (e.key === 'ArrowDown') { this.activeGenreIndex = Math.min(max, this.activeGenreIndex + 1); e.preventDefault(); }
     else if (e.key === 'ArrowUp') { this.activeGenreIndex = Math.max(0, this.activeGenreIndex - 1); e.preventDefault(); }
-    else if (e.key === 'Enter') { const pick = this.filteredGenres[this.activeGenreIndex]; if (pick) this.toggleGenreToken(pick); else if (this.canCreateGenre()) this.createGenreFromQuery(); e.preventDefault(); }
+    else if (e.key === 'Enter') { const pick = this.filteredGenres[this.activeGenreIndex]; if (pick) {this.toggleGenreToken(pick);} else if (this.canCreateGenre()) {this.createGenreFromQuery();} e.preventDefault(); }
     else if (e.key === 'Escape') { this.openGenres = false; e.preventDefault(); }
     else if (e.key === 'Backspace' && !this.genreQuery && this.model.genres.length) { this.model.genres = this.model.genres.slice(0, -1); }
   }
@@ -258,8 +258,8 @@ export class BookCreationComponent implements OnInit {
   }
   isTagSelected(t: string): boolean { return this.model.tags.includes(t); }
   toggleTagToken(t: string): void {
-    if (this.isTagSelected(t)) this.model.tags = this.model.tags.filter(x => x !== t);
-    else this.model.tags.push(t);
+    if (this.isTagSelected(t)) {this.model.tags = this.model.tags.filter(x => x !== t);}
+    else {this.model.tags.push(t);}
     this.tagQuery = '';
     this.filterTags();
     this.toggleTags(true);
@@ -267,12 +267,12 @@ export class BookCreationComponent implements OnInit {
   removeTag(t: string) { this.model.tags = this.model.tags.filter(x => x !== t); }
   canCreateTag(): boolean {
     const q = this.tagQuery.trim();
-    if (!q) return false;
+    if (!q) {return false;}
     return !this.availableTags.some(t => this.norm(t) === this.norm(q));
   }
   createTagFromQuery(): void {
     const name = this.tagQuery.trim();
-    if (!name) return;
+    if (!name) {return;}
     this.tagsLoading = true;
     this.booksApi.ensureTag(name).subscribe({
       next: (dto: any) => {
@@ -306,7 +306,7 @@ export class BookCreationComponent implements OnInit {
     const max = this.filteredTags.length - 1;
     if (e.key === 'ArrowDown') { this.activeTagIndex = Math.min(max, this.activeTagIndex + 1); e.preventDefault(); }
     else if (e.key === 'ArrowUp') { this.activeTagIndex = Math.max(0, this.activeTagIndex - 1); e.preventDefault(); }
-    else if (e.key === 'Enter') { const pick = this.filteredTags[this.activeTagIndex]; if (pick) this.toggleTagToken(pick); else if (this.canCreateTag()) this.createTagFromQuery(); e.preventDefault(); }
+    else if (e.key === 'Enter') { const pick = this.filteredTags[this.activeTagIndex]; if (pick) {this.toggleTagToken(pick);} else if (this.canCreateTag()) {this.createTagFromQuery();} e.preventDefault(); }
     else if (e.key === 'Escape') { this.openTags = false; e.preventDefault(); }
     else if (e.key === 'Backspace' && !this.tagQuery && this.model.tags.length) { this.model.tags = this.model.tags.slice(0, -1); }
   }
@@ -406,7 +406,7 @@ export class BookCreationComponent implements OnInit {
         this.booksApi.getShelves(Number(this.model.floor), this.model.aisle).subscribe({
           next: rows => {
             const found = rows.find(x => x.name.toLowerCase() === this.model.rayon.toLowerCase());
-            if (!found) return;
+            if (!found) {return;}
             this.booksApi.getLevels(found.shelfId).subscribe({
               next: lvls => {
                 this.availableLevels = lvls.map(String);
@@ -442,11 +442,11 @@ export class BookCreationComponent implements OnInit {
     this.authorDebounce = setTimeout(() => this.fetchNameSuggestions('author', q), 200);
   }
   onAuthorKey(e: KeyboardEvent) {
-    if (!this.openAuthor || !this.authorSuggestions.length) return;
+    if (!this.openAuthor || !this.authorSuggestions.length) {return;}
     const max = this.authorSuggestions.length - 1;
     if (e.key === 'ArrowDown') { this.activeAuthorIndex = Math.min(max, this.activeAuthorIndex + 1); e.preventDefault(); }
     else if (e.key === 'ArrowUp') { this.activeAuthorIndex = Math.max(0, this.activeAuthorIndex - 1); e.preventDefault(); }
-    else if (e.key === 'Enter') { const pick = this.authorSuggestions[this.activeAuthorIndex]; if (pick) this.applyAuthor(pick); e.preventDefault(); }
+    else if (e.key === 'Enter') { const pick = this.authorSuggestions[this.activeAuthorIndex]; if (pick) {this.applyAuthor(pick);} e.preventDefault(); }
     else if (e.key === 'Escape') { this.openAuthor = false; }
   }
   applyAuthor(name: string) { this.model.author = name; this.openAuthor = false; }
@@ -459,11 +459,11 @@ export class BookCreationComponent implements OnInit {
     this.publisherDebounce = setTimeout(() => this.fetchNameSuggestions('publisher', q), 200);
   }
   onPublisherKey(e: KeyboardEvent) {
-    if (!this.openPublisher || !this.publisherSuggestions.length) return;
+    if (!this.openPublisher || !this.publisherSuggestions.length) {return;}
     const max = this.publisherSuggestions.length - 1;
     if (e.key === 'ArrowDown') { this.activePublisherIndex = Math.min(max, this.activePublisherIndex + 1); e.preventDefault(); }
     else if (e.key === 'ArrowUp') { this.activePublisherIndex = Math.max(0, this.activePublisherIndex - 1); e.preventDefault(); }
-    else if (e.key === 'Enter') { const pick = this.publisherSuggestions[this.activePublisherIndex]; if (pick) this.applyPublisher(pick); e.preventDefault(); }
+    else if (e.key === 'Enter') { const pick = this.publisherSuggestions[this.activePublisherIndex]; if (pick) {this.applyPublisher(pick);} e.preventDefault(); }
     else if (e.key === 'Escape') { this.openPublisher = false; }
   }
   applyPublisher(name: string) { this.model.publisher = name; this.openPublisher = false; }
@@ -477,16 +477,16 @@ export class BookCreationComponent implements OnInit {
           const n = kind === 'author'
             ? (b?.author ?? b?.authorName)
             : (b?.publisher ?? b?.editorName ?? b?.publisherName);
-          if (typeof n === 'string' && n.trim()) names.add(n.trim());
-          if (Array.isArray(n)) for (const x of n) if (typeof x === 'string' && x.trim()) names.add(x.trim());
+          if (typeof n === 'string' && n.trim()) {names.add(n.trim());}
+          if (Array.isArray(n)) {for (const x of n) {if (typeof x === 'string' && x.trim()) {names.add(x.trim());}}}
         }
         const list = Array.from(names).sort((a, b) => a.localeCompare(b)).slice(0, 10);
         if (kind === 'author') { this.authorSuggestions = list; this.activeAuthorIndex = 0; }
         else { this.publisherSuggestions = list; this.activePublisherIndex = 0; }
       },
       error: () => {
-        if (kind === 'author') this.authorSuggestions = [];
-        else this.publisherSuggestions = [];
+        if (kind === 'author') {this.authorSuggestions = [];}
+        else {this.publisherSuggestions = [];}
       }
     });
   }
@@ -566,7 +566,7 @@ export class BookCreationComponent implements OnInit {
   private loadForEdit(id: string) {
     this.booksApi.getById(Number(id)).subscribe({
       next: (b: any) => {
-        if (!b) return;
+        if (!b) {return;}
 
         this.model.title = b.title ?? '';
         this.model.description = b.description ?? '';
@@ -605,9 +605,9 @@ export class BookCreationComponent implements OnInit {
   }
 
   private toDateInput(v: any): string {
-    if (!v) return '';
+    if (!v) {return '';}
     const d = new Date(v);
-    if (isNaN(d.getTime())) return '';
+    if (isNaN(d.getTime())) {return '';}
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
     return `${d.getFullYear()}-${mm}-${dd}`;
@@ -785,7 +785,7 @@ export class BookCreationComponent implements OnInit {
       e.preventDefault();
     } else if (e.key === 'Enter') {
       const pick = this.filteredFloors[this.activeFloorIndex];
-      if (pick) this.applyFloor(pick);
+      if (pick) {this.applyFloor(pick);}
       e.preventDefault();
     } else if (e.key === 'Escape') {
       this.openFloors = false;
@@ -806,7 +806,7 @@ export class BookCreationComponent implements OnInit {
       e.preventDefault();
     } else if (e.key === 'Enter') {
       const pick = this.filteredAisles[this.activeAisleIndex];
-      if (pick) this.applyAisle(pick);
+      if (pick) {this.applyAisle(pick);}
       e.preventDefault();
     } else if (e.key === 'Escape') {
       this.openAisles = false;
@@ -827,7 +827,7 @@ export class BookCreationComponent implements OnInit {
       e.preventDefault();
     } else if (e.key === 'Enter') {
       const pick = this.filteredRayons[this.activeRayonIndex];
-      if (pick) this.applyRayon(pick);
+      if (pick) {this.applyRayon(pick);}
       e.preventDefault();
     } else if (e.key === 'Escape') {
       this.openRayons = false;
@@ -848,7 +848,7 @@ export class BookCreationComponent implements OnInit {
       e.preventDefault();
     } else if (e.key === 'Enter') {
       const pick = this.filteredLevels[this.activeLevelIndex];
-      if (pick) this.applyLevel(pick);
+      if (pick) {this.applyLevel(pick);}
       e.preventDefault();
     } else if (e.key === 'Escape') {
       this.openLevels = false;

@@ -16,7 +16,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 /** ✅ Custom validator: date must not be in the future */
 const notFutureDate: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value = control.value;
-  if (!value) return null;
+  if (!value) {return null;}
   const today = new Date();
   const dob = new Date(value);
   return dob > today ? { futureDate: true } : null;

@@ -41,7 +41,7 @@ import { SectionTitleComponent } from '../../../../shared/components/section-tit
  * @property a - The answer text.
  * @property open - Optional UI state; `true` means the answer is expanded.
  */
-type Faq = { q: string; a: string; open?: boolean };
+interface Faq { q: string; a: string; open?: boolean }
 
 @Component({
   selector: 'app-faq-page',
