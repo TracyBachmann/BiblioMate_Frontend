@@ -61,7 +61,7 @@ export class AuthInterceptor implements HttpInterceptor {
     // Forward the request and handle HTTP errors
     return next.handle(authReq).pipe(
       catchError((err: HttpErrorResponse) => {
-        if (err.status === 401) {
+        if (err.status === 401 && !isAuthEndpoint) {
           console.warn('401 Unauthorized detected, logging out');
           this.auth.logout();
           return EMPTY;
