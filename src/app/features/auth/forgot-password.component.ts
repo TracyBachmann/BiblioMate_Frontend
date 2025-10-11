@@ -12,8 +12,7 @@ import { environment } from '../../../environment';
   template: `
     <div class="login-wrapper">
       <div class="login-page">
-        <img loading="lazy" ngSrc="assets/images/hero-background.webp" width="1920" height="1080"
-             alt="Bibliothèque de Montferrand" class="login-background" fetchpriority="high"/>
+        <img loading="lazy" ngSrc="assets/images/hero-background-large.webp" ngSrcset="assets/images/hero-background-small.webp 400w, assets/images/hero-background-medium.webp 800w, assets/images/hero-background-large.webp 1200w" sizes="(max-width: 600px) 400px, (max-width: 1024px) 800px, 1200px" width="1200" height="991" alt="Biblioth�que" loading="lazy">
 
         <section class="login-form">
           <h1>Mot de passe oublié</h1>

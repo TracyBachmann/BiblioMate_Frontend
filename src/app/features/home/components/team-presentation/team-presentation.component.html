@@ -4,12 +4,14 @@
     <!-- === Left side: illustrative image === -->
     <div class="team-presentation__image">
       <img
-        ngSrc="assets/images/team-presentation.webp"
-        alt="Library room with children"
+        ngSrc="assets/images/team-presentation-medium.webp"
+        ngSrcset="assets/images/team-presentation-small.webp 400w,
+                  assets/images/team-presentation-medium.webp 800w"
+        sizes="(max-width: 600px) 400px, 800px"
         width="800"
         height="600"
-        loading="lazy"
-      />
+        alt="Présentation de l'équipe"
+        loading="lazy">
     </div>
 
     <!-- === Right side: text block === -->

@@ -1,14 +1,19 @@
 <!-- ================= HERO SECTION ================= -->
 <section class="hero" role="region" aria-label="Library introduction">
   <!-- Background image -->
-  <img loading="lazy"
-    ngSrc="assets/images/hero-background.webp"
-    width="1920"
-    height="1080"
+  <img
+    ngSrc="assets/images/hero-background-large.webp"
+    ngSrcset="assets/images/hero-background-small.webp 400w,
+            assets/images/hero-background-medium.webp 800w,
+            assets/images/hero-background-large.webp 1200w"
+    sizes="(max-width: 600px) 400px,
+         (max-width: 1024px) 800px,
+         1200px"
+    width="1200"
+    height="991"
     alt="Bibliothèque de Montferrand"
-    class="hero__background"
+    loading="eager"
     priority
-    fetchpriority="high"
   />
 
   <!-- Library logo -->
