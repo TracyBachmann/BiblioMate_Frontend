@@ -2,27 +2,47 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
-/**
- * Role-based guard for route protection.
- * ------------------------
- * Checks if the user is authenticated and has one of the allowed roles
- * before granting access to a route. If not, redirects to the login page.
- *
- * @param roles - Array of allowed roles ('User', 'Librarian', 'Admin')
- * @returns CanActivateFn function usable in route definitions
- */
 export function roleGuard(roles: ('User' | 'Librarian' | 'Admin')[]): CanActivateFn {
   return () => {
     const auth = inject(AuthService);
     const router = inject(Router);
-    const role = auth.getRole();
 
-    // Block access if user is not authenticated or role is not allowed
-    if (!auth.isAuthenticated() || !role || !roles.includes(role)) {
+    if (!auth.isAuthenticated?.()) {
       router.navigate(['/connexion']);
       return false;
     }
 
-    return true; // Access granted
+    // Normalisation
+    const raw = auth.getRole?.();
+    const role = raw
+      ? (String(raw).toLowerCase() === 'admin'
+        ? 'Admin'
+        : String(raw).toLowerCase() === 'librarian'
+          ? 'Librarian'
+          : 'User')
+      : undefined;
+
+    if (!role) {
+      router.navigate(['/connexion']);
+      return false;
+    }
+
+    // Règle d’héritage: Admin -> Librarian uniquement
+    // - Si la route autorise 'Admin' → OK
+    // - Sinon, si la route autorise 'Librarian' et l'utilisateur est 'Admin' → OK (héritage)
+    // - Sinon, aucun héritage vers 'User' → Admin NE PASSE PAS sur des routes 'User' only
+    if (role === 'Admin') {
+      if (roles.includes('Admin')) return true;
+      if (roles.includes('Librarian')) return true;
+      router.navigate(['/connexion']);
+      return false;
+    }
+
+    if (!roles.includes(role)) {
+      router.navigate(['/connexion']);
+      return false;
+    }
+
+    return true;
   };
 }

@@ -107,8 +107,20 @@ export class PersonalSpaceComponent {
         title: 'Utilisateurs',
         subtitle: 'Comptes, rôles et permissions',
         image: 'assets/images/users.webp',
-        link: ['/admin/utilisateurs'],
+        link: ['/management/admin/user-management'],
       },
+      {
+        title: 'Logs & rapports',
+        subtitle: 'Journalisation et rapports système',
+        image: 'assets/images/manage-requests.webp',
+        link: ['/management/admin/logs-reports'],
+      },
+      {
+        title: 'Paramètres établissement',
+        subtitle: 'Règles métier et configuration',
+        image: 'assets/images/notifications.webp',
+        link: ['/management/admin/business-settings'],
+      }
     ];
 
     // Selection rules based on role
@@ -127,4 +139,5 @@ export class PersonalSpaceComponent {
   get fullName(): string { return this._fullName(); }
   get options(): NavOption[] { return this._options(); }
 }
+
 
