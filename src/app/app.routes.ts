@@ -1,15 +1,11 @@
 /**
  * Application main route configuration.
  *
- * This file defines all routes of the Angular application, including:
  * - Public routes (home, login, register, catalog, info pages).
- * - Auth-related routes (email confirmation, password reset, register success).
- * - Protected routes under "personal space" (`/espace`) guarded by `authGuard`.
- * - ✨ ALL components are lazy-loaded for optimal performance.
- * - Fallback route redirecting to home (`''`).
- *
- * Each route entry uses `loadComponent` for lazy loading to reduce initial bundle size.
- * This improves First Contentful Paint (FCP) and Largest Contentful Paint (LCP) metrics.
+ * - Auth routes (email confirmation, password reset, register success).
+ * - Protected personal space under /espace (authGuard).
+ * - Admin/Management pages under /management/* (authGuard).
+ * - All components are lazy-loaded.
  */
 
 import { Routes } from '@angular/router';
@@ -24,45 +20,39 @@ export const routes: Routes = [
         .then(m => m.HomePageComponent)
   },
 
-  /** Authentication routes (all lazy loaded) */
+  /** Authentication routes */
   {
     path: 'connexion',
     loadComponent: () =>
-      import('./features/auth/login.component')
-        .then(m => m.LoginComponent)
+      import('./features/auth/login.component').then(m => m.LoginComponent)
   },
   {
     path: 'inscription',
     loadComponent: () =>
-      import('./features/auth/register.component')
-        .then(m => m.RegisterComponent)
+      import('./features/auth/register.component').then(m => m.RegisterComponent)
   },
   {
     path: 'confirm-email',
     loadComponent: () =>
-      import('./features/auth/confirm-email.component')
-        .then(m => m.default)
+      import('./features/auth/confirm-email.component').then(m => m.default)
   },
   {
     path: 'mot-de-passe-oublie',
     loadComponent: () =>
-      import('./features/auth/forgot-password.component')
-        .then(m => m.default)
+      import('./features/auth/forgot-password.component').then(m => m.default)
   },
   {
     path: 'reinitialiser-mot-de-passe',
     loadComponent: () =>
-      import('./features/auth/reset-password.component')
-        .then(m => m.default)
+      import('./features/auth/reset-password.component').then(m => m.default)
   },
   {
     path: 'inscription/verification',
     loadComponent: () =>
-      import('./features/auth/register-success.component')
-        .then(m => m.default)
+      import('./features/auth/register-success.component').then(m => m.default)
   },
 
-  /** Catalog routes (lazy loaded) */
+  /** Catalog routes */
   {
     path: 'catalogue',
     loadComponent: () =>
@@ -76,7 +66,7 @@ export const routes: Routes = [
         .then(m => m.BookDetailsPageComponent)
   },
 
-  /** Personal account space (protected by authGuard, all lazy loaded) */
+  /** Personal account space (protected) */
   {
     path: 'espace',
     canActivate: [authGuard],
@@ -119,7 +109,37 @@ export const routes: Routes = [
         .then(m => m.CatalogManagementComponent)
   },
 
-  /** Informational pages (already lazy loaded) */
+  /** Management area (admin) — protected */
+  {
+    path: 'management/admin/logs-reports',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/admin/logs-reports/logs-reports.component')
+        .then(m => m.LogsReportsComponent)
+  },
+  {
+    path: 'management/admin/user-management',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/admin/user-management/user-management.component')
+        .then(m => m.UserManagementComponent)
+  },
+  {
+    path: 'management/admin/business-settings',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/admin/business-settings/business-settings.component')
+        .then(m => m.BusinessSettingsComponent)
+  },
+  {
+    path: 'management/reference-data',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/management/reference-data/reference-data.component')
+        .then(m => m.ReferenceDataComponent)
+  },
+
+  /** Informational pages */
   {
     path: 'contact',
     loadComponent: () =>
@@ -145,5 +165,6 @@ export const routes: Routes = [
         .then(m => m.LegalNoticePageComponent)
   },
 
+  /** Fallback */
   { path: '**', redirectTo: '' }
 ];

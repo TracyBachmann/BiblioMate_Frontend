@@ -1,45 +1,32 @@
-<!-- ============================================================
-     Data Table Component Template
-     - Displays tabular data with dynamic columns and rows
-     - Supports optional action buttons per row
-     - Designed for generic usage with configurable inputs
-   ============================================================ -->
-
 <div class="data-table-wrapper">
   <table class="data-table">
     <thead>
     <tr>
-      <!-- Table header cells generated dynamically from "columns" input -->
       <th *ngFor="let col of columns" [style.width]="col.width">
         {{ col.label }}
       </th>
-
-      <!-- Extra header cell for actions if at least one action is defined -->
       <th *ngIf="actions.length">Actions</th>
     </tr>
     </thead>
 
     <tbody>
-    <!-- Table rows generated dynamically from "data" input -->
     <tr *ngFor="let row of data">
-      <!-- Data cells: display value from each column definition -->
       <td *ngFor="let col of columns">
         {{ getValue(row, col) }}
       </td>
 
-      <!-- Actions column: renders one button per configured action -->
       <td *ngIf="actions.length" class="actions-cell">
         <button
           *ngFor="let action of actions"
           type="button"
           class="icon-btn"
           [attr.aria-label]="action.label"
-        (click)="action.handler(row)">
-        <img loading="lazy"
-          [src]="action.icon"
-          [alt]="action.label"
-          width="18"
-          height="18" />
+          (click)="action.handler(row)">
+          <img loading="lazy"
+               [src]="action.icon"
+               [alt]="action.label"
+               width="18"
+               height="18" />
         </button>
       </td>
     </tr>

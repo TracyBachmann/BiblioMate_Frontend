@@ -1,0 +1,136 @@
+<section class="user-management-page">
+  <div class="page-gutter">
+    <!-- ===== Page header ===== -->
+    <div class="page-header">
+      <app-section-title [title]="'Gestion des utilisateurs'"></app-section-title>
+    </div>
+
+    <!-- ===== Toolbar: search + filters + actions ===== -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <!-- Add user button -->
+        <button type="button" class="styled-button btn-sm btn-icon" (click)="addUser()">
+          <span class="icon i-user-add" aria-hidden="true"></span>
+          <span>Ajouter un utilisateur</span>
+        </button>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- Search input -->
+        <div class="search-box">
+          <input
+            type="text"
+            placeholder="Tapez votre recherche..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+            class="search-input"
+          />
+          <button type="button" class="search-btn" aria-label="Rechercher">
+            <span class="icon i-search" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <!-- Advanced search toggle -->
+        <button
+          type="button"
+          class="toggle-search-btn"
+          [class.active]="advancedSearchOpen"
+          (click)="toggleAdvancedSearch()"
+          aria-label="Recherche avancée"
+        >
+          <span class="icon i-filter" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== Advanced search panel ===== -->
+    <div class="advanced-search" *ngIf="advancedSearchOpen">
+      <div class="filter-group">
+        <label for="filter-role">Rôle</label>
+        <select id="filter-role" [(ngModel)]="filterRole" (change)="applyFilters()" class="filter-select">
+          <option value="">Tous</option>
+          <option value="User">Utilisateur</option>
+          <option value="Librarian">Bibliothécaire</option>
+          <option value="Admin">Administrateur</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filter-status">Statut</label>
+        <select id="filter-status" [(ngModel)]="filterStatus" (change)="applyFilters()" class="filter-select">
+          <option value="">Tous</option>
+          <option value="validated">Validés</option>
+          <option value="pending">En attente</option>
+        </select>
+      </div>
+
+      <button type="button" class="styled-button outline btn-sm" (click)="resetFilters()">
+        Réinitialiser
+      </button>
+    </div>
+
+    <!-- ===== Data table ===== -->
+    <div class="table-container">
+      <app-data-table
+        [columns]="columns"
+        [data]="filteredUsers"
+        [actions]="tableActions"
+      ></app-data-table>
+
+      <!-- Empty state -->
+      <div class="empty" *ngIf="filteredUsers.length === 0 && !loading">
+        <img loading="lazy" ngSrc="assets/images/empty.svg" alt="" width="64" height="64" />
+        <p>Aucun utilisateur trouvé.</p>
+      </div>
+
+      <!-- Loading state -->
+      <div class="loading" *ngIf="loading">
+        <p>Chargement des utilisateurs...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Toast notifications ===== -->
+  <div class="toast-root" *ngIf="toast" aria-live="polite">
+    <div class="toast" [class.success]="toast.type==='success'"
+         [class.error]="toast.type==='error'"
+         [class.info]="toast.type==='info'">
+      <span class="t-icon" aria-hidden="true"></span>
+      <div class="t-content">{{ toast.message }}</div>
+      <button class="t-close" (click)="toast = null" aria-label="Fermer">×</button>
+    </div>
+  </div>
+
+  <!-- ===== Confirmation modal ===== -->
+  <div *ngIf="confirmModal" class="modal-overlay" (click)="closeConfirmModal()">
+    <div class="modal-dialog" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ confirmModal.title }}</h3>
+        <button type="button" class="close-btn" (click)="closeConfirmModal()" aria-label="Fermer">×</button>
+      </div>
+      <div class="modal-body">
+        <p>{{ confirmModal.message }}</p>
+        <textarea
+          *ngIf="confirmModal.needsReason"
+          [(ngModel)]="rejectionReason"
+          placeholder="Raison du rejet (optionnel)"
+          class="reason-input"
+          rows="3"
+        ></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="styled-button outline" (click)="closeConfirmModal()">
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="styled-button"
+          [class.danger]="confirmModal.isDanger"
+          (click)="confirmAction()"
+        >
+          {{ confirmModal.confirmText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

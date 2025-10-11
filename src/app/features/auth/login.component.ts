@@ -93,15 +93,22 @@ export class LoginComponent implements OnInit {
       error: (err) => {
         // Map API error messages to user-friendly text
         const apiMsg = err?.error?.error || err?.error;
+
+        // ⭐ NOUVEAU : Gestion du compte en attente de validation admin
         if (apiMsg === 'Account awaiting admin approval.') {
-          this.errorMessage = 'Votre compte a bien été créé, mais il doit être approuvé par un·e bibliothécaire.';
-        } else if (apiMsg === 'Email not confirmed.') {
+          this.errorMessage = '⏳ Votre compte est en attente de validation par un administrateur. Vous recevrez un email dès qu\'il sera approuvé (généralement sous 24-48h).';
+        }
+        // Email non confirmé
+        else if (apiMsg === 'Email not confirmed.') {
           this.errorMessage = 'Veuillez confirmer votre adresse e-mail avant de vous connecter.';
-        } else {
+        }
+        // Autres erreurs
+        else {
           this.errorMessage = (err?.status === 0)
             ? 'Impossible de joindre le serveur.'
             : 'Identifiants invalides.';
         }
+
         this.isSubmitting = false;
       }
     });
