@@ -5,7 +5,6 @@
  * - Auth routes (email confirmation, password reset, register success).
  * - Protected personal space under /espace (authGuard).
  * - Admin/Management pages under /management/* (authGuard).
- * - All components are lazy-loaded.
  */
 
 import { Routes } from '@angular/router';
