@@ -64,10 +64,10 @@ export class FooterComponent {
       title: 'Informations officielles',
       class: 'footer__info',
       links: [
-        { label: 'À propos', href: '#' },
-        { label: 'Contact', href: '#' },
-        { label: 'Foire aux questions', href: '#' },
-        { label: 'Mentions légales', href: '#' }
+        { label: 'À propos',          href: '/a-propos' },
+        { label: 'Contact',           href: '/contact' },
+        { label: 'Foire aux questions', href: '/faq' },
+        { label: 'Mentions légales',  href: '/mentions-legales' }
       ]
     },
     {
