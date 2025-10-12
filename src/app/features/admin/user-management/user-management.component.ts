@@ -17,22 +17,22 @@ interface ConfirmModal {
   confirmText: string;
   isDanger?: boolean;
   needsReason?: boolean;
+  isRoleChange?: boolean;
+  currentRole?: string;
   action: () => void;
 }
 
-// Interface pour typer les données utilisateur
 interface UserData {
   userId: number;
   firstName: string;
   lastName: string;
   email: string;
   role: string;
-  isValidated: boolean;
-  registrationDate: string;
+  isApproved: boolean;
+  isEmailConfirmed?: boolean;
   fullName?: string;
   statusLabel?: string;
-  registrationDateFormatted?: string;
-  [key: string]: any; // Pour permettre l'accès dynamique aux propriétés
+  [key: string]: any;
 }
 
 @Component({
@@ -53,13 +53,14 @@ export class UserManagementComponent implements OnInit {
   toast: Toast | null = null;
   confirmModal: ConfirmModal | null = null;
   rejectionReason = '';
+  selectedRole = '';
 
   columns: TableColumn[] = [
-    { key: 'userId', label: 'ID', width: '80px' },
-    { key: 'fullName', label: 'Nom complet', width: '200px' },
-    { key: 'email', label: 'Email', width: '250px' },
-    { key: 'role', label: 'Rôle', width: '130px' },
-    { key: 'statusLabel', label: 'Statut', width: '150px' }
+    { key: 'userId', label: 'ID', width: '60px' },
+    { key: 'fullName', label: 'Nom complet', width: '25%' },
+    { key: 'email', label: 'Email', width: '30%' },
+    { key: 'role', label: 'Rôle', width: '15%' },
+    { key: 'statusLabel', label: 'Statut', width: '20%' }
   ];
 
   tableActions: TableAction<UserData>[] = [
@@ -111,19 +112,10 @@ export class UserManagementComponent implements OnInit {
   }
 
   enrichUser(user: any): UserData {
-    // Gérer la date d'inscription (peut être sous différents noms)
-    let regDate = user.registrationDate || user.createdAt || user.createdDate || new Date().toISOString();
-
     return {
       ...user,
       fullName: `${user.firstName} ${user.lastName}`,
-      // Option A : Basé sur IsApproved uniquement
-      statusLabel: user.isApproved ? '✓ Validé' : '⏳ En attente',
-      // Option B : Plus détaillé avec email
-      // statusLabel: !user.isEmailConfirmed ? '📧 Email non confirmé' 
-      //   : user.isApproved ? '✓ Validé' 
-      //   : '⏳ En attente validation',
-      registrationDateFormatted: new Date(regDate).toLocaleDateString('fr-FR')
+      statusLabel: user.isApproved ? '✓ Validé' : '⏳ En attente'
     };
   }
 
@@ -152,9 +144,9 @@ export class UserManagementComponent implements OnInit {
     }
 
     if (this.filterStatus === 'validated') {
-      result = result.filter(u => u.isValidated);
+      result = result.filter(u => u.isApproved);
     } else if (this.filterStatus === 'pending') {
-      result = result.filter(u => !u.isValidated);
+      result = result.filter(u => !u.isApproved);
     }
 
     this.filteredUsers = result;
@@ -168,7 +160,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   openValidateModal(user: UserData): void {
-    if (user.isValidated) {
+    if (user.isApproved) {
       this.showToast('info', 'Cet utilisateur est déjà validé.');
       return;
     }
@@ -182,7 +174,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   openRejectModal(user: UserData): void {
-    if (user.isValidated) {
+    if (user.isApproved) {
       this.showToast('info', 'Cet utilisateur est déjà validé.');
       return;
     }
@@ -198,7 +190,16 @@ export class UserManagementComponent implements OnInit {
   }
 
   openRoleModal(user: UserData): void {
-    this.showToast('info', 'Modification de rôle : fonctionnalité à venir.');
+    this.selectedRole = user.role;
+
+    this.confirmModal = {
+      title: 'Modifier le rôle',
+      message: `Choisissez le nouveau rôle pour ${user.firstName} ${user.lastName} :`,
+      confirmText: 'Modifier',
+      isRoleChange: true,
+      currentRole: user.role,
+      action: () => this.updateRole(user.userId)
+    };
   }
 
   openDeleteModal(user: UserData): void {
@@ -214,6 +215,7 @@ export class UserManagementComponent implements OnInit {
   closeConfirmModal(): void {
     this.confirmModal = null;
     this.rejectionReason = '';
+    this.selectedRole = '';
   }
 
   confirmAction(): void {
@@ -262,8 +264,22 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  addUser(): void {
-    this.showToast('info', "Ajout d'utilisateur : fonctionnalité à venir.");
+  updateRole(userId: number): void {
+    if (!this.selectedRole) {
+      this.showToast('error', 'Veuillez sélectionner un rôle.');
+      return;
+    }
+
+    this.adminUserService.updateUserRole(userId, this.selectedRole).subscribe({
+      next: () => {
+        this.showToast('success', 'Rôle modifié avec succès.');
+        this.loadUsers();
+      },
+      error: (err: any) => {
+        console.error('Erreur lors de la modification du rôle', err);
+        this.showToast('error', 'Impossible de modifier le rôle.');
+      }
+    });
   }
 
   showToast(type: Toast['type'], message: string): void {

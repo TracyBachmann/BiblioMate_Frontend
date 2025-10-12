@@ -115,6 +115,8 @@
       </div>
       <div class="modal-body">
         <p>{{ confirmModal.message }}</p>
+
+        <!-- Textarea pour le rejet -->
         <textarea
           *ngIf="confirmModal.needsReason"
           [(ngModel)]="rejectionReason"
@@ -122,6 +124,18 @@
           class="reason-input"
           rows="3"
         ></textarea>
+
+        <!-- Dropdown pour le changement de rôle -->
+        <select
+          *ngIf="confirmModal.isRoleChange"
+          [(ngModel)]="selectedRole"
+          class="role-select"
+        >
+          <option value="" disabled selected>Sélectionnez un rôle</option>
+          <option value="User" [selected]="confirmModal.currentRole === 'User'">Utilisateur</option>
+          <option value="Librarian" [selected]="confirmModal.currentRole === 'Librarian'">Bibliothécaire</option>
+          <option value="Admin" [selected]="confirmModal.currentRole === 'Admin'">Administrateur</option>
+        </select>
       </div>
       <div class="modal-footer">
         <button type="button" class="styled-button secondary" (click)="closeConfirmModal()">
