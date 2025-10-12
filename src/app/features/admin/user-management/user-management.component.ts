@@ -59,8 +59,7 @@ export class UserManagementComponent implements OnInit {
     { key: 'fullName', label: 'Nom complet', width: '200px' },
     { key: 'email', label: 'Email', width: '250px' },
     { key: 'role', label: 'Rôle', width: '130px' },
-    { key: 'statusLabel', label: 'Statut', width: '150px' },
-    { key: 'registrationDateFormatted', label: "Date d'inscription", width: '180px' }
+    { key: 'statusLabel', label: 'Statut', width: '150px' }
   ];
 
   tableActions: TableAction<UserData>[] = [
@@ -112,11 +111,19 @@ export class UserManagementComponent implements OnInit {
   }
 
   enrichUser(user: any): UserData {
+    // Gérer la date d'inscription (peut être sous différents noms)
+    let regDate = user.registrationDate || user.createdAt || user.createdDate || new Date().toISOString();
+
     return {
       ...user,
       fullName: `${user.firstName} ${user.lastName}`,
-      statusLabel: user.isValidated ? '✓ Validé' : '⏳ En attente',
-      registrationDateFormatted: new Date(user.registrationDate).toLocaleDateString('fr-FR')
+      // Option A : Basé sur IsApproved uniquement
+      statusLabel: user.isApproved ? '✓ Validé' : '⏳ En attente',
+      // Option B : Plus détaillé avec email
+      // statusLabel: !user.isEmailConfirmed ? '📧 Email non confirmé' 
+      //   : user.isApproved ? '✓ Validé' 
+      //   : '⏳ En attente validation',
+      registrationDateFormatted: new Date(regDate).toLocaleDateString('fr-FR')
     };
   }
 
