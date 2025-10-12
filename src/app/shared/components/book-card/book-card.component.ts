@@ -86,7 +86,7 @@ export class BookCardComponent {
    * and bookId is defined.
    */
   onEditClick() {
-    if (this.manage && this.editFn && this.bookId != null) {
+    if (this.manage && this.editFn && this.bookId !== null && this.bookId !== undefined) {
       this.editFn(String(this.bookId));
     }
   }
@@ -97,7 +97,7 @@ export class BookCardComponent {
    * and bookId is defined.
    */
   onDeleteClick() {
-    if (this.manage && this.deleteFn && this.bookId != null) {
+    if (this.manage && this.deleteFn && this.bookId !== null && this.bookId !== undefined) {
       this.deleteFn(String(this.bookId));
     }
   }
@@ -149,4 +149,5 @@ export class BookCardComponent {
     return null;
   }
 }
+
 
