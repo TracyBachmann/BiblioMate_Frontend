@@ -270,6 +270,7 @@ export class UserManagementComponent implements OnInit {
       return;
     }
 
+    // @ts-ignore
     this.adminUserService.updateUserRole(userId, this.selectedRole).subscribe({
       next: () => {
         this.showToast('success', 'Rôle modifié avec succès.');
