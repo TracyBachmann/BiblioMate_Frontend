@@ -3,15 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
 
-/**
- * AdminUserService
- * ========================================
- * Gère toutes les opérations admin liées aux utilisateurs
- * Pas besoin d'interfaces séparées, tout est typé inline !
- */
+type UserRole = 'User' | 'Librarian' | 'Admin';
+
 @Injectable({ providedIn: 'root' })
 export class AdminUserService {
-  private apiUrl = `${environment.apiBase}/api/admin/users`;
+  private apiUrl = `${environment.apiBase}/api/users`;
+  private authUrl = `${environment.apiBase}/api/auths`;
 
   constructor(private http: HttpClient) {}
 
@@ -29,37 +26,32 @@ export class AdminUserService {
 
   /**
    * POST valider un compte utilisateur
-   * @param userId - ID de l'utilisateur à valider
    */
   validateUser(userId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${userId}/validate`, {});
+    return this.http.post(`${this.authUrl}/approve/${userId}`, {});
   }
 
   /**
    * POST rejeter un compte utilisateur
-   * @param userId - ID de l'utilisateur à rejeter
-   * @param reason - Raison du rejet (optionnel)
    */
   rejectUser(userId: number, reason?: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${userId}/reject`, {
-      reason: reason || null
+    return this.http.post(`${this.authUrl}/reject/${userId}`, {
+      Reason: reason ?? null
     });
   }
 
   /**
    * PUT modifier le rôle d'un utilisateur
-   * @param userId - ID de l'utilisateur
-   * @param role - Nouveau rôle ('User' | 'Librarian' | 'Admin')
    */
-  updateUserRole(userId: number, role: string): Observable<any> {
+  updateUserRole(userId: number, role: UserRole): Observable<any> {
     return this.http.put(`${this.apiUrl}/${userId}/role`, { role });
   }
 
   /**
    * DELETE supprimer un utilisateur
-   * @param userId - ID de l'utilisateur à supprimer
    */
   deleteUser(userId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${userId}`);
   }
 }
+
