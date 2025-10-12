@@ -112,13 +112,13 @@ export class PersonalSpaceComponent {
       {
         title: 'Logs & rapports',
         subtitle: 'Journalisation et rapports système',
-        image: 'assets/images/manage-requests.webp',
+        image: 'assets/images/logs.webp',
         link: ['/management/admin/logs-reports'],
       },
       {
-        title: 'Paramètres établissement',
+        title: 'Paramètres métier',
         subtitle: 'Règles métier et configuration',
-        image: 'assets/images/notifications.webp',
+        image: 'assets/images/parameters.webp',
         link: ['/management/admin/business-settings'],
       }
     ];
