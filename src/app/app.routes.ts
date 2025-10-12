@@ -65,33 +65,34 @@ export const routes: Routes = [
         .then(m => m.BookDetailsPageComponent)
   },
 
-  /** Personal account space (protected) */
+  /** Personal account space (protected, top-level routes) */
   {
     path: 'espace',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/account/pages/personal-space/personal-space.component')
-        .then(m => m.PersonalSpaceComponent),
-    children: [
-      {
-        path: 'profil',
-        loadComponent: () =>
-          import('./features/account/pages/user-profile/user-profile.component')
-            .then(m => m.UserProfileComponent)
-      },
-      {
-        path: 'mes-reservations',
-        loadComponent: () =>
-          import('./features/account/pages/my-reservations/my-reservations.component')
-            .then(m => m.MyReservationsComponent)
-      },
-      {
-        path: 'mes-emprunts',
-        loadComponent: () =>
-          import('./features/account/pages/my-loans/my-loans.component')
-            .then(m => m.MyLoansComponent)
-      }
-    ]
+        .then(m => m.PersonalSpaceComponent)
+  },
+  {
+    path: 'espace/profil',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/account/pages/user-profile/user-profile.component')
+        .then(m => m.UserProfileComponent)
+  },
+  {
+    path: 'espace/mes-reservations',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/account/pages/my-reservations/my-reservations.component')
+        .then(m => m.MyReservationsComponent)
+  },
+  {
+    path: 'espace/mes-emprunts',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/account/pages/my-loans/my-loans.component')
+        .then(m => m.MyLoansComponent)
   },
 
   /** Catalog management (for admins or privileged users) */
