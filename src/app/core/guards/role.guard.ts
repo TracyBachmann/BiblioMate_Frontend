@@ -12,7 +12,6 @@ export function roleGuard(roles: ('User' | 'Librarian' | 'Admin')[]): CanActivat
       return false;
     }
 
-    // Normalisation
     const raw = auth.getRole?.();
     const role = raw
       ? (String(raw).toLowerCase() === 'admin'
@@ -27,13 +26,13 @@ export function roleGuard(roles: ('User' | 'Librarian' | 'Admin')[]): CanActivat
       return false;
     }
 
-    // Règle d’héritage: Admin -> Librarian uniquement
+    // Règle d'héritage: Admin -> Librarian uniquement
     // - Si la route autorise 'Admin' → OK
     // - Sinon, si la route autorise 'Librarian' et l'utilisateur est 'Admin' → OK (héritage)
     // - Sinon, aucun héritage vers 'User' → Admin NE PASSE PAS sur des routes 'User' only
     if (role === 'Admin') {
-      if (roles.includes('Admin')) return true;
-      if (roles.includes('Librarian')) return true;
+      if (roles.includes('Admin')) { return true; }
+      if (roles.includes('Librarian')) { return true; }
       router.navigate(['/connexion']);
       return false;
     }

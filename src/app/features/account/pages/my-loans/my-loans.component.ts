@@ -134,13 +134,13 @@ export class MyLoansComponent implements OnInit {
         if (!t.includes(q) && !d.includes(q)) {return false;}
       }
       if (f.overdueOnly && !l.overdue) {return false;}
-      if (soonLimit != null) {
-        if (l.dueAt == null || l.dueAt > soonLimit) {return false;}
+      if (soonLimit !== null) {
+        if (l.dueAt === null || l.dueAt > soonLimit) {return false;}
       }
-      if (loanStart != null && (l.loanAt == null || l.loanAt < loanStart)) {return false;}
-      if (loanEnd   != null && (l.loanAt == null || l.loanAt > loanEnd))   {return false;}
-      if (dueStart  != null && (l.dueAt  == null || l.dueAt  < dueStart))  {return false;}
-      if (dueEnd    != null && (l.dueAt  == null || l.dueAt  > dueEnd))    {return false;}
+      if (loanStart !== null && (l.loanAt === null || l.loanAt < loanStart)) {return false;}
+      if (loanEnd   !== null && (l.loanAt === null || l.loanAt > loanEnd))   {return false;}
+      if (dueStart  !== null && (l.dueAt  === null || l.dueAt  < dueStart))  {return false;}
+      if (dueEnd    !== null && (l.dueAt  === null || l.dueAt  > dueEnd))    {return false;}
       return true;
     });
 
@@ -174,7 +174,7 @@ export class MyLoansComponent implements OnInit {
             )
           );
           this.applyFiltersNow();
-          alert(`Votre emprunt a été prolongé jusqu’au ${this.formatDate(due)}.`);
+          alert(`Votre emprunt a été prolongé jusqu'au ${this.formatDate(due)}.`);
         } else {
           alert('Emprunt prolongé.');
         }
@@ -307,11 +307,10 @@ export class MyLoansComponent implements OnInit {
   private dateInputToEndMs(s: string): number | null {
     if (!s) {return null;}
     const start = this.toStartMs(s);
-    return start == null ? null : this.addDaysMs(start, 1) - 1;
+    return start === null ? null : this.addDaysMs(start, 1) - 1;
   }
   private isOverdue(dueAt: number | null): boolean {
-    if (dueAt == null) {return false;}
+    if (dueAt === null) {return false;}
     return dueAt < this.startOfTodayMs();
   }
 }
-
