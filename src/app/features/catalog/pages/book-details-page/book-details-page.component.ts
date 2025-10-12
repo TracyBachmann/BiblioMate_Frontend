@@ -121,9 +121,28 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
   }
 
   // ===== Helper methods =====
-  private safe(v: any): string { if (v == null) {return '—';} const s = String(v); return s.trim() === '' ? '—' : s; }
-  private pick(...c: any[]) { for (const x of c){ if (x==null) {continue;} const s=typeof x==='string'?x.trim():String(x); if (s!=='') {return s;} } return undefined; }
-  private nested(){ const b:any=this.book()??{}; const sl=b.shelfLevel??b.stock?.shelfLevel??null; const s=sl?.shelf??null; const z=s?.zone??null; return {shelfLevel:sl,shelf:s,zone:z}; }
+  private safe(v: unknown): string {
+    if (v === null || v === undefined) { return '—'; }
+    const s = String(v);
+    return s.trim() === '' ? '—' : s;
+  }
+
+  private pick(...c: unknown[]) {
+    for (const x of c) {
+      if (x === null || x === undefined) { continue; }
+      const s = typeof x === 'string' ? x.trim() : String(x);
+      if (s !== '') { return s; }
+    }
+    return undefined;
+  }
+
+  private nested(){
+    const b:any=this.book()??{};
+    const sl=b.shelfLevel??b.stock?.shelfLevel??null;
+    const s=sl?.shelf??null;
+    const z=s?.zone??null;
+    return {shelfLevel:sl,shelf:s,zone:z};
+  }
 
   // Extract fields for template
   title(): string { return (this.book() as any)?.title ?? ''; }
@@ -304,3 +323,4 @@ export class BookDetailsPageComponent implements OnInit, OnDestroy {
     });
   }
 }
+

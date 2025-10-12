@@ -191,10 +191,10 @@ export class MyReservationsComponent implements OnInit {
         if (!t.includes(q) && !d.includes(q)) {return false;}
       }
       if (f.availableOnly && !r.available) {return false;}
-      if (resStart != null && (r.resAt == null || r.resAt < resStart)) {return false;}
-      if (resEnd   != null && (r.resAt == null || r.resAt > resEnd))   {return false;}
-      if (expStart != null && (r.expAt == null || r.expAt < expStart)) {return false;}
-      if (expEnd   != null && (r.expAt == null || r.expAt > expEnd))   {return false;}
+      if (resStart !== null && (r.resAt === null || r.resAt < resStart)) {return false;}
+      if (resEnd   !== null && (r.resAt === null || r.resAt > resEnd))   {return false;}
+      if (expStart !== null && (r.expAt === null || r.expAt < expStart)) {return false;}
+      if (expEnd   !== null && (r.expAt === null || r.expAt > expEnd))   {return false;}
       return true;
     });
 
@@ -284,7 +284,7 @@ export class MyReservationsComponent implements OnInit {
   private dateInputToEndMs(s: string): number | null {
     if (!s) {return null;}
     const start = this.toStartMs(s);
-    return start == null ? null : start + 24 * 60 * 60 * 1000 - 1;
+    return start === null ? null : start + 24 * 60 * 60 * 1000 - 1;
   }
 }
 
