@@ -61,14 +61,32 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
   // --- View switch (grid | list)
   viewMode = signal<'grid' | 'list'>('grid');
 
+  // ============================================================
+  // PAGINATION
+  // ============================================================
+  pageSize = 6;
+  pageIndex = signal(0);
+
+  /** Compute total pages based on results length */
+  totalPages = computed(() => {
+    const n = Math.ceil(this.results().length / this.pageSize);
+    return Array.from({ length: n }, (_, i) => i);
+  });
+
+  /** Slice current results according to pagination state */
+  pagedResults = computed(() => {
+    const start = this.pageIndex() * this.pageSize;
+    return this.results().slice(start, start + this.pageSize);
+  });
+
   // --- Carousel state (for "new arrivals")
-  readonly pageSize = 3; // number of cards visible at once
+  readonly carouselPageSize = 3; // number of cards visible at once
   index = signal(0);     // current slice index
 
   /** Compute currently visible items in the carousel */
   visibleNouveautes = computed(() => {
     const start = this.index();
-    const end = start + this.pageSize;
+    const end = start + this.carouselPageSize;
     return this.nouveautes().slice(start, end);
   });
 
@@ -147,22 +165,22 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
   // ===== Carousel controls =====
   next(): void {
     const len = this.nouveautes().length;
-    if (len <= this.pageSize) {return;} // nothing to slide
-    const nextStart = this.index() + this.pageSize;
+    if (len <= this.carouselPageSize) {return;} // nothing to slide
+    const nextStart = this.index() + this.carouselPageSize;
     this.index.set(nextStart >= len ? 0 : nextStart);
   }
 
   prev(): void {
     const len = this.nouveautes().length;
-    if (len <= this.pageSize) {return;}
-    const prevStart = this.index() - this.pageSize;
-    this.index.set(prevStart < 0 ? Math.max(0, len - this.pageSize) : prevStart);
+    if (len <= this.carouselPageSize) {return;}
+    const prevStart = this.index() - this.carouselPageSize;
+    this.index.set(prevStart < 0 ? Math.max(0, len - this.carouselPageSize) : prevStart);
   }
 
   startAutoplay(): void {
     this.stopAutoplay();
     const len = this.nouveautes().length;
-    if (len <= this.pageSize) {return;}
+    if (len <= this.carouselPageSize) {return;}
     this.autoplayId = setInterval(() => {
       if (!this.autoplayPaused()) {this.next();}
     }, this.autoplayDelay);
@@ -238,18 +256,46 @@ export class CatalogPageComponent implements OnInit, OnDestroy {
     );
 
     if (!hasAny) {
-      this.booksApi.getLatest(24).subscribe(items => this.results.set(items.map(this.toVM)));
+      this.booksApi.getLatest(24).subscribe(items => {
+        this.results.set(items.map(this.toVM));
+        this.pageIndex.set(0); // reset to first page
+      });
       return;
     }
 
     // Otherwise: run search API
     this.booksApi.search(dto).subscribe({
-      next: items => this.results.set(items.map(this.toVM)),
+      next: items => {
+        this.results.set(items.map(this.toVM));
+        this.pageIndex.set(0); // reset to first page
+      },
       error: err => {
         console.error('Search API failed, fallback to GET:', err);
-        this.booksApi.getLatest(24).subscribe(items => this.results.set(items.map(this.toVM)));
+        this.booksApi.getLatest(24).subscribe(items => {
+          this.results.set(items.map(this.toVM));
+          this.pageIndex.set(0); // reset to first page
+        });
       }
     });
+  }
+
+  // ============================================================
+  // PAGINATION HELPERS
+  // ============================================================
+  nextPage() {
+    if (this.pageIndex() < this.totalPages().length - 1) {
+      this.pageIndex.update(i => i + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.pageIndex() > 0) {
+      this.pageIndex.update(i => i - 1);
+    }
+  }
+
+  goToPage(i: number) {
+    this.pageIndex.set(i);
   }
 
   /** Simple status helper (Disponible / Indisponible) */

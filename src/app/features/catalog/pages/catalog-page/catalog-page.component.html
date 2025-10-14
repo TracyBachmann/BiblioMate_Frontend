@@ -5,9 +5,9 @@
        ======================= -->
   <header class="catalog-hero">
     <img loading="lazy"
-      ngSrc="assets/images/catalog-background.webp"
-      width="1920" height="350" alt="Catalogue"
-      class="hero-bg" fetchpriority="high" />
+         ngSrc="assets/images/catalog-background.webp"
+         width="1920" height="350" alt="Catalogue"
+         class="hero-bg" fetchpriority="high" />
 
     <div class="page-gutter hero-inner">
       <!-- Page title -->
@@ -135,7 +135,7 @@
       <span>Résultats affichés ({{ results().length }})</span>
 
       <!-- View mode switcher -->
-      <div class="view-switch" role="tablist" aria-label="Changer le mode d’affichage">
+      <div class="view-switch" role="tablist" aria-label="Changer le mode d'affichage">
         <button
           type="button"
           class="switch-btn"
@@ -174,7 +174,7 @@
     <ng-template #resultsList>
       <div class="cards-grid" [class.is-list]="viewMode() === 'list'">
         <app-book-card
-          *ngFor="let b of results()"
+          *ngFor="let b of pagedResults()"
           [compact]="viewMode() === 'list'"
           [showStatus]="true"
           [status]="bookStatus(b)"
@@ -183,6 +183,15 @@
           [description]="b.description"
           [bookId]="b.id">
         </app-book-card>
+      </div>
+
+      <!-- Pagination controls -->
+      <div class="pagination" *ngIf="totalPages().length > 1">
+        <button (click)="prevPage()" [disabled]="pageIndex() === 0">‹</button>
+        <button *ngFor="let i of totalPages()" [class.is-active]="i === pageIndex()" (click)="goToPage(i)">
+          {{ i + 1 }}
+        </button>
+        <button (click)="nextPage()" [disabled]="pageIndex() === totalPages().length - 1">›</button>
       </div>
     </ng-template>
   </section>
