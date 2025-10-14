@@ -44,13 +44,13 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     // Debug log (can be removed in production)
-    console.log('Interceptor', {
-      url: req.url,
-      apiBase,
-      tokenPresent: !!token,
-      isApi,
-      isAuthEndpoint
-    });
+    //console.log('Interceptor', {
+    //  url: req.url,
+    //  apiBase,
+    //  tokenPresent: !!token,
+    //  isApi,
+    //  isAuthEndpoint
+    //});
 
     // Clone the request and add the Bearer token if applicable
     const authReq =
